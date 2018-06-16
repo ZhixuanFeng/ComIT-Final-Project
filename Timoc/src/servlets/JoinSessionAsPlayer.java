@@ -1,4 +1,4 @@
-
+package servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -8,6 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import dao.ApplicationDAO;
+import dao.DBConnection;
 
 /**
  * Servlet implementation class JoinSessionAsPlayer

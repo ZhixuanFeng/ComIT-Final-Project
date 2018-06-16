@@ -1,3 +1,5 @@
+package dao;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -6,6 +8,8 @@ import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
+
+import beans.Account;
 
 public class ApplicationDAO {
 	
