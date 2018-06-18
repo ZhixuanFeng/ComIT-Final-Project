@@ -19,6 +19,11 @@
   <listener>
     <listener-class>listeners.ApplicationListener</listener-class>
   </listener>
+  
+  <session-config>
+        <session-timeout>60</session-timeout>
+  </session-config>
+
   <welcome-file-list>
     <welcome-file>home</welcome-file>
     <welcome-file>home.jsp</welcome-file>

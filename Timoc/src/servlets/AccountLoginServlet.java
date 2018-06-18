@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import beans.User;
 import dao.ApplicationDAO;
 
 /**
@@ -47,31 +48,28 @@ public class AccountLoginServlet extends HttpServlet
 		
 		ApplicationDAO dao = new ApplicationDAO();
 		Connection connection = (Connection)getServletContext().getAttribute("dbconnection");
-		int returnCode = dao.validateUser(username, password, connection);
+		int id = dao.validateUser(username, password, connection);
 		
-		switch (returnCode)
+		if (id == 0)
 		{
-		case 0:  // invalid
+			// invalid
 			System.out.println("Login failed - username does not exist: " + username);
-			//response.getWriter().write("Invalid username/password");
 			request.setAttribute("returnMessage", "Invalid username/password, please try again");
 			request.getRequestDispatcher("/jsp/accountLogin.jsp").forward(request, response);
-			break;
-		case 1:  // valid
+		}
+		else if (id > 0)
+		{
+			// valid
 			System.out.println("Login success, username " + username);
+			User user = new User(id, username);
 			HttpSession session = request.getSession();
-			session.setAttribute("username", username);
+			session.setAttribute("user", user);
 			request.getRequestDispatcher("/jsp/home.jsp").forward(request, response);
-			break;
-		case 2:  // already online
-			System.out.println("Login failed - user already online: " + username);
-			//response.getWriter().write("User already online");
-			// TODO logout the already online account and let this login attempt go through
-			break;
-		default:
+		}
+		else
+		{
 			System.out.println("Unknown error validating user " + username);
 			// TODO redirect to error page
-			break;
 		}
 		
 //		// forward the return code and control to jsp

@@ -172,10 +172,10 @@ public class ApplicationDAO {
 		return returnCode;
 	}
 	
-	// check if username and password pair is valid and if the account is already online
+	// check if username and password pair is valid and return the account id
 	public int validateUser(String username, String password, Connection connection) 
 	{
-		int returnCode = 0;  // 0-invalid, 1-valid, 2-is already online, -1 - error
+		int id = 0;  // 0-invalid, >0 -valid,  -1 - error
 		try 
 		{
 			// write the select query
@@ -190,14 +190,7 @@ public class ApplicationDAO {
 			ResultSet set = statement.executeQuery();
 			if (set.next())
 			{
-				returnCode = set.getBoolean("is_online") ? 2: 1;
-			}
-			
-			// set the account status to online
-			if (returnCode == 1)
-			{
-				set.updateBoolean("is_online", true);
-				set.updateRow();
+				id = set.getInt(1);
 			}
 		} catch (SQLException exception)
 		{
@@ -205,7 +198,7 @@ public class ApplicationDAO {
 			return -1;
 		}
 		
-		return returnCode;
+		return id;
 	}
 	
 	
