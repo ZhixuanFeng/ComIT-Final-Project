@@ -10,19 +10,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.ApplicationDAO;
-import dao.DBConnection;
 
 /**
  * Servlet implementation class JoinSessionAsPlayer
  */
-@WebServlet("/JoinSessionAsPlayer")
-public class JoinSessionAsPlayer extends HttpServlet {
+@WebServlet("/joinSessionAsPlayer")
+public class JoinSessionAsPlayerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public JoinSessionAsPlayer() {
+    public JoinSessionAsPlayerServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -33,7 +32,7 @@ public class JoinSessionAsPlayer extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String respond = "Connection success";
 		
-		Connection connection = DBConnection.getConnectionToDatabase();
+		Connection connection = (Connection)getServletContext().getAttribute("dbconnection");
 		ApplicationDAO dao = new ApplicationDAO();
 		
 		String inputedCode = request.getParameter("code").toUpperCase();

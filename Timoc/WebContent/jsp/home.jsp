@@ -6,17 +6,11 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Timoc</title>
 <h3>Welcome To Timoc</h3>
-<p>Today is <%= new java.util.Date().toString() %></p>
+<p><%= new java.util.Date().toString() %></p>
 </head>
-<%
-	String bgColor = request.getParameter("COLOR");
-	
-	if (bgColor == null)
-	   bgColor = "WHITE";
-%>
-<body BGCOLOR="<%= bgColor%>">
-  <form>
-  <input type="submit" value="Display">
-  </form>
+<body>
+  <form action="generateSession" method="get"><input type="submit" value="Display"></form>
+  <form action="login" method="get"><input type="submit" value="Login"></form>
+  <form action="register" method="get"><input type="submit" value="Create new account"></form>
 </body>
 </html>

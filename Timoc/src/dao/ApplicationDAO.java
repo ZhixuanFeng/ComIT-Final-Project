@@ -111,39 +111,78 @@ public class ApplicationDAO {
 		return row;
 	}
 	
-	public int registerUser(Account newAccount, Connection connection) {
-		int rowsAffected = 0;
-
+	// if successful, return affected row number, otherwise 0 - error, -1 - username exists, -2 email exists
+	public int registerUser(Account newAccount, Connection connection) 
+	{
+		int returnCode = 0; 
 		try {
-			// write the insert query
-			String insertQuery = "insert into player_account values(?,?,?)";
-
+			// check if username exists
+			String sql = "SELECT 1 FROM player_account WHERE username=?";
 			// set parameters with PreparedStatement
-			java.sql.PreparedStatement statement = connection.prepareStatement(insertQuery);
+			PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, newAccount.getUsername());
-			statement.setString(2, newAccount.getPassword());
-			statement.setString(3, newAccount.getEmail());
+			// execute the statement and check whether username exists
+			ResultSet set = statement.executeQuery();
+			if (set.next())
+			{
+				return -1;
+			}
+			set.close();
 
+			// check if email exists
+			sql = "SELECT 1 FROM player_account WHERE email=?";
+			// set parameters with PreparedStatement
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, newAccount.getUsername());
+			// execute the statement and check whether email exists
+			set = statement.executeQuery();
+			if (set.next())
+			{
+				return -2;
+			}
+			set.close();
+			
+			
+			// create new player table
+			String insertPlayerQuery = "INSERT INTO player (name) VALUES(?)";
+			statement = connection.prepareStatement(insertPlayerQuery);
+			statement.setString(1, newAccount.getUsername());
 			// execute the statement
-			rowsAffected = statement.executeUpdate();
+			returnCode = statement.executeUpdate();
+			
+			// insert new account
+			String insertAccountQuery = "INSERT INTO player_account (player_id, username, password, email) "
+					+ "VALUES((SELECT id from player WHERE name=?),"
+					+ "(SELECT name from player WHERE name=?),"
+					+ "?,?)";
+			// set parameters with PreparedStatement
+			statement = connection.prepareStatement(insertAccountQuery);
+			statement.setString(1, newAccount.getUsername());
+			statement.setString(2, newAccount.getUsername());
+			statement.setString(3, newAccount.getPassword());
+			statement.setString(4, newAccount.getEmail());
+			// execute the statement
+			returnCode = statement.executeUpdate();
 
-		} catch (SQLException exception) {
+		} catch (SQLException exception) 
+		{
 			exception.printStackTrace();
+			return 0;
 		}
-		return rowsAffected;
+		return returnCode;
 	}
 	
 	// check if username and password pair is valid and if the account is already online
 	public int validateUser(String username, String password, Connection connection) 
 	{
-		int returnCode = 0;  // 0-invalid, 1-valid, 2-is already online
+		int returnCode = 0;  // 0-invalid, 1-valid, 2-is already online, -1 - error
 		try 
 		{
 			// write the select query
-			String sql = "select 1 from users where username=? and password=?";
+			String sql = "SELECT * FROM player_account WHERE username=? AND password=?";
 
 			// set parameters with PreparedStatement
-			java.sql.PreparedStatement statement = connection.prepareStatement(sql);
+			java.sql.PreparedStatement statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			statement.setString(1, username);
 			statement.setString(2, password);
 
@@ -153,10 +192,19 @@ public class ApplicationDAO {
 			{
 				returnCode = set.getBoolean("is_online") ? 2: 1;
 			}
+			
+			// set the account status to online
+			if (returnCode == 1)
+			{
+				set.updateBoolean("is_online", true);
+				set.updateRow();
+			}
 		} catch (SQLException exception)
 		{
 			exception.printStackTrace();
+			return -1;
 		}
+		
 		return returnCode;
 	}
 	

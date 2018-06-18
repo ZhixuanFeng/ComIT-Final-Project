@@ -5,12 +5,22 @@
     <param-name>dbURL</param-name>
     <param-value>jdbc:mysql://localhost:3306/timoc</param-value>
   </context-param>
+  
+  <servlet>
+		<servlet-name>HomeServlet</servlet-name>
+		<servlet-class>servlets.HomeServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>HomeServlet</servlet-name>
+		<url-pattern>/home</url-pattern>
+  </servlet-mapping>
+  
+  <listener>
+    <listener-class>listeners.ApplicationListener</listener-class>
+  </listener>
   <welcome-file-list>
-    <welcome-file>index.html</welcome-file>
-    <welcome-file>index.htm</welcome-file>
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>default.html</welcome-file>
-    <welcome-file>default.htm</welcome-file>
-    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>home</welcome-file>
+    <welcome-file>home.jsp</welcome-file>
   </welcome-file-list>
 </web-app>
