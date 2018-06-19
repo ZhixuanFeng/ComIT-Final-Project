@@ -15,13 +15,15 @@ import dao.ApplicationDAO;
  * Servlet implementation class GenerateConnectCode
  */
 @WebServlet("/generateSession")
-public class GenerateSessionServlet extends HttpServlet {
+public class GenerateSessionServlet extends HttpServlet
+{
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GenerateSessionServlet() {
+    public GenerateSessionServlet()
+    {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -29,7 +31,8 @@ public class GenerateSessionServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
 		Connection connection = (Connection)getServletContext().getAttribute("dbconnection");
 		ApplicationDAO dao = new ApplicationDAO();
 		response.getWriter().append("Your Connect Code Is: ").append(dao.generateSessionCode(connection));
@@ -38,7 +41,8 @@ public class GenerateSessionServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

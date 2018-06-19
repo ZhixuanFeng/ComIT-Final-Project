@@ -5,9 +5,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Timoc</title>
+</head>
 <h3>Welcome To Timoc</h3>
 <p><%= new java.util.Date().toString() %></p>
-</head>
 <body>
   <form action="generateSession" method="get"><input type="submit" value="Display"></form>
   <form action="login" method="get"><input type="submit" value="Login"></form>

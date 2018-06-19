@@ -15,13 +15,15 @@ import dao.ApplicationDAO;
  * Servlet implementation class JoinSessionAsPlayer
  */
 @WebServlet("/joinSessionAsPlayer")
-public class JoinSessionAsPlayerServlet extends HttpServlet {
+public class JoinSessionAsPlayerServlet extends HttpServlet
+{
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public JoinSessionAsPlayerServlet() {
+    public JoinSessionAsPlayerServlet()
+    {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -29,7 +31,8 @@ public class JoinSessionAsPlayerServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
 		String respond = "Connection success";
 		
 		Connection connection = (Connection)getServletContext().getAttribute("dbconnection");
@@ -52,7 +55,8 @@ public class JoinSessionAsPlayerServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

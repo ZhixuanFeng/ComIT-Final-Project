@@ -6,6 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Register</title>
 </head>
+<h3>Register</h3>
 <body>
 <form action="register" method="post">
 	Username(4-20 characters):<br>
