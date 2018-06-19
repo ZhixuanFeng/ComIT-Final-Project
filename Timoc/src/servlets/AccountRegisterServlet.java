@@ -8,8 +8,10 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import beans.Account;
+import beans.User;
 import dao.ApplicationDAO;
 
 /**
@@ -56,6 +58,12 @@ public class AccountRegisterServlet extends HttpServlet
 		if (row > 0)
 		{
 			System.out.println("New account registerred: " + username);
+			int id = dao.getAccountID(username, connection);
+			User user = new User(id, username);
+			HttpSession session = request.getSession();
+			session.setAttribute("user", user);
+			request.getRequestDispatcher("/jsp/home.jsp").forward(request, response);
+			System.out.println("Login success, username " + username);
 		}
 		else if (row == 0)
 		{

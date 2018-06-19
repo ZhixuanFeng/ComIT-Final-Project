@@ -182,7 +182,7 @@ public class ApplicationDAO {
 			String sql = "SELECT * FROM player_account WHERE username=? AND password=?";
 
 			// set parameters with PreparedStatement
-			java.sql.PreparedStatement statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			java.sql.PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, username);
 			statement.setString(2, password);
 
@@ -201,7 +201,31 @@ public class ApplicationDAO {
 		return id;
 	}
 	
-	
+	// returns account id
+	public int getAccountID(String username, Connection connection)
+	{
+		int id = 0;
+		try 
+		{
+			// write the select query
+			String sql = "SELECT 1 FROM player_account WHERE username=?";
+
+			// set parameters with PreparedStatement
+			java.sql.PreparedStatement statement = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			statement.setString(1, username);
+			// execute the statement and check whether user exists
+			ResultSet set = statement.executeQuery();
+			if (set.next())
+			{
+				id = set.getInt(1);
+			}
+		} catch (SQLException exception)
+		{
+			exception.printStackTrace();
+			return -1;
+		}
+		return id;
+	}
 	
 	
 	
