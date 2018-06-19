@@ -10,11 +10,14 @@
 <body>
 <form action="register" method="post">
 	Username(4-20 characters):<br>
-  	<input type="text" name="username" maxlength="21" id="username"><br>
+	<font size="3" color="red">	${UsernameProblem}</font>
+  	<input type="text" name="username" maxlength="21" id="username" value="${EnteredUsername}"><br>
 	Password(8-32 characters):<br>
- 	<input type="password" name="password" id="password"><br>
+	<font size="3" color="red">	${PasswordProblem}</font>
+ 	<input type="password" name="password" maxlength="32" id="password"><br>
 	E-mail Address(Password recovery not yet implemented):<br>
- 	<input type="text" name="email" id="email"><br><br>
+	<font size="3" color="red">	${EmailProblem}</font>
+ 	<input type="text" name="email" id="email" value="${EnteredEmail}"><br><br>
 	<input type="submit" value="Submit">
 </form>
 </body>
