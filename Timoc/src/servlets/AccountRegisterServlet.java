@@ -81,6 +81,7 @@ public class AccountRegisterServlet extends HttpServlet
 		else
 		{
 			System.out.println("Unknown error occurred when registerring account: " + username);
+			request.getRequestDispatcher("/jsp/errorPage.jsp").forward(request, response);
 		}
 	}
 

@@ -70,7 +70,7 @@ public class AccountLoginServlet extends HttpServlet
 		else
 		{
 			System.out.println("Unknown error validating user " + username);
-			// TODO redirect to error page
+			request.getRequestDispatcher("/jsp/errorPage.jsp").forward(request, response);
 		}
 		
 //		// forward the return code and control to jsp

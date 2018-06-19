@@ -35,7 +35,15 @@ public class GenerateSessionServlet extends HttpServlet
 	{
 		Connection connection = (Connection)getServletContext().getAttribute("dbconnection");
 		ApplicationDAO dao = new ApplicationDAO();
-		response.getWriter().append("Your Connect Code Is: ").append(dao.generateSessionCode(connection));
+		String code = dao.generateSessionCode(connection);
+		if (code != null)
+		{
+			response.getWriter().append("Your Connect Code Is: ").append(code);
+		}
+		else
+		{
+			request.getRequestDispatcher("/jsp/errorPage.jsp").forward(request, response);
+		}
 	}
 
 	/**
