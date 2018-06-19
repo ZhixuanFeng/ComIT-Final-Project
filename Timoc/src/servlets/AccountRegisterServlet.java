@@ -62,7 +62,8 @@ public class AccountRegisterServlet extends HttpServlet
 			User user = new User(id, username);
 			HttpSession session = request.getSession();
 			session.setAttribute("user", user);
-			request.getRequestDispatcher("/jsp/home.jsp").forward(request, response);
+			//request.getRequestDispatcher("/jsp/home.jsp").forward(request, response);
+			response.sendRedirect("home");
 			System.out.println("Login success, username " + username);
 		}
 		else if (row == 0)
