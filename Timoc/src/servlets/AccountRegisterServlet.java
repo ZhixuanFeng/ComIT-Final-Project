@@ -144,7 +144,6 @@ public class AccountRegisterServlet extends HttpServlet
 		{
 			return "Password too short.";
 		}
-		
 		return null;
 	}
 	

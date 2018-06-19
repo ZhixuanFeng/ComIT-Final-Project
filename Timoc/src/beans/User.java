@@ -10,15 +10,17 @@ public class User implements HttpSessionBindingListener
 {
     public User(int id, String username)
 	{
-		this.id = (long) id;
+		this.id = id;
 		this.username = username;
+		connectedGameSessionCode = -1;
 	}
 
 	// All logins.
     private static Map<User, HttpSession> logins = new HashMap<User, HttpSession>();
     
-    private Long id;
+    private Integer id;
     private String username;
+    private int connectedGameSessionCode;  // use int instead of reference to reduce memory usage
     
     
     
@@ -52,12 +54,12 @@ public class User implements HttpSessionBindingListener
         logins.remove(this);
     }
 
-	public Long getId()
+	public int getId()
 	{
 		return id;
 	}
 
-	public void setId(Long id)
+	public void setId(int id)
 	{
 		this.id = id;
 	}
@@ -70,5 +72,15 @@ public class User implements HttpSessionBindingListener
 	public void setUsername(String username)
 	{
 		this.username = username;
+	}
+
+	public int getConnectedGameSession()
+	{
+		return connectedGameSessionCode;
+	}
+
+	public void setConnectedGameSession(int connectedGameSession)
+	{
+		this.connectedGameSessionCode = connectedGameSession;
 	}
 }

@@ -32,14 +32,8 @@ public class AccountLogout extends HttpServlet
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("user");
-		
-		if (user != null)
-		{
-			session.removeAttribute("user");
-			System.out.println("User logged out: " + user.getUsername());
-		}
+		logout(request);
+		response.sendRedirect("home");
 	}
 
 	/**
@@ -51,4 +45,21 @@ public class AccountLogout extends HttpServlet
 		doGet(request, response);
 	}
 
+	
+	// logout the user
+	void logout(HttpServletRequest request)
+	{
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		
+		if (user != null)
+		{
+			// remove user from connected game session
+			
+			
+			// finally, remove user from HTTP session
+			session.removeAttribute("user");
+			System.out.println("User logged out: " + user.getUsername());
+		}
+	}
 }

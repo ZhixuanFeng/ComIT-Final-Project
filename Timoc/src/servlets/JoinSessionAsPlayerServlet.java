@@ -1,7 +1,6 @@
 package servlets;
 
 import java.io.IOException;
-import java.sql.Connection;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.ApplicationDAO;
+import beans.GameSession;
+import beans.User;
 
 /**
  * Servlet implementation class JoinSessionAsPlayer
@@ -33,21 +33,45 @@ public class JoinSessionAsPlayerServlet extends HttpServlet
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		String respond = "Connection success";
+		String respond = "";
 		
-		Connection connection = (Connection)getServletContext().getAttribute("dbconnection");
-		ApplicationDAO dao = new ApplicationDAO();
+		// check if user has login
+		User user = (User)request.getSession().getAttribute("User");
+		if (user == null)
+		{
+			return; // do nothing, can't redirect or forward to login page
+		}
 		
-		String inputedCode = request.getParameter("code").toUpperCase();
-		int row = dao.connectToSession(connection, inputedCode);
-		if (row == 0)
+		int code = GameSession.codeToInt((String) request.getAttribute("code"));
+		
+		// check if code is valid
+		if (GameSession.isCodeValid(code))
 		{
 			respond = "Invalid Code";
+			return;
 		}
-		else if (row < 0)
+		
+		// check if game session exists
+		if (!GameSession.gameSessionExist(code))
 		{
-			respond = "Connection Failed";
+			respond = "Game Sesseion Does not Exist";
+			return;
 		}
+		
+		// get game session
+		GameSession gameSession = GameSession.getGameSessionByCode(code);
+		
+		// check if game session is full
+		if (gameSession.isFull())
+		{
+			respond = "Game Session is Full";
+			return;
+		}
+		
+		// add user to game session
+		gameSession.addUser(user);
+		user.setConnectedGameSession(code);
+		respond = "Connection success";
 		
 		response.getWriter().append(respond);
 	}

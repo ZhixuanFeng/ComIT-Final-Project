@@ -1,7 +1,6 @@
 package servlets;
 
 import java.io.IOException;
-import java.sql.Connection;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.ApplicationDAO;
+import beans.GameSession;
 
 /**
  * Servlet implementation class GenerateConnectCode
@@ -33,15 +32,15 @@ public class GenerateSessionServlet extends HttpServlet
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		Connection connection = (Connection)getServletContext().getAttribute("dbconnection");
-		ApplicationDAO dao = new ApplicationDAO();
-		String code = dao.generateSessionCode(connection);
-		if (code != null)
+		GameSession gameSession;
+		try
 		{
+			gameSession = new GameSession();
+			String code = gameSession.getCodeString();
 			response.getWriter().append("Your Connect Code Is: ").append(code);
-		}
-		else
+		} catch (Exception e)
 		{
+			e.printStackTrace();
 			request.getRequestDispatcher("/jsp/errorPage.jsp").forward(request, response);
 		}
 	}
