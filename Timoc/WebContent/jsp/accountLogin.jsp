@@ -14,7 +14,7 @@
 	Password:<br>
  	<input type="password" name="password" id="password"><br>
 	<font size="3" color="red">	${returnMessage}</font><br>
-	<input type="submit" value="Submit">
+	<input type="submit" value="Login"> <!-- TODO: Add a link to register page -->
 </form>
 </body>
 </html>

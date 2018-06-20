@@ -15,10 +15,12 @@
 	Password(8-32 characters):<br>
 	<font size="3" color="red">	${PasswordProblem}</font>
  	<input type="password" name="password" maxlength="32" id="password"><br>
+	Confirm password:<br>
+ 	<input type="password" name="password_re" maxlength="32" id="password_re"><br>
 	E-mail Address(Password recovery not yet implemented):<br>
 	<font size="3" color="red">	${EmailProblem}</font>
  	<input type="text" name="email" id="email" value="${EnteredEmail}"><br><br>
-	<input type="submit" value="Submit">
+ 	<input type="submit" value="Create my Account"> <!-- TODO: Add a link to login page -->
 </form>
 </body>
 </html>

@@ -65,6 +65,10 @@ public class AccountRegisterServlet extends HttpServlet
 			request.setAttribute("PasswordProblem", passwordProblem + "<br>");
 			shouldRetry = true;
 		}
+		else if (password.equals(request.getParameter("password_re")))  // TODO: learn how to do this in front end
+		{
+			request.setAttribute("PasswordProblem", "The two passwords entered do not match, please try again." + "<br>");
+		}
 		if (!isValidEmail(email))
 		{
 			request.setAttribute("EmailProblem", email + " is not an email address." + "<br>");
