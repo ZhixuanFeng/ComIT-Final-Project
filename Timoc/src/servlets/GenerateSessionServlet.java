@@ -32,6 +32,14 @@ public class GenerateSessionServlet extends HttpServlet
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
+		response.sendRedirect("home");
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+	{
 		GameSession gameSession;
 		try
 		{
@@ -43,15 +51,6 @@ public class GenerateSessionServlet extends HttpServlet
 			e.printStackTrace();
 			request.getRequestDispatcher("/jsp/errorPage.jsp").forward(request, response);
 		}
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
-	{
-		// TODO Auto-generated method stub
-		doGet(request, response);
 	}
 
 }

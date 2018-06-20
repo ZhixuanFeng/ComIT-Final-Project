@@ -9,7 +9,7 @@
 <h3>Welcome To Timoc</h3>
 <p><%= new java.util.Date().toString() %></p>
 <body>
-  <form action="generateSession" method="get"><input type="submit" value="Display"></form>
+  <form action="home" method="post"><input type="hidden" name="homeAction" value="generateSession"><input type="submit" value="Display"></form>
   <form action="login" method="get"><input type="submit" value="Login"></form>
   <form action="register" method="get"><input type="submit" value="Create new account"></form>
 </body>
