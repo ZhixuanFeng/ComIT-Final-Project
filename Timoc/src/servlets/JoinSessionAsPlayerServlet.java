@@ -36,16 +36,24 @@ public class JoinSessionAsPlayerServlet extends HttpServlet
 		String respond = "";
 		
 		// check if user has login
-		User user = (User)request.getSession().getAttribute("User");
+		User user = (User)request.getSession().getAttribute("user");
 		if (user == null)
 		{
 			return; // do nothing, can't redirect or forward to login page
 		}
 		
-		int code = GameSession.codeToInt((String) request.getAttribute("code"));
+		// check if user is already connected to a game session, if so, disconnect user from the session
+		if (user.getConnectedGameSession() != -1)
+		{
+			System.out.println("Disconnect user " + user.getUsername() + " to its game session and connect to a new session.");
+			ExitSessionAsPlayerServlet.exitSession(user);
+		}
+		
+		String codeString = (String)request.getParameter("code");
+		int code = GameSession.codeToInt(codeString);
 		
 		// check if code is valid
-		if (GameSession.isCodeValid(code))
+		if (!GameSession.isCodeValid(code))
 		{
 			respond = "Invalid Code";
 			return;
@@ -68,6 +76,7 @@ public class JoinSessionAsPlayerServlet extends HttpServlet
 			return;
 		}
 		
+		System.out.println("Connecting user " + user.getUsername() + " to " + gameSession.toString());
 		// add user to game session
 		gameSession.addUser(user);
 		user.setConnectedGameSession(code);

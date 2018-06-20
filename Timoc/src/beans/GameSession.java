@@ -144,7 +144,7 @@ public class GameSession
 	// convert four-letter code into integer, assuming code is four letters long
 	public static int codeToInt(String code)
 	{
-		return (code.charAt(0) - 65) * (int) Math.pow(ALPHABET_RANGE, 3) + 
+		return  code == null ? 0 : (code.charAt(0) - 65) * (int) Math.pow(ALPHABET_RANGE, 3) + 
 				(code.charAt(1) - 65) * (int) Math.pow(ALPHABET_RANGE, 2) + 
 				(code.charAt(2) - 65) * ALPHABET_RANGE + 
 				(code.charAt(3) - 65); 
@@ -153,5 +153,10 @@ public class GameSession
 	public static boolean isCodeValid(int code)
 	{
 		return code >= 0 && code < MAX_SESSIONS;
+	}
+	
+	public String toString()
+	{
+		return "Game Session " + intToCode(code) + " - " + code;
 	}
 }

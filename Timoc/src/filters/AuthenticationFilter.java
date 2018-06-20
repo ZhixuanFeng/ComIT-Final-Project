@@ -27,7 +27,8 @@ public class AuthenticationFilter implements Filter
 		//pre-processing
 		HttpServletRequest request = (HttpServletRequest)arg0;
 		if(request.getRequestURI().startsWith("/Timoc/logout")||
-				request.getRequestURI().startsWith("/Timoc/joinSessionAsPlayer"))
+				request.getRequestURI().startsWith("/Timoc/joinSessionAsPlayer")||
+				request.getRequestURI().startsWith("/Timoc/exitSessionAsPlayer"))
 		{
 			HttpSession session = request.getSession();
 			if(session.getAttribute("user") == null)

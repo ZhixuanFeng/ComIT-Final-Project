@@ -12,7 +12,7 @@ public class User implements HttpSessionBindingListener
 	{
 		this.id = id;
 		this.username = username;
-		connectedGameSessionCode = -1;
+		connectedGameSessionCode = -1; // -1 meaning not connected to any game session
 	}
 
 	// All logins.

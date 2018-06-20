@@ -6,22 +6,22 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
+import beans.GameSession;
 import beans.User;
 
 /**
- * Servlet implementation class AccountLogout
+ * Servlet implementation class ExitSessionAsPlayer
  */
-@WebServlet("/logout")
-public class AccountLogout extends HttpServlet
+@WebServlet("/exitSessionAsPlayer")
+public class ExitSessionAsPlayerServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AccountLogout() 
+    public ExitSessionAsPlayerServlet() 
     {
         super();
         // TODO Auto-generated constructor stub
@@ -32,7 +32,7 @@ public class AccountLogout extends HttpServlet
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
 	{
-		logout(request);
+		exitSession((User) request.getSession().getAttribute("user"));
 		response.sendRedirect("home");
 	}
 
@@ -45,21 +45,19 @@ public class AccountLogout extends HttpServlet
 		doGet(request, response);
 	}
 
-	
-	// logout the user
-	void logout(HttpServletRequest request)
+	// removes user from its currently connected session
+	public static void exitSession(User user)
 	{
-		HttpSession session = request.getSession();
-		User user = (User) session.getAttribute("user");
-		
-		if (user != null)
+		// remove user from connected game session
+		if (user.getConnectedGameSession() != -1)
 		{
-			// remove from connected game session, if any
-			ExitSessionAsPlayerServlet.exitSession(user);
+			GameSession gameSession = GameSession.getGameSessionByCode(user.getConnectedGameSession());
+
+			System.out.println("Disconnecting user " + user.getUsername() + " from " + gameSession.toString());
+			// code for removing user from the game
 			
-			// finally, remove user from HTTP session
-			session.removeAttribute("user");
-			System.out.println("User logged out: " + user.getUsername());
+			gameSession.removeUser(user);
+			user.setConnectedGameSession(-1);
 		}
 	}
 }
