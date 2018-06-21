@@ -55,7 +55,7 @@ public class AccountLogout extends HttpServlet
 		if (user != null)
 		{
 			// remove from connected game session, if any
-			ExitSessionAsPlayerServlet.exitSession(user);
+			user.logoutUser();
 			
 			// finally, remove user from HTTP session
 			session.removeAttribute("user");

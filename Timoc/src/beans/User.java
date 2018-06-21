@@ -6,6 +6,8 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
+import servlets.ExitSessionAsPlayerServlet;
+
 public class User implements HttpSessionBindingListener
 {
     public User(int id, String username)
@@ -39,9 +41,10 @@ public class User implements HttpSessionBindingListener
     @Override
     public void valueBound(HttpSessionBindingEvent event) 
     {
-        HttpSession session = logins.remove(this);
+        HttpSession session = logins.get(this);
         if (session != null)
         {
+        	logoutUser();
         	System.out.println("Logging in when account is already online, username: " + username);
             session.invalidate();
         }
@@ -51,7 +54,13 @@ public class User implements HttpSessionBindingListener
     @Override
     public void valueUnbound(HttpSessionBindingEvent event)
     {
-        logins.remove(this);
+    	logoutUser();
+    }
+    
+    public void logoutUser()
+    {
+    	logins.remove(this);
+    	ExitSessionAsPlayerServlet.exitSession(this);
     }
 
 	public int getId()

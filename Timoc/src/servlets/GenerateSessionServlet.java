@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import beans.Display;
 import beans.GameSession;
 
 /**
@@ -43,7 +44,15 @@ public class GenerateSessionServlet extends HttpServlet
 		GameSession gameSession;
 		try
 		{
+			// create game session
 			gameSession = new GameSession();
+			
+			// create and add display to game session
+			Display display = new Display(request.getRemoteAddr(), gameSession);
+			request.setAttribute("display", display);
+			gameSession.addDisplay(display);
+			
+			// respond with code
 			String code = gameSession.getCodeString();
 			response.getWriter().append("Your Connect Code Is: ").append(code);
 		} catch (Exception e)
