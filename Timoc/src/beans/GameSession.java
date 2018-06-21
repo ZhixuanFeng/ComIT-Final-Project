@@ -99,12 +99,13 @@ public class GameSession
 		if (connectedUsers.contains(user))
 		{
 			connectedUsers.remove(user);
+			
+			// check if game session is empty, if so, remove it
+			if (isEmpty())
+			{
+				destroyGameSession();
+			}
 		}
-	}
-	
-	public boolean isFull()
-	{
-		return connectedUsers.size() >= 4;
 	}
 	
 	public void addDisplay(Display display)
@@ -120,7 +121,29 @@ public class GameSession
 		if (connectedDisplays.contains(display))
 		{
 			connectedDisplays.remove(display);
+			
+			// check if game session is empty, if so, remove it
+			if (isEmpty())
+			{
+				destroyGameSession();
+			}
 		}
+	}
+	
+	public boolean isFull()
+	{
+		return connectedUsers.size() >= 4;
+	}
+	
+	boolean isEmpty()
+	{
+		return connectedUsers.size() == 0 && connectedDisplays.size() == 0; 
+	}
+	
+	void destroyGameSession()
+	{
+		gameSessions.remove(code);
+		System.out.println(toString() + " becomes empty and will be removed.");
 	}
 	
 	// convert an integer into four-letter code, assuming 0 <= i < 456976
