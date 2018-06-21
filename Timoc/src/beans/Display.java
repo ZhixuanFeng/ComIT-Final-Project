@@ -18,6 +18,7 @@ public class Display implements HttpSessionBindingListener
     public void valueUnbound(HttpSessionBindingEvent event)
     {
     	gameSession.removeDisplay(this);
+    	System.out.println("Value unbound.");
     }
 	
 	public String getIPAddress()
@@ -38,5 +39,10 @@ public class Display implements HttpSessionBindingListener
 	public void setGameSession(GameSession gameSession)
 	{
 		this.gameSession = gameSession;
+	}
+	
+	public String toString()
+	{
+		return "Display at " + IPAddress;
 	}
 }

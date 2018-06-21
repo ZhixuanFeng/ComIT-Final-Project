@@ -49,8 +49,9 @@ public class GenerateSessionServlet extends HttpServlet
 			
 			// create and add display to game session
 			Display display = new Display(request.getRemoteAddr(), gameSession);
-			request.setAttribute("display", display);
+			request.getSession().setAttribute("display", display);
 			gameSession.addDisplay(display);
+			System.out.println(display.toString() + " is connected to " + gameSession.toString());
 			
 			// respond with code
 			String code = gameSession.getCodeString();

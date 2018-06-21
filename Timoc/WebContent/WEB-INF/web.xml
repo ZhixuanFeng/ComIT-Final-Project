@@ -16,9 +16,9 @@
   <listener>
     <listener-class>listeners.ApplicationListener</listener-class>
   </listener>
-  <session-config>
-    <session-timeout>1</session-timeout>
-  </session-config>
+  <listener>
+	<listener-class>listeners.AppHttpSessionListener</listener-class>
+  </listener>
   <filter>
     <filter-name>AuthenticationFilter</filter-name>
     <filter-class>filters.AuthenticationFilter</filter-class>
