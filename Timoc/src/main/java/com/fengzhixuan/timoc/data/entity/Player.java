@@ -21,6 +21,8 @@ public class Player
     @MapsId
     private User user;
 
+    public Player () {}
+
     public Player (String name)
     {
         this.name = name;

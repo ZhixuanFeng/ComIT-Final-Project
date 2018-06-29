@@ -23,7 +23,7 @@ public class User
     private String username;
 
     @Column(name="password", nullable=false)
-    @Length(min = 6, message = "*Your password must be at least 5 characters")
+    @Length(min = 6, message = "*Your password must be at least 6 characters")
     @NotEmpty(message = "*Please provide a password")
     private String password;
 
@@ -43,14 +43,6 @@ public class User
     private Player player;
 
     public User(){}
-
-    public User(String username, String password, String email)
-    {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.enabled = true;
-    }
 
     public long getId()
     {

@@ -1,6 +1,8 @@
 package com.fengzhixuan.timoc.springmvcsecurity.config;
 
+import com.fengzhixuan.timoc.data.entity.Player;
 import com.fengzhixuan.timoc.data.entity.User;
+import com.fengzhixuan.timoc.data.service.PlayerService;
 import com.fengzhixuan.timoc.data.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,9 @@ public class LoginController
 {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PlayerService playerService;
 
     @RequestMapping(value="/login", method=RequestMethod.GET)
     public ModelAndView login()
@@ -66,6 +71,9 @@ public class LoginController
             modelAndView.addObject("user", new User());
             modelAndView.setViewName("registration");
 
+            Player player = new Player(user.getUsername());
+            player.setUser(user);
+            playerService.savePlayer(player);
         }
         return modelAndView;
     }
