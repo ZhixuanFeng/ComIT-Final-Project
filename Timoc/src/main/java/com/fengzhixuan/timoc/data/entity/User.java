@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @Entity
@@ -23,11 +24,13 @@ public class User
     private String username;
 
     @Column(name="password", nullable=false)
+    @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "*Your password contains invalid character(s).")
     @Length(min = 6, message = "*Your password must be at least 6 characters")
     @NotEmpty(message = "*Please provide a password")
     private String password;
 
     @Column(name="email", nullable=false)
+    @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "*Your email contains invalid character(s).")
     @Email(message = "*Please provide a valid email")
     @NotEmpty(message = "*Please provide an email")
     private String email;
