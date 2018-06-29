@@ -24,7 +24,6 @@ public class User
     private String username;
 
     @Column(name="password", nullable=false)
-    @Pattern(regexp = "^[a-zA-Z0-9.\\-\\/+=@_ ]*$", message = "*Your password contains invalid character(s).")
     @Length(min = 6, message = "*Your password must be at least 6 characters")
     @NotEmpty(message = "*Please provide a password")
     private String password;

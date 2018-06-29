@@ -32,11 +32,11 @@ public class UserServiceImpl implements UserService
     @Override
     public void saveUser(User user)
     {
-        user.setPassword(bCryptPasswordEncoder.encode("timoc"));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setEnabled(true);
         Role role = roleRepository.findByRole("USER");
         //Role role = roleRepository.getOne(1); // use getOne to increase performance, assuming id of USER is 1
-        user.setRoles(new HashSet<Role>(Arrays.asList(role)));
+        user.setRoles(new HashSet<>(Arrays.asList(role)));
         userRepository.save(user);
     }
 }
