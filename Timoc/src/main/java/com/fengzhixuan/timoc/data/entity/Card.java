@@ -41,8 +41,8 @@ public class Card
     @Column(name="mana", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int mana;
 
-    @Column(name="draw", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
-    private int draw;
+    @Column(name="random", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
+    private int random;
 
     @Column(name="taunt", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int taunt;
@@ -194,14 +194,14 @@ public class Card
         this.mana = mana;
     }
 
-    public int getDraw()
+    public int getRandom()
     {
-        return draw;
+        return random;
     }
 
-    public void setDraw(int draw)
+    public void setRandom(int random)
     {
-        this.draw = draw;
+        this.random = random;
     }
 
     public int getTaunt()
@@ -242,5 +242,26 @@ public class Card
     public void setPlayer(Player player)
     {
         this.player = player;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Card{" +
+                "id=" + id +
+                ", ownerType=" + ownerType +
+                ", quality=" + quality +
+                ", suit=" + suit +
+                ", rank=" + rank +
+                ", attack=" + attack +
+                ", block=" + block +
+                ", heal=" + heal +
+                ", mana=" + mana +
+                ", random=" + random +
+                ", taunt=" + taunt +
+                ", revive=" + revive +
+                ", aoe=" + aoe +
+                ", player=" + player +
+                '}';
     }
 }

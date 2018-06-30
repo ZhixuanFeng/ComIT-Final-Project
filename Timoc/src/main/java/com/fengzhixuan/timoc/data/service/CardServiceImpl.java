@@ -2,6 +2,7 @@ package com.fengzhixuan.timoc.data.service;
 
 import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.Player;
+import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class CardServiceImpl implements CardService
     public void setOwner(Card card, Player player)
     {
         card.setPlayer(player);
+        card.setOwnerType(CardOwnerType.Player);
         cardRepository.save(card);
     }
 
@@ -40,7 +42,8 @@ public class CardServiceImpl implements CardService
         int quality = Math.round((float)random.nextGaussian() * deviation + meanQuality); // normal distribution
         if (quality < 0) quality = 0;
         if (quality > 100) quality = 100;
-        float qualityMultiplier = 0.75f + quality * 0.0125f;
+        //float qualityMultiplier = 0.75f + quality * 0.0125f;
+        float qualityMultiplier = 1 + quality / 100f;
         int suit = random.nextInt(4);
         int rank = random.nextInt(13) + 1;
 
@@ -56,7 +59,7 @@ public class CardServiceImpl implements CardService
          * ----------------------------------------------
          * Spade     | block                 | taunt
          * Heart     | heal                  | mana, revive
-         * Club      | attack, block         | draw
+         * Club      | attack, block         | random
          * Diamond   | attack                | AOE
          *
          * Effect generation rules:
@@ -66,23 +69,23 @@ public class CardServiceImpl implements CardService
         */
 
         int r = random.nextInt(100);
-        float cardValue = rank * qualityMultiplier;
+        int cardValue = Math.round(rank * qualityMultiplier);
         if (r < 40)
         {
             switch (card.getSuitEnum())
             {
                 case Spade:
-                    card.setBlock(Math.round(cardValue));
+                    card.setBlock(cardValue);
                     break;
                 case Heart:
-                    card.setHeal(Math.round(cardValue));
+                    card.setHeal(cardValue);
                     break;
                 case Club:
                     card.setAttack(Math.round(cardValue / 2));
-                    card.setBlock(Math.round(cardValue / 2));
+                    card.setBlock(cardValue - card.getAttack());
                     break;
                 case Diamond:
-                    card.setAttack(Math.round(cardValue));
+                    card.setAttack(cardValue);
                     break;
                 default:
                     return null;
@@ -93,36 +96,32 @@ public class CardServiceImpl implements CardService
             switch (card.getSuitEnum())
             {
                 case Spade:
-                    // taunt amount = (0-100%) of card value
-                    int taunt = random.nextInt(Math.round(cardValue)) + 1;
-                    card.setTaunt(taunt);
-                    card.setBlock(Math.round(cardValue) - taunt);
+                    // taunt amount + block amount = card value
+                    int block = random.nextInt(cardValue);
+                    card.setBlock(block);
+                    card.setTaunt(cardValue - block);
                     break;
                 case Heart:
                     // 20% revive + heal; 80% heal + mana
-                    card.setHeal(Math.round(cardValue));
-                    int r2 = random.nextInt(100);
-                    if (r2 < 20)
+                    if (random.nextInt(100) < 20)
                     {
-                        int revive = random.nextInt(Math.round(cardValue)) + 1;
+                        int revive = random.nextInt(cardValue) + 1;
                         card.setRevive(revive * 2);
-                        card.setHeal(Math.round(cardValue) - revive);
+                        card.setHeal(cardValue - revive);
                     }
                     else
                     {
-                        int mana = random.nextInt(Math.round(cardValue)) + 1;
+                        int mana = random.nextInt(cardValue) + 1;
                         card.setMana(mana);
-                        card.setHeal(Math.round(cardValue) - mana);
+                        card.setHeal(cardValue - card.getMana());
                     }
                     break;
                 case Club:
-                    // 40% draw 1 + attack + block; 60% attack + block
+                    // 40% random & attack & block; 60% attack & block
                     if (random.nextInt(100) < 40)
                     {
-                        //int draw = (int)(random.nextInt(Math.round(cardValue)) / 20f) + 1;
-                        int draw = 1;
-                        card.setDraw(draw);
-                        int remainingValue = Math.round(cardValue) - 10;
+                        card.setRandom(random.nextInt(cardValue) + 1);
+                        int remainingValue = cardValue - card.getRandom();
                         if (remainingValue > 0)
                         {
                             int attack = random.nextInt(remainingValue) + 1;
@@ -132,28 +131,18 @@ public class CardServiceImpl implements CardService
                     }
                     else
                     {
-                        int attack = random.nextInt(Math.round(cardValue)) + 1;
+                        int attack = random.nextInt(cardValue) + 1;
                         card.setAttack(attack);
-                        card.setBlock(Math.round(cardValue) - attack);
+                        card.setBlock(cardValue - attack);
                     }
                     break;
                 case Diamond:
                     // 75% with aoe effect, 25% without
                     if (random.nextInt(100) < 75)
                     {
-                        int aoe = 1;
-                        card.setAoe(aoe);
-                        int remainingValue = Math.round(cardValue);
-                        if (remainingValue > 0)
-                        {
-                            int attack = random.nextInt(remainingValue);
-                            card.setAttack(attack);
-                        }
+                        card.setAoe(1);
                     }
-                    else
-                    {
-                        card.setAttack(Math.round(cardValue));
-                    }
+                    card.setAttack(cardValue);
                     break;
                 default:
                     return null;
@@ -161,11 +150,11 @@ public class CardServiceImpl implements CardService
         }
         else
         {
-            int remainingValue = Math.round(cardValue);
+            int remainingValue = cardValue;
             int effectCount = 0;
             while (remainingValue > 0 && effectCount < 4)
             {
-                int r2 = random.nextInt(11);
+                int r2 = random.nextInt(8);
                 int value = random.nextInt(remainingValue) + 1;
                 switch (r2)
                 {
@@ -200,25 +189,19 @@ public class CardServiceImpl implements CardService
                         card.setMana(card.getMana() + value);
                         remainingValue -= value;
                         break;
-                    case 5: // draw
-                    case 6: // draw
-                        if (card.getDraw() == 0)
-                        {
-                            effectCount++;
-                            card.setDraw(1);
-                            remainingValue -= 10;
-                        }
+                    case 5: // random
+                        if (card.getRandom() == 0) effectCount++;
+                        card.setRandom(card.getRandom() + value);
+                        remainingValue -= value;
                         break;
-                    case 7: // aoe
-                    case 8: // aoe
+                    case 6: // aoe
                         if (card.getAoe() == 0)
                         {
                             effectCount++;
                             card.setAoe(1);
                         }
                         break;
-                    case 9: // revive
-                    case 10: // revive
+                    case 7: // revive
                         if (card.getAttack() == 0 || card.getAoe() > 0)
                         {
                             if (card.getRevive() == 0) effectCount++;
@@ -231,6 +214,7 @@ public class CardServiceImpl implements CardService
                 }
             }
         }
+        System.out.println(r + " Created card: " + card.toString());
         return card;
     }
 }
