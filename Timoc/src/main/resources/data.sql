@@ -7,9 +7,10 @@ WHERE NOT EXISTS (SELECT * FROM role WHERE role_id = 1);
 /*
  *  Initialize role table
  */
+ /*
 INSERT INTO role (role_id, role) VALUES (1, "USER");
 INSERT INTO role (role_id, role) VALUES (2, "ADMIN");
-
+*/
 
 /*
  *  Initialize card table
@@ -40,7 +41,7 @@ INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, 
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (22, 0, 0, 1, 9, 0, 0, 9, 0, 0, 0, 0, 0);
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (23, 0, 0, 1, 10, 0, 0, 10, 0, 0, 0, 0, 0);
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (24, 0, 0, 1, 11, 0, 0, 11, 0, 0, 0, 0, 0);
-INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (25, 0, 0, 1, 12, 0, 0, 12, 0, 0, 0, 0, 0);
+INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (25, 0, 0, 1, 12, 0, 0, 0, 0, 0, 0, 24, 0);
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (26, 0, 0, 1, 13, 0, 0, 13, 0, 0, 0, 0, 0);
 /* Club */
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (27, 0, 0, 2, 1, 0, 1, 0, 0, 0, 0, 0, 0);
@@ -68,5 +69,5 @@ INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, 
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (48, 0, 0, 3, 9, 9, 0, 0, 0, 0, 0, 0, 0);
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (49, 0, 0, 3, 10, 10, 0, 0, 0, 0, 0, 0, 0);
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (50, 0, 0, 3, 11, 11, 0, 0, 0, 0, 0, 0, 0);
-INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (51, 0, 0, 3, 12, 12, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (51, 0, 0, 3, 12, 12, 0, 0, 0, 0, 0, 0, 1);
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (52, 0, 0, 3, 13, 13, 0, 0, 0, 0, 0, 0, 0);

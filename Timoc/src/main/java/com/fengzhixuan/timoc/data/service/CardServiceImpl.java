@@ -159,12 +159,9 @@ public class CardServiceImpl implements CardService
                 switch (r2)
                 {
                     case 0: // attack
-                        if (card.getHeal() == 0 || card.getAoe() > 0)
-                        {
-                            if (card.getAttack() == 0) effectCount++;
-                            card.setAttack(card.getAttack() + value);
-                            remainingValue -= value;
-                        }
+                        if (card.getAttack() == 0) effectCount++;
+                        card.setAttack(card.getAttack() + value);
+                        remainingValue -= value;
                         break;
                     case 1: // block
                         if (card.getBlock() == 0) effectCount++;
@@ -172,12 +169,9 @@ public class CardServiceImpl implements CardService
                         remainingValue -= value;
                         break;
                     case 2: // heal
-                        if (card.getAttack() == 0 || card.getAoe() > 0)
-                        {
-                            if (card.getHeal() == 0) effectCount++;
-                            card.setHeal(card.getHeal() + value);
-                            remainingValue -= value;
-                        }
+                        if (card.getHeal() == 0) effectCount++;
+                        card.setHeal(card.getHeal() + value);
+                        remainingValue -= value;
                         break;
                     case 3: // taunt
                         if (card.getTaunt() == 0) effectCount++;
@@ -202,12 +196,9 @@ public class CardServiceImpl implements CardService
                         }
                         break;
                     case 7: // revive
-                        if (card.getAttack() == 0 || card.getAoe() > 0)
-                        {
-                            if (card.getRevive() == 0) effectCount++;
-                            card.setRevive(card.getRevive() + value * 2);
-                            remainingValue -= value;
-                        }
+                        if (card.getRevive() == 0) effectCount++;
+                        card.setRevive(card.getRevive() + value * 2);
+                        remainingValue -= value;
                         break;
                     default:
                         return null;
