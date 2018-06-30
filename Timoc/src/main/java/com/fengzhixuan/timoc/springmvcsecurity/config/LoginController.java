@@ -1,12 +1,15 @@
 package com.fengzhixuan.timoc.springmvcsecurity.config;
 
 import com.fengzhixuan.timoc.data.entity.Player;
+import com.fengzhixuan.timoc.data.entity.Role;
 import com.fengzhixuan.timoc.data.entity.User;
+import com.fengzhixuan.timoc.data.repository.RoleRepository;
 import com.fengzhixuan.timoc.data.service.PlayerService;
 import com.fengzhixuan.timoc.data.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.HashSet;
 
 @Controller
 public class LoginController
@@ -23,6 +28,12 @@ public class LoginController
 
     @Autowired
     private PlayerService playerService;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @RequestMapping(value="/login", method=RequestMethod.GET)
     public ModelAndView login()
@@ -66,11 +77,20 @@ public class LoginController
         }
         else
         {
+            // no problem, set up and save user
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            user.setEnabled(true);
+            Role role = roleRepository.findByRole("USER");
+            //Role role = roleRepository.getOne(1); // use getOne to increase performance, assuming id of USER is 1
+            user.setRoles(new HashSet<>(Arrays.asList(role)));
             userService.saveUser(user);
+
+            // return message
             modelAndView.addObject("successMessage", "Registration successful. You may login now.");
             modelAndView.addObject("user", new User());
             modelAndView.setViewName("registration");
 
+            // create associated player entity
             Player player = new Player(user.getUsername());
             player.setUser(user);
             playerService.savePlayer(player);

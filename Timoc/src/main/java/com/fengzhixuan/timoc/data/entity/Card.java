@@ -29,23 +29,32 @@ public class Card
     @Column(name="rank_num", nullable=false, columnDefinition = "TINYINT UNSIGNED DEFAULT 0")
     private int rank;
 
-    @Column(name="attack", nullable=false, columnDefinition = "TINYINT(4) UNSIGNED DEFAULT 0")
+    @Column(name="attack", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int attack;
 
-    @Column(name="block", nullable=false, columnDefinition = "TINYINT(4) UNSIGNED DEFAULT 0")
+    @Column(name="block", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int block;
 
-    @Column(name="heal", nullable=false, columnDefinition = "TINYINT(4) UNSIGNED DEFAULT 0")
+    @Column(name="heal", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int heal;
 
-    @Column(name="mana", nullable=false, columnDefinition = "TINYINT(4) UNSIGNED DEFAULT 0")
+    @Column(name="mana", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int mana;
 
-    @Column(name="draw", nullable=false, columnDefinition = "TINYINT(4) UNSIGNED DEFAULT 0")
+    @Column(name="draw", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int draw;
 
+    @Column(name="taunt", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
+    private int taunt;
+
+    @Column(name="revive", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
+    private int revive;
+
+    @Column(name="aoe", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
+    private int aoe;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "player_id", nullable = true)
+    @JoinColumn(name = "player_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Player player;
 
@@ -193,6 +202,36 @@ public class Card
     public void setDraw(int draw)
     {
         this.draw = draw;
+    }
+
+    public int getTaunt()
+    {
+        return taunt;
+    }
+
+    public void setTaunt(int taunt)
+    {
+        this.taunt = taunt;
+    }
+
+    public int getRevive()
+    {
+        return revive;
+    }
+
+    public void setRevive(int revive)
+    {
+        this.revive = revive;
+    }
+
+    public int getAoe()
+    {
+        return aoe;
+    }
+
+    public void setAoe(int aoe)
+    {
+        this.aoe = aoe;
     }
 
     public Player getPlayer()
