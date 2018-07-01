@@ -7,10 +7,8 @@ WHERE NOT EXISTS (SELECT * FROM role WHERE role_id = 1);
 /*
  *  Initialize role table
  */
- /*
 INSERT INTO role (role_id, role) VALUES (1, "USER");
 INSERT INTO role (role_id, role) VALUES (2, "ADMIN");
-*/
 
 /*
  *  Initialize card table

@@ -1,7 +1,7 @@
 package com.fengzhixuan.timoc.data.service;
 
 import com.fengzhixuan.timoc.data.entity.Card;
-import com.fengzhixuan.timoc.data.entity.Player;
+import com.fengzhixuan.timoc.data.entity.CardCollection;
 
 public interface CardService
 {
@@ -9,7 +9,7 @@ public interface CardService
 
     void deleteCard(Card card);
 
-    void setOwner(Card card, Player player);
+    void setCollection(Card card, CardCollection collection);
 
     Card createCard(int meanQuality, int deviation);
 }

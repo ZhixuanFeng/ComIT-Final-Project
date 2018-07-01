@@ -1,9 +1,11 @@
 package com.fengzhixuan.timoc.springmvcsecurity.config;
 
+import com.fengzhixuan.timoc.data.entity.CardCollection;
 import com.fengzhixuan.timoc.data.entity.Player;
 import com.fengzhixuan.timoc.data.entity.Role;
 import com.fengzhixuan.timoc.data.entity.User;
 import com.fengzhixuan.timoc.data.repository.RoleRepository;
+import com.fengzhixuan.timoc.data.service.CardCollectionService;
 import com.fengzhixuan.timoc.data.service.PlayerService;
 import com.fengzhixuan.timoc.data.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class LoginController
 
     @Autowired
     private PlayerService playerService;
+
+    @Autowired
+    private CardCollectionService cardCollectionService;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -83,7 +88,6 @@ public class LoginController
             Role role = roleRepository.findByRole("USER");
             //Role role = roleRepository.getOne(1); // use getOne to increase performance, assuming id of USER is 1
             user.setRoles(new HashSet<>(Arrays.asList(role)));
-            userService.saveUser(user);
 
             // return message
             modelAndView.addObject("successMessage", "Registration successful. You may login now.");
@@ -91,9 +95,14 @@ public class LoginController
             modelAndView.setViewName("registration");
 
             // create associated player entity
-            Player player = new Player(user.getUsername());
-            player.setUser(user);
+            Player player = new Player(user);
+
+            // create associated card collection
+            CardCollection cardCollection = new CardCollection(player);
+
+            userService.saveUser(user);
             playerService.savePlayer(player);
+            cardCollectionService.saveCardCollection(cardCollection);
         }
         return modelAndView;
     }

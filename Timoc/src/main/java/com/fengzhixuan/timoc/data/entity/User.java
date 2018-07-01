@@ -10,12 +10,12 @@ import java.util.Set;
 
 @Entity
 @Table(name="user")
+@SequenceGenerator(name = "user_seq", sequenceName = "user_seq")
 public class User
 {
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "user_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     private long id;
 
     @Column(name="username", nullable=false, length=31)
@@ -41,7 +41,8 @@ public class User
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    @OneToOne(mappedBy = "user")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, optional = false)
     private Player player;
 
     public User(){}

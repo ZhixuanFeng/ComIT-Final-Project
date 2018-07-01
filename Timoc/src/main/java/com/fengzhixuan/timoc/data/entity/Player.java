@@ -16,17 +16,22 @@ public class Player
     @Column(name="level", nullable=false, columnDefinition="TINYINT DEFAULT 1")
     private int level;
 
-    @OneToOne
-    @JoinColumn(name="id")
+    @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private User user;
 
+    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, optional = false)
+    private CardCollection cardCollection;
+
     public Player () {}
 
-    public Player (String name)
+    public Player (User user)
     {
-        this.name = name;
+        this.name = user.getUsername();
         this.level = 0;
+        this.user = user;
+        user.setPlayer(this);
     }
 
     @Override
@@ -76,5 +81,15 @@ public class Player
     public void setUser(User user)
     {
         this.user = user;
+    }
+
+    public CardCollection getCardCollection()
+    {
+        return cardCollection;
+    }
+
+    public void setCardCollection(CardCollection cardCollection)
+    {
+        this.cardCollection = cardCollection;
     }
 }

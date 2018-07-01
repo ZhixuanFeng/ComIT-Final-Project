@@ -2,19 +2,17 @@ package com.fengzhixuan.timoc.data.entity;
 
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.enums.CardSuit;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="card")
+@SequenceGenerator(name = "card_seq", sequenceName = "card_seq",  initialValue = 53)
 public class Card
 {
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "card_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "card_seq")
     private long id;
 
     @Column(name="owner_type", nullable=false, columnDefinition="TINYINT(4) UNSIGNED DEFAULT 0")
@@ -54,9 +52,8 @@ public class Card
     private int aoe;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "player_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Player player;
+    @JoinColumn(name = "card_collection_id")
+    private CardCollection cardCollection;
 
     public Card() {}
 
@@ -234,14 +231,14 @@ public class Card
         this.aoe = aoe;
     }
 
-    public Player getPlayer()
+    public CardCollection getCardCollection()
     {
-        return player;
+        return cardCollection;
     }
 
-    public void setPlayer(Player player)
+    public void setCardCollection(CardCollection cardCollection)
     {
-        this.player = player;
+        this.cardCollection = cardCollection;
     }
 
     @Override
@@ -261,7 +258,6 @@ public class Card
                 ", taunt=" + taunt +
                 ", revive=" + revive +
                 ", aoe=" + aoe +
-                ", player=" + player +
                 '}';
     }
 }

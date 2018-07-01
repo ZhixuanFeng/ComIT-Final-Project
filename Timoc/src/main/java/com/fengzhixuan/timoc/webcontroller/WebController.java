@@ -1,8 +1,10 @@
 package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.data.entity.Card;
+import com.fengzhixuan.timoc.data.entity.CardCollection;
 import com.fengzhixuan.timoc.data.entity.Player;
 import com.fengzhixuan.timoc.data.entity.User;
+import com.fengzhixuan.timoc.data.service.CardCollectionService;
 import com.fengzhixuan.timoc.data.service.CardService;
 import com.fengzhixuan.timoc.data.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,20 +26,27 @@ public class WebController
         return modelAndView;
     }
 
+    /*
+     *  URL for testing card creation
+     */
     @Autowired
     private UserService userService;
     @Autowired
     private CardService cardService;
-
+    @Autowired
+    private CardCollectionService cardCollectionService;
     @RequestMapping(value = "/getCard", method = RequestMethod.GET)
     public ModelAndView getCard()
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByUsername(auth.getName());
         Player player = user.getPlayer();
-        Card newCard = cardService.createCard(player.getLevel(), 10);
-        cardService.setOwner(newCard, player);
-
+        CardCollection cardCollection = player.getCardCollection();
+        if (!cardCollectionService.isStorageFull(cardCollection))
+        {
+            Card newCard = cardService.createCard(player.getLevel(), 10);
+            cardCollectionService.addCard(newCard, player.getCardCollection());
+        }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("hello");
         return modelAndView;
