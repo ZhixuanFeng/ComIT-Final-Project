@@ -2,6 +2,7 @@ package com.fengzhixuan.timoc.data.service;
 
 import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.CardCollection;
+import com.fengzhixuan.timoc.data.entity.CardDeck;
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,12 @@ public class CardServiceImpl implements CardService
 {
     @Autowired
     private CardRepository cardRepository;
+
+    @Override
+    public Card getCardById(long id)
+    {
+        return cardRepository.getOne(id);
+    }
 
     @Override
     public void saveCard(Card card)
@@ -39,6 +46,13 @@ public class CardServiceImpl implements CardService
             card.setOwnerType(CardOwnerType.NoOwner);
         }
         card.setCardCollection(collection);
+        cardRepository.save(card);
+    }
+
+    @Override
+    public void setDeck(Card card, CardDeck deck)
+    {
+        card.setCardDeck(deck);
         cardRepository.save(card);
     }
 

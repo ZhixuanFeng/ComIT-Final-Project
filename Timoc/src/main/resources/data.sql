@@ -69,3 +69,8 @@ INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, 
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (50, 0, 0, 3, 11, 11, 0, 0, 0, 0, 0, 0, 0);
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (51, 0, 0, 3, 12, 12, 0, 0, 0, 0, 0, 0, 1);
 INSERT INTO card (id, owner_type, quality, suit, rank_num, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (52, 0, 0, 3, 13, 13, 0, 0, 0, 0, 0, 0, 0);
+
+/*
+ * Starter Deck
+ */
+INSERT INTO card_deck (id) VALUES (1);

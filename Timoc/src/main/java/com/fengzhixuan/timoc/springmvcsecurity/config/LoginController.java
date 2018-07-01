@@ -1,11 +1,9 @@
 package com.fengzhixuan.timoc.springmvcsecurity.config;
 
-import com.fengzhixuan.timoc.data.entity.CardCollection;
-import com.fengzhixuan.timoc.data.entity.Player;
-import com.fengzhixuan.timoc.data.entity.Role;
-import com.fengzhixuan.timoc.data.entity.User;
+import com.fengzhixuan.timoc.data.entity.*;
 import com.fengzhixuan.timoc.data.repository.RoleRepository;
 import com.fengzhixuan.timoc.data.service.CardCollectionService;
+import com.fengzhixuan.timoc.data.service.CardDeckService;
 import com.fengzhixuan.timoc.data.service.PlayerService;
 import com.fengzhixuan.timoc.data.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +31,9 @@ public class LoginController
 
     @Autowired
     private CardCollectionService cardCollectionService;
+
+    @Autowired
+    private CardDeckService cardDeckService;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -99,6 +100,10 @@ public class LoginController
 
             // create associated card collection
             CardCollection cardCollection = new CardCollection(player);
+
+            // create associated card deck
+            CardDeck cardDeck = new CardDeck(player);
+            cardDeckService.initializeDeck(cardDeck);  // this saves card deck
 
             userService.saveUser(user);
             playerService.savePlayer(player);

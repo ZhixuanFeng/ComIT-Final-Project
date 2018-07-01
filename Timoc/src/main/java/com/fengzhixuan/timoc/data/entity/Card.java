@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="card")
-@SequenceGenerator(name = "card_seq", sequenceName = "card_seq",  initialValue = 53)
+@SequenceGenerator(name = "card_seq", sequenceName = "card_seq",  initialValue = 20000)
 public class Card
 {
     @Id
@@ -54,6 +54,10 @@ public class Card
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_collection_id")
     private CardCollection cardCollection;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_deck_id")
+    private CardDeck cardDeck;
 
     public Card() {}
 
@@ -239,6 +243,16 @@ public class Card
     public void setCardCollection(CardCollection cardCollection)
     {
         this.cardCollection = cardCollection;
+    }
+
+    public CardDeck getCardDeck()
+    {
+        return cardDeck;
+    }
+
+    public void setCardDeck(CardDeck cardDeck)
+    {
+        this.cardDeck = cardDeck;
     }
 
     @Override

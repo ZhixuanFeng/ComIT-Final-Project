@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name="user")
-@SequenceGenerator(name = "user_seq", sequenceName = "user_seq")
+@SequenceGenerator(name = "user_seq", sequenceName = "user_seq", initialValue = 10000)
 public class User
 {
     @Id
