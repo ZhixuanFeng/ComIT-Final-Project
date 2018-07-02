@@ -1,6 +1,8 @@
 package com.fengzhixuan.timoc.data.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="player")
@@ -16,6 +18,9 @@ public class Player
     @Column(name="level", nullable=false, columnDefinition="TINYINT DEFAULT 1")
     private int level;
 
+    @Column(name="gold", nullable=false, columnDefinition="INT DEFAULT 0")
+    private int gold;
+
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private User user;
@@ -23,6 +28,9 @@ public class Player
     @OneToOne(mappedBy = "player", cascade = CascadeType.ALL,
             fetch = FetchType.LAZY, optional = false)
     private CardCollection cardCollection;
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Offer> offers = new ArrayList<>();
 
     public Player () {}
 
@@ -73,6 +81,16 @@ public class Player
         this.level = level;
     }
 
+    public int getGold()
+    {
+        return gold;
+    }
+
+    public void setGold(int gold)
+    {
+        this.gold = gold;
+    }
+
     public User getUser()
     {
         return user;
@@ -91,5 +109,15 @@ public class Player
     public void setCardCollection(CardCollection cardCollection)
     {
         this.cardCollection = cardCollection;
+    }
+
+    public List<Offer> getOffers()
+    {
+        return offers;
+    }
+
+    public void setOffers(List<Offer> offers)
+    {
+        this.offers = offers;
     }
 }

@@ -56,6 +56,10 @@ public class Card
     @JoinColumn(name = "card_deck_id")
     private CardDeck cardDeck;
 
+    @OneToOne(mappedBy = "card", cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY, optional = false)
+    private Offer offer;
+
     public Card() {}
 
     public long getId()
@@ -250,6 +254,16 @@ public class Card
     public void setCardDeck(CardDeck cardDeck)
     {
         this.cardDeck = cardDeck;
+    }
+
+    public Offer getOffer()
+    {
+        return offer;
+    }
+
+    public void setOffer(Offer offer)
+    {
+        this.offer = offer;
     }
 
     @Override
