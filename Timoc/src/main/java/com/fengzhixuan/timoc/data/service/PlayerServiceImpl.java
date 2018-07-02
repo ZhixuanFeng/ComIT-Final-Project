@@ -19,4 +19,18 @@ public class PlayerServiceImpl implements PlayerService
     {
         playerRepository.save(player);
     }
+
+    @Override
+    public void addGold(Player player, int gold)
+    {
+        player.setGold(player.getGold() + gold);
+        playerRepository.save(player);
+    }
+
+    @Override
+    public void removeGold(Player player, int gold)
+    {
+        player.setGold(player.getGold() - gold);
+        playerRepository.save(player);
+    }
 }

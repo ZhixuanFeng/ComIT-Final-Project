@@ -31,14 +31,18 @@ public class CardDeckServiceImpl implements CardDeckService
     @Override
     public void addCard(Card card, CardDeck deck)
     {
-        int indecks = card.getIndecks();
-        if (deck.getCards().containsKey(indecks))
+        if (card.getOwnerTypeEnum() == CardOwnerType.Player) // make sure the card belongs to the player
         {
-            cardService.setDeck(deck.getCards().get(indecks), null);
+            int indecks = card.getIndecks();
+            if (deck.getCards().containsKey(indecks))
+            {
+                // set deck attribute of the card to be null
+                cardService.setDeck(deck.getCards().get(indecks), null);
+            }
+            cardService.setDeck(card, deck);
+            deck.getCards().replace(indecks, card);
+            cardDeckRepository.save(deck);
         }
-        cardService.setDeck(card, deck);
-        deck.getCards().replace(indecks, card);
-        cardDeckRepository.save(deck);
     }
 
     @Override

@@ -21,19 +21,20 @@ public class Offer
     @JoinColumn(name = "card_id")
     private Card card;
 
+    @Column(name = "indecks", columnDefinition = "TINYINT DEFAULT 0")
+    private int indecks;
+
     @Column(name = "price", nullable = false, columnDefinition = "INT DEFAULT 0")
     private int price;
 
     @Column(name = "expiry_date")
     private Date expDate;
 
-    @Column(name = "buyer_id")
-    private long buyerID;
-
     public Offer(Player player, Card card, int price)
     {
         this.player = player;
         this.card = card;
+        this.indecks = card.getIndecks();
         this.price = price;
     }
 
@@ -67,6 +68,16 @@ public class Offer
         this.card = card;
     }
 
+    public int getIndecks()
+    {
+        return indecks;
+    }
+
+    public void setIndecks(int indecks)
+    {
+        this.indecks = indecks;
+    }
+
     public int getPrice()
     {
         return price;
@@ -85,15 +96,5 @@ public class Offer
     public void setExpDate(Date expDate)
     {
         this.expDate = expDate;
-    }
-
-    public long getBuyerID()
-    {
-        return buyerID;
-    }
-
-    public void setBuyerID(long buyerID)
-    {
-        this.buyerID = buyerID;
     }
 }

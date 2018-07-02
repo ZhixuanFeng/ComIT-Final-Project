@@ -5,5 +5,6 @@ public enum CardOwnerType
     AllPlayers,
     Player,
     Enemy,
-    NoOwner
+    NoOwner,
+    Market
 }

@@ -94,6 +94,8 @@ public class Card
                 return CardOwnerType.Enemy;
             case 3:
                 return CardOwnerType.NoOwner;
+            case 4:
+                return CardOwnerType.Market;
             default:
                 return CardOwnerType.AllPlayers;
         }
