@@ -1,10 +1,8 @@
 package com.fengzhixuan.timoc.webcontroller;
 
-import com.fengzhixuan.timoc.data.entity.Card;
-import com.fengzhixuan.timoc.data.entity.CardCollection;
-import com.fengzhixuan.timoc.data.entity.Player;
-import com.fengzhixuan.timoc.data.entity.User;
+import com.fengzhixuan.timoc.data.entity.*;
 import com.fengzhixuan.timoc.data.service.CardCollectionService;
+import com.fengzhixuan.timoc.data.service.CardDeckService;
 import com.fengzhixuan.timoc.data.service.CardService;
 import com.fengzhixuan.timoc.data.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +33,8 @@ public class WebController
     private CardService cardService;
     @Autowired
     private CardCollectionService cardCollectionService;
+    @Autowired
+    private CardDeckService cardDeckService;
     @RequestMapping(value = "/getCard", method = RequestMethod.GET)
     public ModelAndView getCard()
     {
@@ -46,6 +46,7 @@ public class WebController
         {
             Card newCard = cardService.createCard(player.getLevel(), 10);
             cardCollectionService.addCard(newCard, player.getCardCollection());
+            cardDeckService.addCard(newCard, cardDeckService.getCardDeckById(player.getId())); // test deck
         }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("hello");

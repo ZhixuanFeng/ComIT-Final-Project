@@ -101,13 +101,13 @@ public class LoginController
             // create associated card collection
             CardCollection cardCollection = new CardCollection(player);
 
-            // create associated card deck
-            CardDeck cardDeck = new CardDeck(player);
-            cardDeckService.initializeDeck(cardDeck);  // this saves card deck
-
             userService.saveUser(user);
             playerService.savePlayer(player);
             cardCollectionService.saveCardCollection(cardCollection);
+
+            // create associated card deck
+            CardDeck cardDeck = new CardDeck(player.getId());
+            cardDeckService.initializeDeck(cardDeck);  // this saves card deck
         }
         return modelAndView;
     }

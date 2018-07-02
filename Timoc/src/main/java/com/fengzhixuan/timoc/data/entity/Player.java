@@ -24,10 +24,6 @@ public class Player
             fetch = FetchType.LAZY, optional = false)
     private CardCollection cardCollection;
 
-    @OneToOne(mappedBy = "player", cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, optional = false)
-    private CardDeck cardDeck;
-
     public Player () {}
 
     public Player (User user)
@@ -95,15 +91,5 @@ public class Player
     public void setCardCollection(CardCollection cardCollection)
     {
         this.cardCollection = cardCollection;
-    }
-
-    public CardDeck getCardDeck()
-    {
-        return cardDeck;
-    }
-
-    public void setCardDeck(CardDeck cardDeck)
-    {
-        this.cardDeck = cardDeck;
     }
 }

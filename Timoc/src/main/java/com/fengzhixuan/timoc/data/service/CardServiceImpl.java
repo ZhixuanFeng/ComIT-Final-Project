@@ -70,8 +70,7 @@ public class CardServiceImpl implements CardService
 
         Card card = new Card();
         card.setQuality(quality);
-        card.setSuit(suit);
-        card.setRank(rank);
+        card.setIndex(suit, rank);
 
         /* create random card effects
          *

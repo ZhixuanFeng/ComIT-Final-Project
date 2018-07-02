@@ -21,11 +21,8 @@ public class Card
     @Column(name="quality", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int quality;
 
-    @Column(name="suit", nullable=false, columnDefinition = "TINYINT(3) UNSIGNED DEFAULT 0")
-    private int suit;
-
-    @Column(name="rank_num", nullable=false, columnDefinition = "TINYINT UNSIGNED DEFAULT 0")
-    private int rank;
+    @Column(name="indecks", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
+    private int indecks;  // indecks = suit * 13 + rank - 1
 
     @Column(name="attack", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int attack;
@@ -113,46 +110,46 @@ public class Card
         this.quality = quality;
     }
 
-    public int getSuit()
+    public int getIndecks()
     {
-        return suit;
+        return indecks;
     }
 
-    public void setSuit(int suit)
+    public void setIndecks(int indecks)
     {
-        this.suit = suit;
+        this.indecks = indecks;
+    }
+
+    public void setIndex(int suit, int rank)
+    {
+        this.indecks = suit * 13 + rank - 1;
+    }
+
+    public int getSuit()
+    {
+        return indecks / 13;
     }
 
     public CardSuit getSuitEnum()
     {
-        switch (suit)
+        switch (getSuit())
         {
             case 0:
-                return CardSuit.Spade;
-            case 1:
-                return CardSuit.Heart;
-            case 2:
-                return CardSuit.Club;
-            case 3:
                 return CardSuit.Diamond;
-            default:
+            case 1:
+                return CardSuit.Club;
+            case 2:
+                return CardSuit.Heart;
+            case 3:
                 return CardSuit.Spade;
+            default:
+                return CardSuit.NA;
         }
-    }
-
-    public void setSuit(CardSuit cardSuit)
-    {
-        suit = cardSuit.ordinal();
     }
 
     public int getRank()
     {
-        return rank;
-    }
-
-    public void setRank(int rank)
-    {
-        this.rank = rank;
+        return indecks - getSuit() * 13 + 1;
     }
 
     public int getAttack()
@@ -262,8 +259,8 @@ public class Card
                 "id=" + id +
                 ", ownerType=" + ownerType +
                 ", quality=" + quality +
-                ", suit=" + suit +
-                ", rank=" + rank +
+                ", suit=" + getSuit() +
+                ", rank=" + getRank() +
                 ", attack=" + attack +
                 ", block=" + block +
                 ", heal=" + heal +

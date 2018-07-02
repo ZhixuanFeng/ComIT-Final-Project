@@ -2,8 +2,9 @@ package com.fengzhixuan.timoc.data.enums;
 
 public enum CardSuit
 {
-    Spade,
-    Heart,
+    Diamond,
     Club,
-    Diamond
+    Heart,
+    Spade,
+    NA
 }

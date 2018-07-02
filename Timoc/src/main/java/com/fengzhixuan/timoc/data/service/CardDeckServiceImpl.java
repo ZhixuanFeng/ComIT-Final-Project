@@ -17,44 +17,39 @@ public class CardDeckServiceImpl implements CardDeckService
     private CardService cardService;
 
     @Override
+    public CardDeck getCardDeckById(long id)
+    {
+        return cardDeckRepository.getOne(id);
+    }
+
+    @Override
     public void initializeDeck(CardDeck deck)
     {
-        CardDeck startDeck = cardDeckRepository.getOne(1L);
-        deck.setCards(startDeck.getCards());
         cardDeckRepository.save(deck);
     }
 
     @Override
     public void addCard(Card card, CardDeck deck)
     {
-        int index = (card.getSuit() + 1) * (card.getRank() - 1);
-        Card cardToSwitchOut = deck.getCards()[index];
-
-        if (cardToSwitchOut.getOwnerTypeEnum() == CardOwnerType.Player)
+        int indecks = card.getIndecks();
+        if (deck.getCards().containsKey(indecks))
         {
-            cardService.setDeck(cardToSwitchOut, null);
+            cardService.setDeck(deck.getCards().get(indecks), null);
         }
-
-        if (card.getOwnerTypeEnum() == CardOwnerType.Player)
-        {
-            cardService.setDeck(card, deck);
-        }
-
-        deck.getCards()[index] = card;
+        cardService.setDeck(card, deck);
+        deck.getCards().replace(indecks, card);
         cardDeckRepository.save(deck);
     }
 
     @Override
     public void removeCard(Card card, CardDeck deck)
     {
-        int index = (card.getSuit() + 1) * (card.getRank() - 1);
-        if (card.getOwnerTypeEnum() == CardOwnerType.Player && deck.getCards()[index] == card)
+        int indecks = card.getIndecks();
+        if (card.getOwnerTypeEnum() == CardOwnerType.Player && deck.getCards().get(indecks) == card)
         {
             cardService.setDeck(card, null);
+            deck.getCards().remove(indecks);
         }
-
-        Card starterCard = cardService.getCardById(index + 1);
-        deck.getCards()[index] = starterCard;
         cardDeckRepository.save(deck);
     }
 }
