@@ -116,10 +116,12 @@ public class CardServiceImpl implements CardService
             switch (card.getSuitEnum())
             {
                 case Spade:
-                    // taunt amount + block amount = card value
+                    /*// taunt amount + block amount = card value
                     int block = random.nextInt(cardValue);
                     card.setBlock(block);
-                    card.setTaunt(cardValue - block);
+                    card.setTaunt(cardValue - block);*/
+                    card.setBlock(cardValue);
+                    card.setTaunt(random.nextInt(cardValue));
                     break;
                 case Heart:
                     // 20% revive + heal; 80% heal + mana
@@ -194,9 +196,13 @@ public class CardServiceImpl implements CardService
                         remainingValue -= value;
                         break;
                     case 3: // taunt
-                        if (card.getTaunt() == 0) effectCount++;
+                        if (card.getTaunt() == 0)
+                        {
+                            effectCount++;
+                            remainingValue += value;
+                        }
                         card.setTaunt(card.getTaunt() + value);
-                        remainingValue -= value;
+                        //remainingValue -= value;
                         break;
                     case 4: // mana
                         if (card.getMana() == 0) effectCount++;
