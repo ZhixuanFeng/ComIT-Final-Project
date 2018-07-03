@@ -1,4 +1,4 @@
-package com.fengzhixuan.timoc.data.service;
+package com.fengzhixuan.timoc.service;
 
 import com.fengzhixuan.timoc.data.entity.User;
 import com.fengzhixuan.timoc.data.repository.UserRepository;

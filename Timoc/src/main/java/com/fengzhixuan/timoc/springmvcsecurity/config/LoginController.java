@@ -2,10 +2,10 @@ package com.fengzhixuan.timoc.springmvcsecurity.config;
 
 import com.fengzhixuan.timoc.data.entity.*;
 import com.fengzhixuan.timoc.data.repository.RoleRepository;
-import com.fengzhixuan.timoc.data.service.CardCollectionService;
-import com.fengzhixuan.timoc.data.service.CardDeckService;
-import com.fengzhixuan.timoc.data.service.PlayerService;
-import com.fengzhixuan.timoc.data.service.UserService;
+import com.fengzhixuan.timoc.service.CardCollectionService;
+import com.fengzhixuan.timoc.service.CardDeckService;
+import com.fengzhixuan.timoc.service.PlayerService;
+import com.fengzhixuan.timoc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
