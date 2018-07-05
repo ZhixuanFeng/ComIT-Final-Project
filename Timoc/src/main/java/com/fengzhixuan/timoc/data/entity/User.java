@@ -16,6 +16,7 @@ public class User
     @Id
     @Column(name="id")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @Access(AccessType.PROPERTY)
     private long id;
 
     @Column(name="username", nullable=false, length=20)

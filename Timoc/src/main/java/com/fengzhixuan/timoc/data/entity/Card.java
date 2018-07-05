@@ -4,6 +4,8 @@ import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.enums.CardSuit;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="card")
@@ -56,11 +58,11 @@ public class Card
     @JoinColumn(name = "card_deck_id")
     private CardDeck cardDeck;
 
-    @OneToOne(mappedBy = "card", cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, optional = false)
-    private Offer offer;
-
     public Card() {}
+
+    // using @OneToMany to avoid querying offer object when querying card object.  card and offer is actually one-to-one
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Offer> offers = new ArrayList<>();
 
     public long getId()
     {
@@ -258,7 +260,7 @@ public class Card
         this.cardDeck = cardDeck;
     }
 
-    public Offer getOffer()
+    /*public Offer getOffer()
     {
         return offer;
     }
@@ -266,7 +268,7 @@ public class Card
     public void setOffer(Offer offer)
     {
         this.offer = offer;
-    }
+    }*/
 
     @Override
     public String toString()

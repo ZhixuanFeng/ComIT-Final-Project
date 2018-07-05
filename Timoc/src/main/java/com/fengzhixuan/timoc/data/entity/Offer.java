@@ -17,7 +17,8 @@ public class Offer
     @JoinColumn(name = "player_name")
     private Player player;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    // using @ManyToOne to avoid querying offer object when querying card object.  card and offer is actually one-to-one
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "card_id")
     private Card card;
 

@@ -13,7 +13,7 @@ public class CardDeck
 
     /*@OneToMany(mappedBy = "cardDeck", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Card> cards = new ArrayList<>();*/
-    @OneToMany(mappedBy="cardDeck")
+    @OneToMany(mappedBy="cardDeck", fetch = FetchType.LAZY)
     @MapKey(name="indecks")
     private Map<Integer, Card> cards;
 

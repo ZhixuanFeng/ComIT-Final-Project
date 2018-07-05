@@ -43,6 +43,9 @@
     </div>
 </div>
 
-<div th:include="this :: card(${card})">Card</div>
+<!--<div th:include="this :: card(${cards.get(0)})">Card</div>-->
+<div th:each="card : ${cards}">
+    <div th:include="this :: card(${cards.get(cardStat.count - 1)})">Card</div>
+</div>
 </body>
 </html>

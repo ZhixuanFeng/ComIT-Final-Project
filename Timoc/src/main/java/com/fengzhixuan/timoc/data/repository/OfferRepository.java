@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Date;
 import java.util.List;
 
-@Repository("offerRepository")
+@Repository
 public interface OfferRepository extends JpaRepository<Offer, Long>
 {
     List<Offer> findByPlayer(Player player);

@@ -7,6 +7,10 @@ import com.fengzhixuan.timoc.data.repository.CardDeckRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class CardDeckServiceImpl implements CardDeckService
 {
@@ -55,5 +59,17 @@ public class CardDeckServiceImpl implements CardDeckService
             deck.getCards().remove(indecks);
         }
         cardDeckRepository.save(deck);
+    }
+
+    @Override
+    public List<Card> getCards(CardDeck deck)
+    {
+        List<Card> cards = new ArrayList<>();
+        Map<Integer, Card> map = deck.getCards();
+        for (Map.Entry<Integer, Card> entry : map.entrySet())
+        {
+            cards.add(entry.getValue());
+        }
+        return cards;
     }
 }

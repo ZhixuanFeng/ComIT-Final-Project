@@ -4,7 +4,7 @@ import com.fengzhixuan.timoc.data.entity.CardCollection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-@Repository("cardCollectionRepository")
+@Repository
 public interface CardCollectionRepository extends JpaRepository<CardCollection, Long>
 {
 
