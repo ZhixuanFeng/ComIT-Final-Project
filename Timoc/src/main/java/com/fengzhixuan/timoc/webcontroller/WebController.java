@@ -12,6 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import java.util.Random;
 
 @Controller
 public class WebController
@@ -50,6 +53,20 @@ public class WebController
         }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("hello");
+        return modelAndView;
+    }
+
+    /*
+     * Testing deck.html
+     */
+    @RequestMapping(value = "/deck", method = RequestMethod.GET)
+    public ModelAndView randomCard()
+    {
+        Random random = new Random();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("deck");
+        Card card = cardService.createCard(0, 10);
+        modelAndView.addObject(card);
         return modelAndView;
     }
 }

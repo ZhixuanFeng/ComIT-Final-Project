@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Deck</title>
+    <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<div th:fragment="card(card)" th:remove="all">
+    <div class="card">
+        <!--/*Empty card image*/-->
+        <img class="empty_card" src="images/empty_card.png" height="61" width="41"/>
+        <!--/*If it's a red card(diamond or heart), use red numbers*/-->
+        <div class="rank_div" th:if="${card.suit==0 or card.suit==2}">
+            <th:block th:switch="${card.rank}">
+                <span th:case="1" class="rank" th:text="A" style="color:red;"></span>
+                <span th:case="11" class="rank" th:text="J" style="color:red;"></span>
+                <span th:case="12" class="rank" th:text="Q" style="color:red;"></span>
+                <span th:case="13" class="rank" th:text="K" style="color:red;"></span>
+                <span th:case=* class="rank" th:text="${card.rank}" style="color:red;"></span>
+            </th:block>
+        </div>
+        <!--/*If it's a black card(club or spade), use black numbers*/-->
+        <div class="rank_div" th:if="${card.suit==1 or card.suit==3}">
+            <th:block th:switch="${card.rank}">
+                <span th:case="1" class="rank" th:text="A" style="color:black;"></span>
+                <span th:case="11" class="rank" th:text="J" style="color:black;"></span>
+                <span th:case="12" class="rank" th:text="Q" style="color:black;"></span>
+                <span th:case="13" class="rank" th:text="K" style="color:black;"></span>
+                <span th:case=* class="rank" th:text="${card.rank}"></span>
+            </th:block>
+        </div>
+        <!--/*Load suit icon based on suit*/-->
+        <th:block th:switch="${card.suit}">
+            <img th:case="0" class="suit" src="images/diamond.png" height="11" width="11"/> <!--/* Diamond */-->
+            <img th:case="1" class="suit" src="images/club.png" height="11" width="11"/> <!--/* Club */-->
+            <img th:case="2" class="suit" src="images/heart.png" height="11" width="11"/> <!--/* Heart */-->
+            <img th:case="3" class="suit" src="images/spade.png" height="11" width="11"/> <!--/* Spade */-->
+        </th:block>
+    </div>
+</div>
+
+<div th:include="this :: card(${card})">Card</div>
+</body>
+</html>

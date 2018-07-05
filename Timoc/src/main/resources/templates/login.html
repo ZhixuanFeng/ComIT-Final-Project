@@ -3,15 +3,14 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>Spring Security Tutorial</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" />
+    <title>Welcome to Timoc</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/src/main/webapp/resources/css/login.css}" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 
 <body>
-
 <div class="container">
     <div class="col-md-6 col-md-offset-3">
         <form th:action="@{/login}" method="POST" class="form-signin">
@@ -24,7 +23,7 @@
                    id="password" name="password" class="form-control" /> <br />
 
             <div align="center" th:if="${param.error}">
-                <p style="font-size: 20; color: #FF1C19;">Username or Password invalid, please verify</p>
+                <p style="font-size:20px; color: #FF1C19;">Username or Password invalid, please verify</p>
             </div>
 
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
