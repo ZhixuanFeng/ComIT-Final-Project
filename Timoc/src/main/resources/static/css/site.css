@@ -14,48 +14,7 @@
     font-family: "Amstrad CPC464 Regular";
 }
 
-div.card
+body
 {
-    margin: 2%;
-    float: left;
-    width: 10%;
-    display: inline-block;
-    position: relative;
-}
-
-div.card:hover
-{
-    background-color: dimgrey;
-    opacity: 0.7;
-    -webkit-filter: blur(4px);
-    filter: blur(4px);
-}
-
-.empty_card
-{
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-.rank
-{
-    width: 35%;
-    font-size: 2vw; /*font size should be changed if card size is changed*/
-    letter-spacing: -0.15em;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    position: absolute;
-    top: 10%;
-}
-
-.suit
-{
-    width: 20%;
-    height: auto;
-    display: block;
-    position: absolute;
-    top: 25%;
-    left: 9%;
+    background: black;
 }

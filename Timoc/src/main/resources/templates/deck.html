@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/card.css">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Deck</title>
-    <link rel="stylesheet" href="css/site.css">
 </head>
-<body>
+<body style="background: wheat;">
+
+<div th:fragment="cardEffect(iconURL, amount)">
+    <img class="effect_icon " th:attrappend="src=${iconURL}" height="16" width="16"/>
+    <span class="effect_amount" th:text="${amount}"></span>
+</div>
 
 <div th:fragment="card(card)" th:remove="all">
     <div class="card">
@@ -40,6 +46,15 @@
             <img th:case="2" class="suit" src="images/heart.png" height="11" width="11"/> <!--/* Heart */-->
             <img th:case="3" class="suit" src="images/spade.png" height="11" width="11"/> <!--/* Spade */-->
         </th:block>
+
+        <div class="card_effect">
+            <div th:if="${card.attack gt 0}" th:include="this :: cardEffect('images/attack.png', ${card.attack})"></div>
+            <div th:if="${card.block gt 0}" th:include="this :: cardEffect('images/block.png', ${card.block})"></div>
+            <div th:if="${card.heal gt 0}" th:include="this :: cardEffect('images/heal.png', ${card.heal})"></div>
+            <div th:if="${card.mana gt 0}" th:include="this :: cardEffect('images/mana.png', ${card.mana})"></div>
+            <div th:if="${card.revive gt 0}" th:include="this :: cardEffect('images/revive.png', ${card.revive})"></div>
+            <div th:if="${card.aoe gt 0}" th:include="this :: cardEffect('images/aoe.png', ${card.aoe})"></div>
+        </div>
     </div>
 </div>
 

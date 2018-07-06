@@ -12,20 +12,29 @@
 
 <body>
 <div class="container">
+    <div class="col-md-6 col-md-offset-3">
 
-    <form th:action="@{/logout}" method="get">
-        <button class="btn btn-md btn-danger btn-block" name="registration"
-                type="Submit">Logout</button>
-    </form>
-
-    <div class="panel-group" style="margin-top:40px">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <span th:utext="${welcome}"></span>
+        <div class="panel-group" style="margin-top:40px">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span th:utext="${welcome}"></span>
+                </div>
+                <p>
+                    You may view your deck or logout.
+                </p>
             </div>
         </div>
+        <br>
+        <form th:action="@{/deck}" method="get">
+            <button class="btn btn-md btn-info btn-block" name="deck"
+                    type="Submit">View your deck</button>
+        </form>
+        <br>
+        <form th:action="@{/logout}" method="get">
+            <button class="btn btn-md btn-danger btn-block" name="logout"
+                    type="Submit">Logout</button>
+        </form>
     </div>
-
 </div>
 </body>
 </html>
