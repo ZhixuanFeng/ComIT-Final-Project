@@ -54,6 +54,8 @@
             <div th:if="${card.mana gt 0}" th:include="this :: cardEffect('images/mana.png', ${card.mana})"></div>
             <div th:if="${card.revive gt 0}" th:include="this :: cardEffect('images/revive.png', ${card.revive})"></div>
             <div th:if="${card.aoe gt 0}" th:include="this :: cardEffect('images/aoe.png', ${card.aoe})"></div>
+            <div th:if="${card.taunt gt 0}" th:include="this :: cardEffect('images/aoe.png', ${card.taunt})"></div>
+            <div th:if="${card.random gt 0}" th:include="this :: cardEffect('images/aoe.png', ${card.random})"></div>
         </div>
     </div>
 </div>

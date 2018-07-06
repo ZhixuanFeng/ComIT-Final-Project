@@ -66,9 +66,20 @@ public class CardDeckServiceImpl implements CardDeckService
     {
         List<Card> cards = new ArrayList<>();
         Map<Integer, Card> map = deck.getCards();
-        for (Map.Entry<Integer, Card> entry : map.entrySet())
+        /*for (Map.Entry<Integer, Card> entry : map.entrySet())
         {
             cards.add(entry.getValue());
+        }*/
+        for (int i = 0; i < 52; i++)
+        {
+            if (map.containsKey(i))
+            {
+                cards.add(map.get(i));
+            }
+            else
+            {
+                cards.add(cardService.getCardById(i+1));
+            }
         }
         return cards;
     }
