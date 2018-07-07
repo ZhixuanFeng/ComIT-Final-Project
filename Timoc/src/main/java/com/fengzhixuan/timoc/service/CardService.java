@@ -17,4 +17,6 @@ public interface CardService
     void setDeck(Card card, CardDeck deck);
 
     Card createCard(int meanQuality, int deviation);
+
+    Card getStarterCard(int indecks);
 }

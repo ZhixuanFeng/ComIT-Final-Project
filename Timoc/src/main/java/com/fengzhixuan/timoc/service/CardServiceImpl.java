@@ -234,4 +234,122 @@ public class CardServiceImpl implements CardService
         System.out.println(r + " Created card: " + card.toString());
         return card;
     }
+
+    /*
+     * return a card object containing starter card information
+     * use this method to get information instead of querying the database to improve performance
+     * ** if the information changes here, remember to change data.sql as well **
+     */
+    @Override
+    public Card getStarterCard(int indecks)
+    {
+        switch (indecks)
+        {
+            case 0:
+                return new Card(indecks, 1, 0, 0, 0, 0, 0, 0, 0);
+            case 1:
+                return new Card(indecks, 2, 0, 0, 0, 0, 0, 0, 0);
+            case 2:
+                return new Card(indecks, 3, 0, 0, 0, 0, 0, 0, 0);
+            case 3:
+                return new Card(indecks, 4, 0, 0, 0, 0, 0, 0, 0);
+            case 4:
+                return new Card(indecks, 5, 0, 0, 0, 0, 0, 0, 0);
+            case 5:
+                return new Card(indecks, 6, 0, 0, 0, 0, 0, 0, 0);
+            case 6:
+                return new Card(indecks, 7, 0, 0, 0, 0, 0, 0, 0);
+            case 7:
+                return new Card(indecks, 8, 0, 0, 0, 0, 0, 0, 0);
+            case 8:
+                return new Card(indecks, 9, 0, 0, 0, 0, 0, 0, 0);
+            case 9:
+                return new Card(indecks, 10, 0, 0, 0, 0, 0, 0, 0);
+            case 10:
+                return new Card(indecks, 11, 0, 0, 0, 0, 0, 0, 0);
+            case 11:
+                return new Card(indecks, 12, 0, 0, 0, 0, 0, 0, 0);
+            case 12:
+                return new Card(indecks, 13, 0, 0, 0, 0, 0, 0, 1);
+            case 13:
+                return new Card(indecks, 0, 1, 0, 0, 0, 0, 0, 0);
+            case 14:
+                return new Card(indecks, 1, 1, 0, 0, 0, 0, 0, 0);
+            case 15:
+                return new Card(indecks, 2, 1, 0, 0, 0, 0, 0, 0);
+            case 16:
+                return new Card(indecks, 2, 2, 0, 0, 0, 0, 0, 0);
+            case 17:
+                return new Card(indecks, 2, 3, 0, 0, 0, 0, 0, 0);
+            case 18:
+                return new Card(indecks, 3, 3, 0, 0, 0, 0, 0, 0);
+            case 19:
+                return new Card(indecks, 4, 3, 0, 0, 0, 0, 0, 0);
+            case 20:
+                return new Card(indecks, 4, 4, 0, 0, 0, 0, 0, 0);
+            case 21:
+                return new Card(indecks, 4, 5, 0, 0, 0, 0, 0, 0);
+            case 22:
+                return new Card(indecks, 5, 5, 0, 0, 0, 0, 0, 0);
+            case 23:
+                return new Card(indecks, 6, 5, 0, 0, 0, 0, 0, 0);
+            case 24:
+                return new Card(indecks, 6, 6, 0, 0, 0, 0, 0, 0);
+            case 25:
+                return new Card(indecks, 7, 6, 0, 0, 0, 0, 0, 0);
+            case 26:
+                return new Card(indecks, 0, 0, 1, 0, 0, 0, 0, 0);
+            case 27:
+                return new Card(indecks, 0, 0, 2, 0, 0, 0, 0, 0);
+            case 28:
+                return new Card(indecks, 0, 0, 3, 0, 0, 0, 0, 0);
+            case 29:
+                return new Card(indecks, 0, 0, 4, 0, 0, 0, 0, 0);
+            case 30:
+                return new Card(indecks, 0, 0, 5, 0, 0, 0, 0, 0);
+            case 31:
+                return new Card(indecks, 0, 0, 6, 0, 0, 0, 0, 0);
+            case 32:
+                return new Card(indecks, 0, 0, 7, 0, 0, 0, 0, 0);
+            case 33:
+                return new Card(indecks, 0, 0, 8, 0, 0, 0, 0, 0);
+            case 34:
+                return new Card(indecks, 0, 0, 9, 0, 0, 0, 0, 0);
+            case 35:
+                return new Card(indecks, 0, 0, 10, 0, 0, 0, 0, 0);
+            case 36:
+                return new Card(indecks, 0, 0, 11, 0, 0, 0, 0, 0);
+            case 37:
+                return new Card(indecks, 0, 0, 0, 0, 0, 0, 24, 0);
+            case 38:
+                return new Card(indecks, 0, 0, 13, 0, 0, 0, 0, 0);
+            case 39:
+                return new Card(indecks, 0, 1, 0, 0, 0, 0, 0, 0);
+            case 40:
+                return new Card(indecks, 0, 2, 0, 0, 0, 0, 0, 0);
+            case 41:
+                return new Card(indecks, 0, 3, 0, 0, 0, 0, 0, 0);
+            case 42:
+                return new Card(indecks, 0, 4, 0, 0, 0, 0, 0, 0);
+            case 43:
+                return new Card(indecks, 0, 5, 0, 0, 0, 0, 0, 0);
+            case 44:
+                return new Card(indecks, 0, 6, 0, 0, 0, 0, 0, 0);
+            case 45:
+                return new Card(indecks, 0, 7, 0, 0, 0, 0, 0, 0);
+            case 46:
+                return new Card(indecks, 0, 8, 0, 0, 0, 0, 0, 0);
+            case 47:
+                return new Card(indecks, 0, 9, 0, 0, 0, 0, 0, 0);
+            case 48:
+                return new Card(indecks, 0, 10, 0, 0, 0, 0, 0, 0);
+            case 49:
+                return new Card(indecks, 0, 11, 0, 0, 0, 0, 0, 0);
+            case 50:
+                return new Card(indecks, 0, 12, 0, 0, 0, 0, 0, 0);
+            case 51:
+                return new Card(indecks, 0, 13, 0, 0, 0, 0, 0, 0);
+        }
+        return null;
+    }
 }

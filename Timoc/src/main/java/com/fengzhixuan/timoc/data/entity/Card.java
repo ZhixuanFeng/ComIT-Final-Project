@@ -58,6 +58,23 @@ public class Card
     @JoinColumn(name = "card_deck_id")
     private CardDeck cardDeck;
 
+    public Card(int indecks, int attack, int block, int heal, int mana, int random, int taunt, int revive, int aoe)
+    {
+        id = indecks + 1;
+        this.indecks = indecks;
+        this.attack = attack;
+        this.block = block;
+        this.heal = heal;
+        this.mana = mana;
+        this.random = random;
+        this.taunt = taunt;
+        this.revive = revive;
+        this.aoe = aoe;
+
+        setOwnerType(CardOwnerType.AllPlayers);
+        quality = 0;
+    }
+
     public Card() {}
 
     // using @OneToMany to avoid querying offer object when querying card object.  card and offer is actually one-to-one
