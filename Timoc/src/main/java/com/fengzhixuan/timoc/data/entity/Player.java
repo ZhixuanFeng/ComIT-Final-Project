@@ -45,7 +45,7 @@ public class Player
     @Override
     public String toString()
     {
-        return "Player{" +
+        return "Player_In_Deck{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

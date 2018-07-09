@@ -39,7 +39,7 @@ public class CardServiceImpl implements CardService
     {
         if (collection != null)
         {
-            card.setOwnerType(CardOwnerType.Player);
+            card.setOwnerType(CardOwnerType.Player_Not_In_Deck);
         }
         else
         {
@@ -53,6 +53,7 @@ public class CardServiceImpl implements CardService
     public void setDeck(Card card, CardDeck deck)
     {
         card.setCardDeck(deck);
+        card.setOwnerType(deck == null ? CardOwnerType.Player_Not_In_Deck : CardOwnerType.Player_In_Deck);
         cardRepository.save(card);
     }
 

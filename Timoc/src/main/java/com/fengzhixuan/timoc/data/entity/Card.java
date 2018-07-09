@@ -1,5 +1,7 @@
 package com.fengzhixuan.timoc.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.enums.CardSuit;
 
@@ -52,10 +54,12 @@ public class Card
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_collection_id")
+    @JsonBackReference
     private CardCollection cardCollection;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "card_deck_id")
+    @JsonBackReference
     private CardDeck cardDeck;
 
     public Card(int indecks, int attack, int block, int heal, int mana, int random, int taunt, int revive, int aoe)
@@ -101,6 +105,7 @@ public class Card
         this.ownerType = ownerType;
     }
 
+    @JsonIgnore
     public CardOwnerType getOwnerTypeEnum()
     {
         switch (ownerType)
@@ -108,13 +113,15 @@ public class Card
             case 0:
                 return CardOwnerType.AllPlayers;
             case 1:
-                return CardOwnerType.Player;
+                return CardOwnerType.Player_In_Deck;
             case 2:
-                return CardOwnerType.Enemy;
+                return CardOwnerType.Player_Not_In_Deck;
             case 3:
-                return CardOwnerType.NoOwner;
-            case 4:
                 return CardOwnerType.Market;
+            case 4:
+                return CardOwnerType.Enemy;
+            case 5:
+                return CardOwnerType.NoOwner;
             default:
                 return CardOwnerType.AllPlayers;
         }
@@ -155,6 +162,7 @@ public class Card
         return indecks / 13;
     }
 
+    @JsonIgnore
     public CardSuit getSuitEnum()
     {
         switch (getSuit())
@@ -276,16 +284,6 @@ public class Card
     {
         this.cardDeck = cardDeck;
     }
-
-    /*public Offer getOffer()
-    {
-        return offer;
-    }
-
-    public void setOffer(Offer offer)
-    {
-        this.offer = offer;
-    }*/
 
     @Override
     public String toString()

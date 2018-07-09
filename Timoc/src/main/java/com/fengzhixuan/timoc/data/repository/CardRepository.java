@@ -15,4 +15,6 @@ public interface CardRepository extends JpaRepository<Card, Long>
 //    @Query(value = "select c from card where card.card_deck_id=:deck_id", nativeQuery = true)
 //    List<Card> findCardsByDeckId();
     List<Card> findByCardDeckId(long deck_id);
+
+    List<Card> findByCardCollectionId(long collection_id);
 }

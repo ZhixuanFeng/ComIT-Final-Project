@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="css/site.css">
-<link rel="stylesheet" href="css/card.css">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Deck</title>
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="css/card.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/deck.js"></script>
 </head>
 <body style="background: wheat;">
 
@@ -16,7 +18,7 @@
 </div>
 
 <div th:fragment="card(card)" th:remove="all">
-    <div class="card">
+    <div class="card" th:id="${card.indecks}">
         <!--/*Empty card image*/-->
         <img class="empty_card" src="images/empty_card.png" height="61" width="41"/>
         <!--/*If it's a red card(diamond or heart), use red numbers*/-->
@@ -50,9 +52,8 @@
     </div>
 </div>
 
-<!--<div th:include="this :: card(${cards.get(0)})">Card</div>-->
 <div th:each="card : ${cards}">
-    <div th:include="this :: card(${cards.get(cardStat.count - 1)})">Card</div>
+    <div th:include="this :: card(${cards.get(cardStat.count - 1)})"></div>
 </div>
 </body>
 </html>

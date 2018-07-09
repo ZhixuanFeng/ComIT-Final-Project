@@ -3,8 +3,11 @@ package com.fengzhixuan.timoc.service;
 import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.CardCollection;
 import com.fengzhixuan.timoc.data.repository.CardCollectionRepository;
+import com.fengzhixuan.timoc.data.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CardCollectionServiceImpl implements CardCollectionService
@@ -14,6 +17,9 @@ public class CardCollectionServiceImpl implements CardCollectionService
 
     @Autowired
     private CardService cardService;
+
+    @Autowired
+    private CardRepository cardRepository;
 
     @Override
     public void addCard(Card card, CardCollection collection)
@@ -63,5 +69,11 @@ public class CardCollectionServiceImpl implements CardCollectionService
     public void saveCardCollection(CardCollection collection)
     {
         cardCollectionRepository.save(collection);
+    }
+
+    @Override
+    public List<Card> getCards(long id)
+    {
+        return cardRepository.findByCardCollectionId(id);
     }
 }

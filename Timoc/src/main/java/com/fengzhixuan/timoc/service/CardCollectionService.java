@@ -4,6 +4,8 @@ import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.CardCollection;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface CardCollectionService
 {
@@ -16,4 +18,6 @@ public interface CardCollectionService
     boolean isStorageFull(CardCollection collection);
 
     void saveCardCollection(CardCollection collection);
+
+    List<Card> getCards(long id);
 }

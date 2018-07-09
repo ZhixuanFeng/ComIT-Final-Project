@@ -57,7 +57,7 @@ public class OfferServiceImpl implements OfferService
     public void cancelOffer(Offer offer)
     {
         Card card = offer.getCard();
-        card.setOwnerType(CardOwnerType.Player);
+        card.setOwnerType(CardOwnerType.Player_Not_In_Deck);
 
         offerRepository.delete(offer);
     }
@@ -74,7 +74,7 @@ public class OfferServiceImpl implements OfferService
         playerService.addGold(seller, offer.getPrice());
 
         // get card
-        card.setOwnerType(CardOwnerType.Player);
+        card.setOwnerType(CardOwnerType.Player_Not_In_Deck);
         cardCollectionService.transferCard(card, seller.getCardCollection(), buyer.getCardCollection());
 
         // remove offer
