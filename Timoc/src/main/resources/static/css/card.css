@@ -46,22 +46,23 @@ div.card:hover
 
 .card_effect
 {
-    float: top;
     display: block;
     position: absolute;
-    width: 80%;
-    top: 50%;
+    width: 100%;
+    top: 40%;
     left: 60%;
     transform: translateX(-50%);
 }
 
 .effect_icon
 {
-    width: 1.5vw;
+    width: 2vw;
     height: auto;
+    padding-left: 1vw;
 }
 
 .effect_amount
 {
     font-size: 1.5vw;
+    padding-left: 1.5vw;
 }

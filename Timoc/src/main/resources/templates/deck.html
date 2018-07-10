@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="css/site.css">
     <link rel="stylesheet" href="css/card.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/starterCards.js"></script>
     <script src="js/deck.js"></script>
 </head>
 <body style="background: wheat;">
-
+<!--/*
 <div th:fragment="cardEffect(iconURL, amount)">
     <img class="effect_icon " th:attrappend="src=${iconURL}" height="16" width="16"/>
     <span class="effect_amount" th:text="${amount}"></span>
@@ -19,10 +20,7 @@
 
 <div th:fragment="card(card)" th:remove="all">
     <div class="card" th:id="${card.indecks}">
-        <!--/*Empty card image*/-->
         <img class="empty_card" src="images/empty_card.png" height="61" width="41"/>
-        <!--/*If it's a red card(diamond or heart), use red numbers*/-->
-        <!--/*If it's a black card(club or spade), use black numbers*/-->
             <th:block th:switch="${card.rank}">
                 <span th:case="1" class="rank" th:text="A" th:style="${card.suit==0 or card.suit==2} ? 'color:red;'"></span>
                 <span th:case="11" class="rank" th:text="J" th:style="${card.suit==0 or card.suit==2} ? 'color:red;'"></span>
@@ -30,15 +28,12 @@
                 <span th:case="13" class="rank" th:text="K" th:style="${card.suit==0 or card.suit==2} ? 'color:red;'"></span>
                 <span th:case=* class="rank" th:text="${card.rank}" th:style="${card.suit==0 or card.suit==2} ? 'color:red;'"></span>
             </th:block>
-        <!--/*Load suit icon based on suit*/-->
         <th:block th:switch="${card.suit}">
-            <img th:case="0" class="suit" src="images/diamond.png" height="11" width="11"/> <!--/* Diamond */-->
-            <img th:case="1" class="suit" src="images/club.png" height="11" width="11"/> <!--/* Club */-->
-            <img th:case="2" class="suit" src="images/heart.png" height="11" width="11"/> <!--/* Heart */-->
-            <img th:case="3" class="suit" src="images/spade.png" height="11" width="11"/> <!--/* Spade */-->
+            <img th:case="0" class="suit" src="images/diamond.png" height="11" width="11"/>
+            <img th:case="1" class="suit" src="images/club.png" height="11" width="11"/>
+            <img th:case="2" class="suit" src="images/heart.png" height="11" width="11"/>
+            <img th:case="3" class="suit" src="images/spade.png" height="11" width="11"/>
         </th:block>
-
-        <!--/*Display card effects(icon and amount) on the cards*/-->
         <div class="card_effect" th:style="${card.suit==0 or card.suit==2} ? 'color:red;'">
             <div th:if="${card.attack gt 0}" th:include="this :: cardEffect('images/attack.png', ${card.attack})"></div>
             <div th:if="${card.block gt 0}" th:include="this :: cardEffect('images/block.png', ${card.block})"></div>
@@ -54,6 +49,11 @@
 
 <div th:each="card : ${cards}">
     <div th:include="this :: card(${cards.get(cardStat.count - 1)})"></div>
+</div>
+*/-->
+
+<div id="deck">
+
 </div>
 </body>
 </html>

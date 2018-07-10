@@ -84,9 +84,9 @@ public class CardServiceImpl implements CardService
          * Diamond   | attack                | AOE
          *
          * Effect generation rules:
-         * 40% chance of cards with primary effects only;
-         * 40% chance of cards with mixed effects of primary and secondary effects
-         * 20% chance of cards with mixed effects from all effects
+         * 40% chance of allCards with primary effects only;
+         * 40% chance of allCards with mixed effects of primary and secondary effects
+         * 20% chance of allCards with mixed effects from all effects
         */
 
         int r = random.nextInt(100);
@@ -239,7 +239,7 @@ public class CardServiceImpl implements CardService
     /*
      * return a card object containing starter card information
      * use this method to get information instead of querying the database to improve performance
-     * ** if the information changes here, remember to change data.sql as well **
+     * ** if the information changes here, remember to change data.sql and starterCards.js as well **
      */
     @Override
     public Card getStarterCard(int indecks)

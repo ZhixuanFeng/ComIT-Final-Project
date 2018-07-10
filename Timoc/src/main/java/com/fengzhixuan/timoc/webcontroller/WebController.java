@@ -67,10 +67,10 @@ public class WebController
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByUsername(auth.getName());
 
-        // get deck and cards
+        // get deck and allCards
         CardDeck deck = cardDeckService.getCardDeckById(user.getId());
         List<Card> cards = cardDeckService.getCards(deck);
-        //List<Card> cards = cardRepository.findByCardDeckId(user.getId());
+        //List<Card> allCards = cardRepository.findByCardDeckId(user.getId());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("deck");

@@ -12,6 +12,7 @@ INSERT INTO role (role_id, role) VALUES (2, "ADMIN");
 
 /*
  *  Initialize card table
+ *  If values in here changes, remember to change cardServiceImpl and starterCards.js
  */
 /* Diamond */
 INSERT INTO card (id, owner_type, quality, indecks, attack, block, heal, mana, random, taunt, revive, aoe) VALUES (1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0);

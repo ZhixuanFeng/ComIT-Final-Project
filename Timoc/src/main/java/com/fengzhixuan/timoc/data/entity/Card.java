@@ -157,6 +157,7 @@ public class Card
         this.indecks = suit * 13 + rank - 1;
     }
 
+    @JsonIgnore
     public int getSuit()
     {
         return indecks / 13;
@@ -180,6 +181,7 @@ public class Card
         }
     }
 
+    @JsonIgnore
     public int getRank()
     {
         return indecks - getSuit() * 13 + 1;
