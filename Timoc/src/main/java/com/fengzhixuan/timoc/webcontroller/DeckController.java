@@ -22,8 +22,8 @@ public class DeckController
     @Autowired
     private CardCollectionService cardCollectionService;
 
-    @RequestMapping(value="/get_deck", method=RequestMethod.GET)
-    private List<Card> getDeck()
+    @RequestMapping(value="/rest/cards", method=RequestMethod.GET)
+    private List<Card> getCards()
     {
         // get user info
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

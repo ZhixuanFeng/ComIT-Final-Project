@@ -3,7 +3,7 @@ var cardsInDeck = [];
 
 $(document).ready(function()
 {
-    $.getJSON("/get_deck", function (json) {
+    $.getJSON("/rest/cards", function (json) {
         allCards = json;
 
         // find cards in deck
