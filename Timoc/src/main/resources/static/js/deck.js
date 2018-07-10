@@ -1,31 +1,53 @@
-var allCards;
-var cardsInDeck = [];
+"use strict";
+
+var cardsInDeck = new Array(52);
+var cardsInStorage = [];
 
 $(document).ready(function()
 {
     $.getJSON("/rest/cards", function (json) {
-        allCards = json;
-
         // find cards in deck
-        allCards.forEach(function (card) {
+        json.forEach(function (card) {
             if (card.ownerType == 1)
                 cardsInDeck[card.indecks] = card;
+            else
+                cardsInStorage.push(card);
         });
 
-        displayCards();
+        displayCards(cardsInDeck, $('#deck'));
 
-        printCards();
-    });
+        $('#deck').dragscrollable({
+            dragSelector: '.card'
+        });
 
-    $(".card").click(function () {
+        // printCards();
+
+        var isClick = false;
+        $('.card').mousedown(function () {
+            isClick = true;
+        });
+        $('.card').mousemove(function () {
+            isClick = isClick ? false : false;
+        });
+        $('.card').mouseup(function () {
+            if (!isClick) return;
+            $('#storage').empty();
+            var indecks = this.id;
+            var cards = [];
+            cardsInStorage.forEach(function (card) {
+                if (card.indecks == indecks) cards.push(card);
+            });
+            if (typeof(cardsInDeck[indecks]) != 'undefined')
+                cards.push(starter[indecks]);
+            displayCards(cards, $('#storage'));
+        });
     });
 });
 
-function displayCards() {
-    var $deckDiv = $('#deck');
+function displayCards(cards, $div) {
     // fill empty slots with starter cards
-    for (var i = 0; i < 52; i++) {
-        var card = (typeof(cardsInDeck[i]) == 'undefined') ? starter[i] : cardsInDeck[i];
+    for (var i = 0; i < cards.length; i++) {
+        var card = (typeof(cards[i]) == 'undefined') ? starter[i] : cards[i];
         var $cardDiv = $('<div class="card">');
         var $emptyCardImg = $('<img class="empty_card" src="images/empty_card.png" height="61" width="41"/>');
         var $rankSpan = $('<span class="rank"></span>');
@@ -46,7 +68,7 @@ function displayCards() {
         if (card.revive > 0) addCardEffect('revive', card.revive, suit);
         if (card.taunt > 0) addCardEffect('taunt', card.taunt, suit);
 
-        $cardDiv.addClass('card').appendTo($deckDiv);
+        $cardDiv.addClass('card').appendTo($div);
         $emptyCardImg.addClass('empty_card').appendTo($cardDiv);
         $rankSpan.addClass('rank').appendTo($cardDiv);
         $suitImg.addClass('suit').appendTo($cardDiv);

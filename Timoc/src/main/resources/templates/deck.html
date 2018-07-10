@@ -8,10 +8,11 @@
     <link rel="stylesheet" href="css/site.css">
     <link rel="stylesheet" href="css/card.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/dragscrollable.min.js"></script>
     <script src="js/starterCards.js"></script>
     <script src="js/deck.js"></script>
 </head>
-<body style="background: wheat;">
+<body style="background: wheat;overscroll-behavior: contain;">
 <!--/*
 <div th:fragment="cardEffect(iconURL, amount)">
     <img class="effect_icon " th:attrappend="src=${iconURL}" height="16" width="16"/>
@@ -52,8 +53,7 @@
 </div>
 */-->
 
-<div id="deck">
-
-</div>
+<div id="deck" style="border: 2px solid black"></div>
+<div id="storage" style="border: 2px solid black"></div>
 </body>
 </html>
