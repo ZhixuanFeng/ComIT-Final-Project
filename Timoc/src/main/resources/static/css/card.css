@@ -1,29 +1,12 @@
-#deck
+.card
 {
-    width: 100%;
-    height: 30vh;
-    overflow: auto;
-    white-space: nowrap;
-}
-
-#storage
-{
-    width: 100%;
-    height: 30vh;
-    overflow: auto;
-    white-space: nowrap;
-    margin-top: 5vh;
-}
-
-div.card
-{
-    margin: 2%;
-    width: 10%;
+    margin: 3vh; /*15% dcw*/
+    width: 20vh; /*dcw*/
     position: relative;
     display: inline-block;
 }
 
-div.card:hover
+.card:hover
 {
     background-color: dimgrey;
 }
@@ -38,7 +21,7 @@ div.card:hover
 .rank
 {
     width: 35%;
-    font-size: 2vw; /*font size should be changed if card size is changed*/
+    font-size: 4vh; /*20% dcw*/
     letter-spacing: -0.15em;
     text-align: center;
     margin-left: auto;
@@ -69,13 +52,13 @@ div.card:hover
 
 .effect_icon
 {
-    width: 2vw;
+    width: 4vh; /*20% dcw*/
     height: auto;
-    padding-left: 1vw;
+    padding-left: 2vh; /*10% dcw*/
 }
 
 .effect_amount
 {
-    font-size: 1.5vw;
-    padding-left: 1.5vw;
+    font-size: 3vh; /*15% dcw*/
+    padding-left: 3vh; /*15% dcw*/
 }

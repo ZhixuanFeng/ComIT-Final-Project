@@ -74,6 +74,9 @@ function displayCards(cards, $div) {
         $suitImg.addClass('suit').appendTo($cardDiv);
         $cardEffectDiv.addClass('card_effect').appendTo($cardDiv);
     }
+    $($div).dragscrollable({
+        dragSelector: '.card'
+    });
 
     function addCardEffect(name, amount, suit) {
         var $newEffectDiv = $('<div />').appendTo($cardEffectDiv);
