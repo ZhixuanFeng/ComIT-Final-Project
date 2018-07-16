@@ -47,6 +47,16 @@ $(document).ready(function()
 
         function setCardArea() {
             displayCards(deck[currentSuit], $deckArea);
+            for (var i = 0; i < 13; i++) {
+                var indecks = currentSuit * 13 + i;
+                var n = 0;
+                if (typeof(deck[currentSuit][i]) != 'undefined' ) n++;
+                cardsInStorage.forEach(function (cardInStorage) {
+                    if (cardInStorage.indecks == indecks) n++;
+                });
+                console.log(n);
+                $($($deckArea).children().eq(i)).children('div.num').text(n);
+            };
 
             var isClick = false;
             $deckArea.children('.card').mousedown(function () {
@@ -128,17 +138,24 @@ $(document).ready(function()
         $storageArea.css({
             'margin-top':'4vh'
         });
+
+        $('.num').css({
+            'width':'100%',
+            'text-align':'center',
+            'size':'2vh',
+            'margin-top':'1vh'
+        })
     });
 });
 
 function displayCards(cards, $div) {
     for (var i = 0; i < cards.length; i++) {
         var card = (typeof(cards[i]) == 'undefined') ? starter[currentSuit * 13 + i] : cards[i];
-        var $cardDiv = $('<div class="card">');
-        var $emptyCardImg = $('<img class="empty_card" src="images/empty_card.png" height="61" width="41"/>');
-        var $rankSpan = $('<span class="rank"></span>');
-        var $suitImg = $('<img class="suit" height="11" width="11"/>');
-        var $cardEffectDiv = $('<div class="card_effect">');
+        var $cardDiv = $('<div>');
+        var $emptyCardImg = $('<img src="images/empty_card.png" height="61" width="41"/>');
+        var $rankSpan = $('<span></span>');
+        var $suitImg = $('<img height="11" width="11"/>');
+        var $cardEffectDiv = $('<div>');
         var rank = getRank(card);
         var suit = getSuit(card);
         $cardDiv.attr('id', card.id);
@@ -159,6 +176,8 @@ function displayCards(cards, $div) {
         $rankSpan.addClass('rank').appendTo($cardDiv);
         $suitImg.addClass('suit').appendTo($cardDiv);
         $cardEffectDiv.addClass('card_effect').appendTo($cardDiv);
+
+        var $num = $('<div>').addClass('num').appendTo($cardDiv);
     }
     $($div).dragscrollable({
         dragSelector: '.card'
