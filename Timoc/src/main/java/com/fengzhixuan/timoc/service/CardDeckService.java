@@ -16,5 +16,7 @@ public interface CardDeckService
 
     void removeCard(Card card, CardDeck deck);
 
+    void removeCardAt(int indecks, CardDeck deck);
+
     List<Card> getCards(CardDeck deck);
 }

@@ -91,7 +91,7 @@ public class CardServiceImpl implements CardService
 
         int r = random.nextInt(100);
         int cardValue = Math.round(rank * qualityMultiplier);
-        if (r < 40)
+        if (r < 33)
         {
             switch (card.getSuitEnum())
             {
@@ -112,7 +112,7 @@ public class CardServiceImpl implements CardService
                     return null;
             }
         }
-        else if (r < 80)
+        else if (r < 66)
         {
             switch (card.getSuitEnum())
             {

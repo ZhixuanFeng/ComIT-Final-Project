@@ -35,14 +35,14 @@ public class CardDeckServiceImpl implements CardDeckService
     @Override
     public void addCard(Card card, CardDeck deck)
     {
-        if (card.getOwnerTypeEnum() == CardOwnerType.Player_Not_In_Deck) // make sure the card belongs to the player
+        if (card.getOwnerTypeEnum() == CardOwnerType.Player_Not_In_Deck)
         {
             int indecks = card.getIndecks();
 
             // if there is a non-starter card in deck, take it out
             if (deck.getCards().containsKey(indecks))
             {
-                // set deck attribute of the card to be null
+                // set deck attribute of the card to be null, setDeck will set the new ownerType
                 cardService.setDeck(deck.getCards().get(indecks), null);
             }
 
@@ -64,6 +64,17 @@ public class CardDeckServiceImpl implements CardDeckService
             cardService.setDeck(card, null);
             deck.getCards().remove(indecks);
         }
+        cardDeckRepository.save(deck);
+    }
+
+    @Override
+    public void removeCardAt(int indecks, CardDeck deck)
+    {
+        Map<Integer, Card> cards = deck.getCards();
+        Card card = cards.get(indecks);
+
+        cardService.setDeck(card, null);
+        cards.remove(indecks);
         cardDeckRepository.save(deck);
     }
 

@@ -1,7 +1,8 @@
 "use strict";
 
-var cardsInDeck = new Array(52);
 var cardsInStorage = [];
+var deck = [new Array(13), new Array(13), new Array(13), new Array(13)];
+var currentSuit = 0;
 
 $(document).ready(function()
 {
@@ -9,45 +10,130 @@ $(document).ready(function()
         // find cards in deck
         json.forEach(function (card) {
             if (card.ownerType == 1)
-                cardsInDeck[card.indecks] = card;
+                deck[getSuit(card)][getRank(card) - 1] = card;
             else
                 cardsInStorage.push(card);
         });
 
-        displayCards(cardsInDeck, $('#deck'));
+        // major divs
+        var $suitFilterDiv = $('<div class="suit_filter">').appendTo('body');
+        var $diamondBtn = $('<img src="images/diamond.png"/>');
+        var $clubBtn = $('<img src="images/club.png"/>');
+        var $heartBtn = $('<img src="images/heart.png"/>');
+        var $spadeBtn = $('<img src="images/spade.png"/>');
+        var suitBtns = [$diamondBtn, $clubBtn, $heartBtn, $spadeBtn];
+        var $deckArea = $('<div>').addClass('card_area').appendTo('body');
+        var $storageArea = $('<div>').addClass('card_area').appendTo('body');
 
-        $('#deck').dragscrollable({
-            dragSelector: '.card'
-        });
-
-        // printCards();
-
-        var isClick = false;
-        $('.card').mousedown(function () {
-            isClick = true;
-        });
-        $('.card').mousemove(function () {
-            isClick = isClick ? false : false;
-        });
-        $('.card').mouseup(function () {
-            if (!isClick) return;
-            $('#storage').empty();
-            var indecks = this.id;
-            var cards = [];
-            cardsInStorage.forEach(function (card) {
-                if (card.indecks == indecks) cards.push(card);
+        // suit button onclick
+        for (var i = 0; i < 4; i++)
+        {
+            suitBtns[i].attr('id', i).addClass('suit_btn').appendTo($suitFilterDiv);
+            suitBtns[i].click(function () {
+                $deckArea.empty();
+                $storageArea.empty();
+                currentSuit = this.id;
+                setCardArea();
             });
-            if (typeof(cardsInDeck[indecks]) != 'undefined')
-                cards.push(starter[indecks]);
-            displayCards(cards, $('#storage'));
+        }
+
+        // allow wheel scroll horizontally
+        $('.card_area').mousewheel(function(e, delta) {
+            this.scrollLeft -= (delta * 100);
+            e.preventDefault();
+        });
+
+        setCardArea();
+
+        function setCardArea() {
+            displayCards(deck[currentSuit], $deckArea);
+
+            var isClick = false;
+            $deckArea.children('.card').mousedown(function () {
+                isClick = true;
+            });
+            $deckArea.children('.card').mousemove(function () {
+                isClick = isClick ? false : false;
+            });
+            $deckArea.children('.card').mouseup(function () {
+                if (!isClick) return;
+                $storageArea.empty();
+                var rank = $(this).children('span.rank').text();
+                if (rank == 'A') rank = 1;
+                else if (rank == 'J') rank = 11;
+                else if (rank == 'Q') rank = 12;
+                else if (rank == 'K') rank = 13;
+                else rank = parseInt(rank);
+                var indecks = currentSuit * 13 + rank - 1;
+                var cardChoices = [];
+                cardsInStorage.forEach(function (card) {
+                    if (card.indecks == indecks) cardChoices.push(card);
+                });
+                if (typeof(deck[currentSuit][rank-1]) != 'undefined')
+                    cardChoices.push(starter[indecks]);
+                displayCards(cardChoices, $storageArea);
+
+                $storageArea.children('.card').click(function () {
+                    var id = this.id;
+                    $.get('/deck/set_card', {id:id}, function (result) {
+                            $storageArea.empty();
+                            $deckArea.empty();
+                            var chosen;
+                            cardChoices.forEach(function (card) {
+                                if (card.id == id) chosen = card;
+                            });
+                            var index = cardsInStorage.indexOf(chosen);
+                            if (index > -1) { // picking non-starter
+                                cardsInStorage.splice(index, 1);
+                                if (typeof(deck[currentSuit][getRank(chosen) - 1]) != 'undefined')
+                                    cardsInStorage.push(deck[currentSuit][getRank(chosen) - 1]);
+                                deck[currentSuit][getRank(chosen) - 1] = chosen;
+                            }
+                            else {
+                                cardsInStorage.push(deck[currentSuit][getRank(chosen) - 1]);
+                                deck[currentSuit][getRank(chosen) - 1] = undefined;
+                            }
+                            setCardArea();
+                    }).fail(function() {
+                        window.location.replace('error');
+                    });
+                });
+            });
+        }
+
+        $('.suit_filter').css({
+            'width':'56vh',
+            'position':'relative',
+            'left':'50%',
+            'transform':'translateX(-50%)'
+        });
+
+        $('.suit_btn').css({
+            'width':'10vh',
+            'height':'10vh',
+            'margin':'1vh 2vh'
+        });
+
+        // set up deck and storage UI area
+        $('.card_area').css({
+            'border':'2px solid black',
+            'width':'80vw',
+            'height':'40vh',
+            'margin-left':'auto',
+            'margin-right':'auto',
+            'overflow':'auto',
+            'white-space':'nowrap'
+        });
+
+        $storageArea.css({
+            'margin-top':'4vh'
         });
     });
 });
 
 function displayCards(cards, $div) {
-    // fill empty slots with starter cards
     for (var i = 0; i < cards.length; i++) {
-        var card = (typeof(cards[i]) == 'undefined') ? starter[i] : cards[i];
+        var card = (typeof(cards[i]) == 'undefined') ? starter[currentSuit * 13 + i] : cards[i];
         var $cardDiv = $('<div class="card">');
         var $emptyCardImg = $('<img class="empty_card" src="images/empty_card.png" height="61" width="41"/>');
         var $rankSpan = $('<span class="rank"></span>');
@@ -55,7 +141,7 @@ function displayCards(cards, $div) {
         var $cardEffectDiv = $('<div class="card_effect">');
         var rank = getRank(card);
         var suit = getSuit(card);
-        $cardDiv.attr('id', card.indecks);
+        $cardDiv.attr('id', card.id);
         $rankSpan.text(rank == 1 ? 'A' : rank == 11 ? 'J' : rank == 12 ? 'Q' : rank == 13 ? 'K' : rank);
         $rankSpan.attr('style', suit == 0 || suit == 2 ? 'color: red' : 'color:black');
         $suitImg.attr('src', suit == 0 ? 'images/diamond.png' : suit == 1 ? 'images/club.png' : suit == 2 ? 'images/heart.png' : 'images/spade.png');

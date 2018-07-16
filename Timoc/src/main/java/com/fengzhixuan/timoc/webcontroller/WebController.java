@@ -1,7 +1,6 @@
 package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.data.entity.*;
-import com.fengzhixuan.timoc.data.repository.CardRepository;
 import com.fengzhixuan.timoc.service.CardCollectionService;
 import com.fengzhixuan.timoc.service.CardDeckService;
 import com.fengzhixuan.timoc.service.CardService;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 @Controller
 public class WebController
@@ -57,24 +54,21 @@ public class WebController
         return modelAndView;
     }
 
-    /*
-     * Testing deck.html
-     */
     @RequestMapping(value = "/deck", method = RequestMethod.GET)
     public ModelAndView viewDeck()
     {
-        // get user info
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByUsername(auth.getName());
-
-        // get deck and allCards
-        CardDeck deck = cardDeckService.getCardDeckById(user.getId());
-        List<Card> cards = cardDeckService.getCards(deck);
-        //List<Card> allCards = cardRepository.findByCardDeckId(user.getId());
+//        // get user info
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        User user = userService.findUserByUsername(auth.getName());
+//
+//        // get deck and allCards
+//        CardDeck deck = cardDeckService.getCardDeckById(user.getId());
+//        List<Card> cards = cardDeckService.getCards(deck);
+//        //List<Card> allCards = cardRepository.findByCardDeckId(user.getId());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("deck");
-        modelAndView.addObject("cards", cards);
+//        modelAndView.addObject("cards", cards);
         return modelAndView;
     }
 }
