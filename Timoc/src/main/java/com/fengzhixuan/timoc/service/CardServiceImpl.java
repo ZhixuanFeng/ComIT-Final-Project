@@ -4,6 +4,7 @@ import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.CardCollection;
 import com.fengzhixuan.timoc.data.entity.CardDeck;
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
+import com.fengzhixuan.timoc.data.enums.CardSuit;
 import com.fengzhixuan.timoc.data.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,6 +61,8 @@ public class CardServiceImpl implements CardService
     @Override
     public Card createCard(int meanQuality, int deviation)
     {
+        final int DRAW_VALUE = 10;
+
         Random random = new Random();
         int quality = Math.round((float)random.nextGaussian() * deviation + meanQuality); // normal distribution
         if (quality < 0) quality = 0;
@@ -75,23 +78,27 @@ public class CardServiceImpl implements CardService
 
         /* create random card effects
          *
+         * Quality:
+         * Card effects amounts are increased by quality
+         * An 100% quality card is twice as good as 0% quality cards
+         *
          * Main effects of suits:
          * Suit      | Primary               | Secondary
          * ----------------------------------------------
          * Spade     | block                 | taunt
          * Heart     | heal                  | mana, revive
-         * Club      | attack, block         | random
+         * Club      | attack, block         | draw(draw can only be in club cards)
          * Diamond   | attack                | AOE
          *
          * Effect generation rules:
-         * 40% chance of allCards with primary effects only;
+         * 20% chance of allCards with primary effects only;
          * 40% chance of allCards with mixed effects of primary and secondary effects
-         * 20% chance of allCards with mixed effects from all effects
+         * 40% chance of allCards with mixed effects from all effects
         */
 
         int r = random.nextInt(100);
         int cardValue = Math.round(rank * qualityMultiplier);
-        if (r < 33)
+        if (r < 20)
         {
             switch (card.getSuitEnum())
             {
@@ -112,7 +119,7 @@ public class CardServiceImpl implements CardService
                     return null;
             }
         }
-        else if (r < 66)
+        else if (r < 40)
         {
             switch (card.getSuitEnum())
             {
@@ -140,11 +147,11 @@ public class CardServiceImpl implements CardService
                     }
                     break;
                 case Club:
-                    // 40% random & attack & block; 60% attack & block
-                    if (random.nextInt(100) < 40)
+                    // 20% draw & attack & block; 80% attack & block
+                    if (random.nextInt(100) < 20)
                     {
-                        card.setRandom(random.nextInt(cardValue) + 1);
-                        int remainingValue = cardValue - card.getRandom();
+                        card.setDraw(1);
+                        int remainingValue = cardValue - DRAW_VALUE;
                         if (remainingValue > 0)
                         {
                             int attack = random.nextInt(remainingValue) + 1;
@@ -210,10 +217,13 @@ public class CardServiceImpl implements CardService
                         card.setMana(card.getMana() + value);
                         remainingValue -= value;
                         break;
-                    case 5: // random
-                        if (card.getRandom() == 0) effectCount++;
-                        card.setRandom(card.getRandom() + value);
-                        remainingValue -= value;
+                    case 5: // draw
+                        if (card.getDraw() == 0 && card.getSuitEnum() == CardSuit.Club)
+                        {
+                            effectCount++;
+                            card.setDraw(DRAW_VALUE/10); // up to 2
+                            remainingValue -= DRAW_VALUE;
+                        }
                         break;
                     case 6: // aoe
                         if (card.getAoe() == 0)
@@ -275,7 +285,7 @@ public class CardServiceImpl implements CardService
             case 13:
                 return new Card(indecks, 0, 1, 0, 0, 0, 0, 0, 0);
             case 14:
-                return new Card(indecks, 1, 1, 0, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 0, 0, 1, 0, 0, 0);
             case 15:
                 return new Card(indecks, 2, 1, 0, 0, 0, 0, 0, 0);
             case 16:

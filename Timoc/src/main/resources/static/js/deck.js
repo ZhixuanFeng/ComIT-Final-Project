@@ -54,7 +54,6 @@ $(document).ready(function()
                 cardsInStorage.forEach(function (cardInStorage) {
                     if (cardInStorage.indecks == indecks) n++;
                 });
-                console.log(n);
                 $($($deckArea).children().eq(i)).children('div.num').text(n);
             };
 
@@ -144,7 +143,7 @@ $(document).ready(function()
             'text-align':'center',
             'size':'2vh',
             'margin-top':'1vh'
-        })
+        });
     });
 });
 
@@ -167,7 +166,7 @@ function displayCards(cards, $div) {
         if (card.heal > 0) addCardEffect('heal', card.heal, suit);
         if (card.mana > 0) addCardEffect('mana', card.mana, suit);
         if (card.aoe > 0) addCardEffect('aoe', card.aoe, suit);
-        if (card.random > 0) addCardEffect('random', card.random, suit);
+        if (card.draw > 0) addCardEffect('draw', card.draw, suit);
         if (card.revive > 0) addCardEffect('revive', card.revive, suit);
         if (card.taunt > 0) addCardEffect('taunt', card.taunt, suit);
 

@@ -40,8 +40,8 @@ public class Card
     @Column(name="mana", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int mana;
 
-    @Column(name="random", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
-    private int random;
+    @Column(name="draw", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
+    private int draw;
 
     @Column(name="taunt", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
     private int taunt;
@@ -62,7 +62,7 @@ public class Card
     @JsonBackReference
     private CardDeck cardDeck;
 
-    public Card(int indecks, int attack, int block, int heal, int mana, int random, int taunt, int revive, int aoe)
+    public Card(int indecks, int attack, int block, int heal, int mana, int draw, int taunt, int revive, int aoe)
     {
         id = indecks + 1;
         this.indecks = indecks;
@@ -70,7 +70,7 @@ public class Card
         this.block = block;
         this.heal = heal;
         this.mana = mana;
-        this.random = random;
+        this.draw = draw;
         this.taunt = taunt;
         this.revive = revive;
         this.aoe = aoe;
@@ -227,14 +227,14 @@ public class Card
         this.mana = mana;
     }
 
-    public int getRandom()
+    public int getDraw()
     {
-        return random;
+        return draw;
     }
 
-    public void setRandom(int random)
+    public void setDraw(int draw)
     {
-        this.random = random;
+        this.draw = draw;
     }
 
     public int getTaunt()
@@ -300,7 +300,7 @@ public class Card
                 ", block=" + block +
                 ", heal=" + heal +
                 ", mana=" + mana +
-                ", random=" + random +
+                ", draw=" + draw +
                 ", taunt=" + taunt +
                 ", revive=" + revive +
                 ", aoe=" + aoe +
