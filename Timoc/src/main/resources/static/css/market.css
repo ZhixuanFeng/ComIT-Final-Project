@@ -1,0 +1,60 @@
+body
+{
+    background: wheat;
+}
+
+h1
+{
+    text-align: center;
+}
+
+.panel
+{
+    border: 3px solid black;
+    width: 85vw;
+    margin: auto;
+}
+
+.filter
+{
+    border: 3px solid limegreen;
+    width: 10rem;
+    float: left;
+    display: block;
+    font-size: 1rem;
+}
+
+.offers
+{
+    border: 3px solid yellow;
+    width: 74%;
+    float: left;
+    display: block;
+}
+
+.cb_suit
+{
+    position: relative;
+    float: top;
+    display: block;
+    left: 1vw;
+}
+
+.f_header
+{
+    display: block;
+    margin: 2vh 0;
+}
+
+.cb_rank
+{
+    position: relative;
+    float: top;
+    display: block;
+    left: 1vw;
+}
+
+.cb
+{
+    display: block;
+}
