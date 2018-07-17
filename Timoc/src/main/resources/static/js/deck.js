@@ -23,7 +23,7 @@ $(document).ready(function()
         var $spadeBtn = $('<img src="images/spade.png"/>');
         var suitBtns = [$diamondBtn, $clubBtn, $heartBtn, $spadeBtn];
         var $deckArea = $('<div>').addClass('card_area').appendTo('body');
-        var $storageArea = $('<div>').addClass('card_area').appendTo('body');
+        var $storageArea = $('<div>').addClass('card_area').addClass('storage_area').appendTo('body');
 
         // suit button onclick
         for (var i = 0; i < 4; i++)
@@ -109,41 +109,6 @@ $(document).ready(function()
                 });
             });
         }
-
-        $('.suit_filter').css({
-            'width':'56vh',
-            'position':'relative',
-            'left':'50%',
-            'transform':'translateX(-50%)'
-        });
-
-        $('.suit_btn').css({
-            'width':'10vh',
-            'height':'10vh',
-            'margin':'1vh 2vh'
-        });
-
-        // set up deck and storage UI area
-        $('.card_area').css({
-            'border':'2px solid black',
-            'width':'80vw',
-            'height':'40vh',
-            'margin-left':'auto',
-            'margin-right':'auto',
-            'overflow':'auto',
-            'white-space':'nowrap'
-        });
-
-        $storageArea.css({
-            'margin-top':'4vh'
-        });
-
-        $('.num').css({
-            'width':'100%',
-            'text-align':'center',
-            'size':'2vh',
-            'margin-top':'1vh'
-        });
     });
 });
 

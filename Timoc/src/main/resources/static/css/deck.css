@@ -1,0 +1,37 @@
+.suit_filter
+{
+    width:56vh;
+    position:relative;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+.suit_btn
+{
+    width:10vh;
+    height:10vh;
+    margin:1vh 2vh;
+}
+
+.card_area
+{
+    border:2px solid black;
+    width:80vw;
+    height:40vh;
+    margin-left:auto;
+    margin-right:auto;
+    overflow:auto;
+    white-space:nowrap;
+}
+
+.storage_area
+{
+    margin-top:4vh;
+}
+
+.num{
+    width:100%;
+    text-align:center;
+    size:2vh;
+    margin-top:1vh;
+}
