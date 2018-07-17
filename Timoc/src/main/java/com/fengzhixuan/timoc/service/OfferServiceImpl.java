@@ -4,15 +4,13 @@ import com.fengzhixuan.timoc.data.entity.*;
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.repository.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OfferServiceImpl implements OfferService
@@ -81,23 +79,23 @@ public class OfferServiceImpl implements OfferService
         offerRepository.delete(offer);
     }
 
-    @Override
-    public List<Offer> getOffersBySuit(int suit)
-    {
-        return offerRepository.findBySuit(suit);
-    }
-
-    @Override
-    public List<Offer> getOffersByRank(int rank)
-    {
-        return offerRepository.findByRank(rank);
-    }
-
-    @Override
-    public List<Offer> getOffersByIndecks(int indecks)
-    {
-        return offerRepository.findByIndecks(indecks);
-    }
+//    @Override
+//    public List<Offer> getOffersBySuit(int suit)
+//    {
+//        return offerRepository.findBySuit(suit);
+//    }
+//
+//    @Override
+//    public List<Offer> getOffersByRank(int rank)
+//    {
+//        return offerRepository.findByRank(rank);
+//    }
+//
+//    @Override
+//    public List<Offer> getOffersByIndecks(int indecks)
+//    {
+//        return offerRepository.findByIndecks(indecks);
+//    }
 
     @Override
     public List<Offer> findByPlayer(Player player)
@@ -113,6 +111,13 @@ public class OfferServiceImpl implements OfferService
         return offerRepository.findByExpDate(date);
     }
 
+    @Override
+    public List<Offer> findByCriteria(Map<String, Integer> criteria)
+    {
+        return offerRepository.findAll(Offer.findByCriteria(criteria));
+    }
+
+    // helper method for creating a Date object from a string
     private Date createDateFromDateString(String dateString)
     {
         Date date = null;
@@ -133,6 +138,7 @@ public class OfferServiceImpl implements OfferService
         return date;
     }
 
+    // helper method for adding days to a date
     public static Date addDays(Date date, int days)
     {
         GregorianCalendar cal = new GregorianCalendar();
