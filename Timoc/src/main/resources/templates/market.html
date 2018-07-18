@@ -12,34 +12,52 @@
     <script src="js/market.js"></script>
 </head>
 <body>
+<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
 <h1>Card Market</h1>
 
 <div class="panel">
     <div class="filter">
-        <div class="cb_suit">
+        <input type="button" class="apply" value="search">
+        <div class="cbs">
+            <div class="f_header"> Effect</div>
+            <label class="cb"><input type="checkbox" id="cb_effect_any" value="any" checked> Any</label><br>
+            <label class="cb"><input type="checkbox" id="cb_attack" value="attack"> attack</label><br>
+            <label class="cb"><input type="checkbox" id="cb_block" value="block"> block</label><br>
+            <label class="cb"><input type="checkbox" id="cb_heal" value="heal"> heal</label><br>
+            <label class="cb"><input type="checkbox" id="cb_mana" value="mana"> mana</label><br>
+            <label class="cb"><input type="checkbox" id="cb_aoe" value="aoe"> AOE</label><br>
+            <label class="cb"><input type="checkbox" id="cb_draw" value="draw"> draw</label><br>
+            <label class="cb"><input type="checkbox" id="cb_revive" value="revive"> revive</label><br>
+            <label class="cb"><input type="checkbox" id="cb_taunt" value="taunt"> taunt</label><br>
+        </div>
+        <div class="cbs">
             <div class="f_header"> Suit</div>
-            <label class="cb"><input type="checkbox" name="cb_all" value="all"> All</label><br>
-            <label class="cb"><input type="checkbox" name="cb_diamond" value="diamond"> Diamond</label><br>
-            <label class="cb"><input type="checkbox" name="cb_club" value="club"> Club</label><br>
-            <label class="cb"><input type="checkbox" name="cb_heart" value="heart"> Heart</label><br>
-            <label class="cb"><input type="checkbox" name="cb_spade" value="spade"> Spade</label><br>
+            <label class="cb"><input type="checkbox" id="cb_suit_all" value="all" checked> All</label><br>
+            <label class="cb"><input type="checkbox" id="cb_diamond" value="0" checked> Diamond</label><br>
+            <label class="cb"><input type="checkbox" id="cb_club" value="1" checked> Club</label><br>
+            <label class="cb"><input type="checkbox" id="cb_heart" value="2" checked> Heart</label><br>
+            <label class="cb"><input type="checkbox" id="cb_spade" value="3" checked> Spade</label><br>
         </div>
-        <div class="cb_rank">
+        <div class="cbs">
             <div class="f_header"> Rank</div>
-            <label class="cb"><input type="checkbox" name="cb_1" value="1"> A</label><br>
-            <label class="cb"><input type="checkbox" name="cb_2" value="2"> 2</label><br>
-            <label class="cb"><input type="checkbox" name="cb_3" value="3"> 3</label><br>
-            <label class="cb"><input type="checkbox" name="cb_4" value="4"> 4</label><br>
-            <label class="cb"><input type="checkbox" name="cb_5" value="5"> 5</label><br>
-            <label class="cb"><input type="checkbox" name="cb_6" value="6"> 6</label><br>
-            <label class="cb"><input type="checkbox" name="cb_7" value="7"> 7</label><br>
-            <label class="cb"><input type="checkbox" name="cb_8" value="8"> 8</label><br>
-            <label class="cb"><input type="checkbox" name="cb_9" value="9"> 9</label><br>
-            <label class="cb"><input type="checkbox" name="cb_10" value="10"> 10</label><br>
-            <label class="cb"><input type="checkbox" name="cb_11" value="11"> J</label><br>
-            <label class="cb"><input type="checkbox" name="cb_12" value="12"> Q</label><br>
-            <label class="cb"><input type="checkbox" name="cb_13" value="13"> K</label><br>
+            <label class="cb"><input type="checkbox" id="cb_rank_all" value="all" checked> All</label><br>
+            <label class="cb"><input type="checkbox" id="cb_1" value="1" checked> A</label><br>
+            <label class="cb"><input type="checkbox" id="cb_2" value="2" checked> 2</label><br>
+            <label class="cb"><input type="checkbox" id="cb_3" value="3" checked> 3</label><br>
+            <label class="cb"><input type="checkbox" id="cb_4" value="4" checked> 4</label><br>
+            <label class="cb"><input type="checkbox" id="cb_5" value="5" checked> 5</label><br>
+            <label class="cb"><input type="checkbox" id="cb_6" value="6" checked> 6</label><br>
+            <label class="cb"><input type="checkbox" id="cb_7" value="7" checked> 7</label><br>
+            <label class="cb"><input type="checkbox" id="cb_8" value="8" checked> 8</label><br>
+            <label class="cb"><input type="checkbox" id="cb_9" value="9" checked> 9</label><br>
+            <label class="cb"><input type="checkbox" id="cb_10" value="10" checked> 10</label><br>
+            <label class="cb"><input type="checkbox" id="cb_11" value="11" checked> J</label><br>
+            <label class="cb"><input type="checkbox" id="cb_12" value="12" checked> Q</label><br>
+            <label class="cb"><input type="checkbox" id="cb_13" value="13" checked> K</label><br>
         </div>
+        <input type="button" class="apply" value="search">
     </div>
     <div class="offers">
 

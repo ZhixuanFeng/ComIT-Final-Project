@@ -84,7 +84,7 @@ $(document).ready(function()
 
                 $storageArea.children('.card').click(function () {
                     var id = this.id;
-                    $.get('/deck/set_card', {id:id}, function (result) {
+                    $.get('/deck/set_card', {id:id}, function () {
                             $storageArea.empty();
                             $deckArea.empty();
                             var chosen;

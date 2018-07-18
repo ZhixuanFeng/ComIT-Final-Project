@@ -71,4 +71,12 @@ public class WebController
 //        modelAndView.addObject("cards", cards);
         return modelAndView;
     }
+
+    @RequestMapping(value = "/market", method = RequestMethod.GET)
+    public ModelAndView viewMarket()
+    {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("market");
+        return modelAndView;
+    }
 }

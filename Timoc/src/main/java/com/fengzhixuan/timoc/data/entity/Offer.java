@@ -1,16 +1,7 @@
 package com.fengzhixuan.timoc.data.entity;
 
-import org.springframework.data.jpa.domain.Specification;
-
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @Entity
 @Table(name = "offer")
@@ -23,7 +14,7 @@ public class Offer
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "player_name")
+    @JoinColumn(name = "player_id")
     private Player player;
 
     // using @ManyToOne to avoid querying offer object when querying card object.  card and offer is actually one-to-one
@@ -31,13 +22,13 @@ public class Offer
     @JoinColumn(name = "card_id")
     private Card card;
 
-    @Column(name = "indecks", columnDefinition = "TINYINT DEFAULT 0")
+    @Column(name = "indecks", nullable=false, columnDefinition = "TINYINT DEFAULT 0")
     private int indecks;
 
-    @Column(name = "suit", columnDefinition = "TINYINT DEFAULT 0")
+    @Column(name = "suit", nullable=false, columnDefinition = "TINYINT DEFAULT 0")
     private int suit;
 
-    @Column(name = "rank", columnDefinition = "TINYINT DEFAULT 0")
+    @Column(name = "rank_num", nullable=false, columnDefinition = "TINYINT DEFAULT 0")
     private int rank;
 
     @Column(name="attack", nullable=false, columnDefinition = "TINYINT(8) UNSIGNED DEFAULT 0")
@@ -70,12 +61,25 @@ public class Offer
     @Column(name = "expiry_date")
     private Date expDate;
 
+    public Offer(){}
+
     public Offer(Player player, Card card, int price)
     {
         this.player = player;
         this.card = card;
         this.indecks = card.getIndecks();
         this.price = price;
+        this.indecks = card.getIndecks();
+        this.suit = card.getSuit();
+        this.rank = card.getRank();
+        this.attack = card.getAttack();
+        this.block = card.getBlock();
+        this.heal = card.getHeal();
+        this.mana = card.getMana();
+        this.aoe = card.getAoe();
+        this.draw = card.getDraw();
+        this.revive = card.getRevive();
+        this.taunt = card.getTaunt();
     }
 
     public long getId()
@@ -236,52 +240,5 @@ public class Offer
     public void setExpDate(Date expDate)
     {
         this.expDate = expDate;
-    }
-
-    public static Specification<Offer> findByCriteria(final Map<String, Integer> searchCriteria) {
-
-        return new Specification<Offer>() {
-
-            @Override
-            public Predicate toPredicate(
-                    Root<Offer> root,
-                    CriteriaQuery<?> query, CriteriaBuilder cb) {
-
-                List<Predicate> predicates = new ArrayList<Predicate>();
-
-                if (searchCriteria.get("suit") != null) {
-                    predicates.add(cb.equal(root.get("suit"), searchCriteria.get("suit")));
-                }
-                if (searchCriteria.get("rank") != null) {
-                    predicates.add(cb.equal(root.get("rank"), searchCriteria.get("rank")));
-                }
-                if (searchCriteria.get("attack") != null) {
-                    predicates.add(cb.equal(root.get("attack"), searchCriteria.get("attack")));
-                }
-                if (searchCriteria.get("block") != null) {
-                    predicates.add(cb.equal(root.get("block"), searchCriteria.get("block")));
-                }
-                if (searchCriteria.get("heal") != null) {
-                    predicates.add(cb.equal(root.get("heal"), searchCriteria.get("heal")));
-                }
-                if (searchCriteria.get("mana") != null) {
-                    predicates.add(cb.equal(root.get("mana"), searchCriteria.get("mana")));
-                }
-                if (searchCriteria.get("aoe") != null) {
-                    predicates.add(cb.equal(root.get("aoe"), searchCriteria.get("aoe")));
-                }
-                if (searchCriteria.get("taunt") != null) {
-                    predicates.add(cb.equal(root.get("taunt"), searchCriteria.get("taunt")));
-                }
-                if (searchCriteria.get("draw") != null) {
-                    predicates.add(cb.equal(root.get("draw"), searchCriteria.get("draw")));
-                }
-                if (searchCriteria.get("revive") != null) {
-                    predicates.add(cb.equal(root.get("revive"), searchCriteria.get("revive")));
-                }
-
-                return cb.and(predicates.toArray(new Predicate[] {}));
-            }
-        };
     }
 }
