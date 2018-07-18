@@ -6,6 +6,12 @@ var currentSuit = 0;
 
 $(document).ready(function()
 {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e,xhr,options) {
+        xhr.setRequestHeader(header, token);
+    });
+
     $.getJSON("/rest/cards", function (json) {
         // find cards in deck
         json.forEach(function (card) {
@@ -84,7 +90,7 @@ $(document).ready(function()
 
                 $storageArea.children('.card').click(function () {
                     var id = this.id;
-                    $.get('/deck/set_card', {id:id}, function () {
+                    $.post('/deck/set_card', {id:id}, function () {
                             $storageArea.empty();
                             $deckArea.empty();
                             var chosen;

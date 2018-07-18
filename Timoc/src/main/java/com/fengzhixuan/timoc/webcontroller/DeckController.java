@@ -27,8 +27,7 @@ public class DeckController
     @Autowired
     private CardService cardService;
 
-    // TODO: find out why it won't work when using POST and $.post instead of GET and $.get
-    @RequestMapping(value = "/deck/set_card", method = RequestMethod.GET)
+    @RequestMapping(value = "/deck/set_card", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<String> setCard(@ModelAttribute("id") String idString)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

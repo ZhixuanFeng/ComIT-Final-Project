@@ -4,6 +4,8 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Market</title>
     <link rel="stylesheet" href="css/site.css">
     <link rel="stylesheet" href="css/card.css">
@@ -12,8 +14,6 @@
     <script src="js/market.js"></script>
 </head>
 <body>
-<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
-<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
 
 <h1>Card Market</h1>
 

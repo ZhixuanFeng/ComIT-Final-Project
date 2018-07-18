@@ -3,8 +3,8 @@ package com.fengzhixuan.timoc.service;
 import com.fengzhixuan.timoc.data.entity.*;
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.repository.OfferRepository;
+import com.fengzhixuan.timoc.webcontroller.MarketRESTController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
@@ -114,7 +114,7 @@ public class OfferServiceImpl implements OfferService
     @Override
     public List<Offer> findByCriteria(Map<String, Integer> criteria)
     {
-        return offerRepository.findAll(Offer.findByCriteria(criteria));
+        return offerRepository.findAll(MarketRESTController.findByCriteria(criteria));
     }
 
     // helper method for creating a Date object from a string
