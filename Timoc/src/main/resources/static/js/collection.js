@@ -76,7 +76,7 @@ $(document).ready(function()
                             $('#bt_cancel_offer').click(function () {
                                 $.post('market/cancel/offer_id', {id:offerId}, function () {
                                     card.ownerType = 2;
-                                    //TODO: change card status
+                                    updateCardStatusDiv(card, $('#' + id));
                                     $('#overlay').hide();
                                 });
                             });
@@ -131,7 +131,7 @@ $(document).ready(function()
                     $message.text('This card is now in your deck');
                 });
             }
-            //TODO: change card status
+            updateCardStatusDiv(card, $('#' + id));
         });
 
         $('#bt_turn_into_gold').click(function () {
@@ -167,7 +167,7 @@ $(document).ready(function()
                     console.log(collection);
                     //TODO: display gold
                     $('#overlay').hide();
-                    //TODO: change card status
+                    updateCardStatusDiv(card, $('#' + id));
                 });
                 $('#bt_confirm').off();
             });
@@ -201,11 +201,10 @@ $(document).ready(function()
                 $('#ol_selling').hide();
                 $('#ol_confirm_buttons').show();
                 $message.text('Sell on the market for ' + input + ' gold?');
-                // TODO: warn player if this card is in deck
                 $('#bt_confirm').click(function () {
                     $.post('market/new_offer', {id:id, price:input}, function () {
                         card.ownerType = 3;
-                        //TODO: change card status
+                        updateCardStatusDiv(card, $('#' + id));
                         $('#overlay').hide();
                     });
                     $('#bt_confirm').off();
@@ -253,9 +252,35 @@ function combineSortedCardPiles(cards1, cards2) {
     return cards;
 }
 
-function displayCards(cards, $div) {
-    $div.empty();
+function displayCards(cards, div) {
+    div.empty();
     cards.forEach(function (card) {
-        addCardBody(card, $div);
+        var cardDiv = addCardBody(card, div);
+        var $statusDiv = $('<div class="card_status">').appendTo(cardDiv);
+        updateCardStatusDiv(card, cardDiv);
     });
+}
+
+function updateCardStatusDiv(card, cardDiv) {
+    var statusDiv = $(cardDiv).children('.card_status')[0];
+    switch (parseInt(card.ownerType)) {
+        case 0:
+            if (typeof(deck[card.indecks]) == 'undefined') {
+                $(statusDiv).text('In Use');
+                $(statusDiv).css({'background-color':'rgba(153, 204, 255, 32)'});
+            }
+            break;
+        case 1:
+            $(statusDiv).text('In Use');
+            $(statusDiv).css({'background-color':'rgba(153, 204, 255, 32)'});
+            break;
+        case 3:
+            $(statusDiv).text('For Sale');
+            $(statusDiv).css({'background-color':'rgba(255, 255, 153, 128)'});
+            break;
+        default:
+            $(statusDiv).empty();
+            $(statusDiv).css({'background-color':'transparent'});
+            break;
+    }
 }

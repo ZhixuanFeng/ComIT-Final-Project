@@ -4,7 +4,7 @@ function addCardBody(card, div) {
     var $cardDiv = $('<div>');
     var $emptyCardImg;
     if (card.id <= 52)
-        $emptyCardImg = $('<img src="images/empty_card_starter.png" height="61" width="41"/>');
+        $emptyCardImg = $('<img src="images/empty_card_starter.png" height="120" width="80"/>');
     else
         $emptyCardImg = $('<img src="images/empty_card.png" height="61" width="41"/>');
     var $rankSpan = $('<span></span>');
