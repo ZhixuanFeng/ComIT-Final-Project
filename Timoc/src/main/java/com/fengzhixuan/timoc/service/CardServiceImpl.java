@@ -9,6 +9,8 @@ import com.fengzhixuan.timoc.data.enums.CardSuit;
 import com.fengzhixuan.timoc.data.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
 
@@ -25,24 +27,28 @@ public class CardServiceImpl implements CardService
     private CardDeckService cardDeckService;
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public Card getCardById(long id)
     {
         return cardRepository.getOne(id);
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void saveCard(Card card)
     {
         cardRepository.save(card);
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void deleteCard(Card card)
     {
         cardRepository.delete(card);
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void setCollection(Card card, CardCollection collection)
     {
         if (collection != null)
@@ -58,6 +64,7 @@ public class CardServiceImpl implements CardService
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void setDeck(Card card, CardDeck deck)
     {
         card.setCardDeck(deck);
@@ -372,6 +379,7 @@ public class CardServiceImpl implements CardService
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void turnIntoGold(Card card, Player player)
     {
         int gold = 50 + card.getQuality();

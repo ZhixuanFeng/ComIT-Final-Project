@@ -6,6 +6,8 @@ import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.repository.CardDeckRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,18 +23,21 @@ public class CardDeckServiceImpl implements CardDeckService
     private CardService cardService;
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public CardDeck getCardDeckById(long id)
     {
         return cardDeckRepository.getOne(id);
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void initializeDeck(CardDeck deck)
     {
         cardDeckRepository.save(deck);
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void addCard(Card card, CardDeck deck)
     {
         if (card.getOwnerTypeEnum() == CardOwnerType.Player_Not_In_Deck)
@@ -54,6 +59,7 @@ public class CardDeckServiceImpl implements CardDeckService
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void removeCard(Card card, CardDeck deck)
     {
         int indecks = card.getIndecks();
@@ -68,6 +74,7 @@ public class CardDeckServiceImpl implements CardDeckService
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void removeCardAt(int indecks, CardDeck deck)
     {
         Map<Integer, Card> cards = deck.getCards();
@@ -82,6 +89,7 @@ public class CardDeckServiceImpl implements CardDeckService
     }
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public List<Card> getCards(CardDeck deck)
     {
         List<Card> cards = new ArrayList<>();

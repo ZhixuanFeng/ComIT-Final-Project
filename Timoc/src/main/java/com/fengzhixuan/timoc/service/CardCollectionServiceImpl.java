@@ -6,6 +6,8 @@ import com.fengzhixuan.timoc.data.repository.CardCollectionRepository;
 import com.fengzhixuan.timoc.data.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class CardCollectionServiceImpl implements CardCollectionService
     private CardRepository cardRepository;
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void addCard(Card card, CardCollection collection)
     {
         collection.getCards().add(card);
@@ -31,6 +34,7 @@ public class CardCollectionServiceImpl implements CardCollectionService
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void removeCard(Card card, CardCollection collection)
     {
         if (collection.getCards().contains(card))
@@ -43,6 +47,7 @@ public class CardCollectionServiceImpl implements CardCollectionService
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void transferCard(Card card, CardCollection collection_from, CardCollection collection_to)
     {
         if (collection_from.getCards().contains(card))
@@ -60,18 +65,21 @@ public class CardCollectionServiceImpl implements CardCollectionService
     }
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public boolean isStorageFull(CardCollection collection)
     {
         return collection.getMaxCardStorage() <= collection.getCardsOwned();
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void saveCardCollection(CardCollection collection)
     {
         cardCollectionRepository.save(collection);
     }
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public List<Card> getCards(long id)
     {
         return cardRepository.findByCardCollectionId(id);

@@ -6,6 +6,8 @@ import com.fengzhixuan.timoc.data.repository.OfferRepository;
 import com.fengzhixuan.timoc.webcontroller.MarketRESTController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -33,6 +35,7 @@ public class OfferServiceImpl implements OfferService
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public Offer createOffer(Player player, Card card, int price)
     {
         Offer offer = new Offer(player, card, price);
@@ -55,6 +58,7 @@ public class OfferServiceImpl implements OfferService
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void cancelOffer(Offer offer)
     {
         Card card = offer.getCard();
@@ -65,6 +69,7 @@ public class OfferServiceImpl implements OfferService
     }
 
     @Override
+    @Transactional(propagation=Propagation.REQUIRED)
     public void acceptOffer(Offer offer, Player buyer)
     {
         // assuming the buyer's collection is not full and player has enough gold
@@ -84,6 +89,7 @@ public class OfferServiceImpl implements OfferService
     }
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public Offer findById(long id)
     {
         return offerRepository.getOne(id);
@@ -108,12 +114,14 @@ public class OfferServiceImpl implements OfferService
 //    }
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public List<Offer> findByPlayer(Player player)
     {
         return offerRepository.findByPlayer(player);
     }
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public List<Offer> findByExpDate(String dateString)
     {
         Date date = createDateFromDateString(dateString);
@@ -122,18 +130,21 @@ public class OfferServiceImpl implements OfferService
     }
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public Offer findByCardId(long id)
     {
         return offerRepository.findByCardId(id);
     }
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public List<Offer> findByCriteria(Map<String, Integer> criteria)
     {
         return offerRepository.findAll(MarketRESTController.findByCriteria(criteria));
     }
 
     @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public List<Offer> findAll()
     {
         return offerRepository.findAll();
