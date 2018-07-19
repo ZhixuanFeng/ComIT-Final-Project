@@ -1,5 +1,7 @@
 package com.fengzhixuan.timoc.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -15,11 +17,13 @@ public class Offer
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "player_id")
+    @JsonBackReference
     private Player player;
 
     // using @ManyToOne to avoid querying offer object when querying card object.  card and offer is actually one-to-one
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "card_id")
+    @JsonBackReference
     private Card card;
 
     @Column(name = "indecks", nullable=false, columnDefinition = "TINYINT DEFAULT 0")

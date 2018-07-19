@@ -117,6 +117,12 @@ public class OfferServiceImpl implements OfferService
         return offerRepository.findAll(MarketRESTController.findByCriteria(criteria));
     }
 
+    @Override
+    public List<Offer> findAll()
+    {
+        return offerRepository.findAll();
+    }
+
     // helper method for creating a Date object from a string
     private Date createDateFromDateString(String dateString)
     {

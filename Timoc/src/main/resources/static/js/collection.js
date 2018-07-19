@@ -33,11 +33,9 @@ $(document).ready(function()
 
         displayCards(collectionAndStarter, $cardArea);
 
+        // show overlay on click
         $cardArea.children('.card').click(function () {
-            var card = undefined;
-            for (var i = 0; i < collection.length && typeof(card) == 'undefined'; i++)
-                if (collection[i].id == this.id)
-                    card = collection[i];
+            var card = findCardById(this.id);
             if (typeof(card) != 'undefined') {
                 $overlay.show();
                 $('#ol_buttons').show();
@@ -58,12 +56,13 @@ $(document).ready(function()
         $('#bt_add_to_deck').click(function () {
             var id = $('#ol_card').children('.card')[0].id;
             if (id > 52) {
-                var i;
-                for (i = 0; i < collection.length && collection[i].id != id; i++);
-                var card = collection[i];
+                var card = findCardById(id);
+                if (card.ownerType == 3) {
+                    $message.text('You may not use cards that are in the market');
+                }
 
                 if (deck[card.indecks].id == id) {
-                    $message.text("This card is already in your deck");
+                    $message.text('This card is already in your deck');
                     return;
                 }
 
@@ -73,24 +72,36 @@ $(document).ready(function()
                         deck[card.indecks].ownerType = 2;
                     }
                     deck[card.indecks] = card;
-                    $message.text("This card is now in your deck");
+                    $message.text('This card is now in your deck');
                 });
             }
             else { // starter card
                 if (typeof(deck[id-1]) == 'undefined') {
-                    $message.text("This card is already in your deck");
+                    $message.text('This card is already in your deck');
                     return;
                 }
 
                 $.post('/deck/set_card', {id:id}, function () {
                     deck[id-1].ownerType = 2;
                     deck[id-1] = undefined;
-                    $message.text("This card is now in your deck");
+                    $message.text('This card is now in your deck');
                 });
             }
         });
 
         $('#bt_turn_into_gold').click(function () {
+            var id = $('#ol_card').children('.card')[0].id;
+            if (id <= 52) {
+                $message.text('You may not turn starter cards into gold');
+                return;
+            }
+            
+            var card = findCardById(id);
+            if (card.ownerType == 3) {
+                $message.text('This card is in the market');
+                return;
+            }
+            
             var str = $('#bt_turn_into_gold').val();
             var amount = parseInt(str.replace( /^\D+/g, ''));
             $('#ol_buttons').hide();
@@ -104,6 +115,18 @@ $(document).ready(function()
         });
 
         $('#bt_sell').click(function () {
+            var id = $('#ol_card').children('.card')[0].id;
+            if (id <= 52) {
+                $message.text('You may not sell starter cards');
+                return;
+            }
+
+            var card = findCardById(id);
+            if (card.ownerType == 3) {
+                $message.text('This card is already in the market');
+                return;
+            }
+
             $('#ol_buttons').hide();
             $('#ol_selling').show();
             $message.text('Put this card for sale on the market');
@@ -120,7 +143,9 @@ $(document).ready(function()
                 $message.text('Sell on the market for ' + input + ' gold?');
                 // TODO: warn player if this card is in deck
                 $('#bt_confirm').click(function () {
-                    //$.post();
+                    $.post('market/new_offer', {id:id, price:input}, function () {
+
+                    });
                     $('#overlay').hide();
                 });
             });
@@ -135,6 +160,17 @@ $(document).mouseup(function(e) {
         container.hide();
     }
 });
+
+function findCardById(id) {
+    var card = undefined;
+    if (id > 52) 
+        for (var i = 0; i < collection.length && typeof(card) == 'undefined'; i++)
+            if (collection[i].id == id)
+                card = collection[i];
+    else
+        card = starter[id-1];
+    return card;
+}
 
 function combineSortedCardPiles(cards1, cards2) {
     var cards = [];

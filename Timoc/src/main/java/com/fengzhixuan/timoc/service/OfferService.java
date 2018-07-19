@@ -25,4 +25,6 @@ public interface OfferService
     List<Offer> findByExpDate(String dateString);
 
     List<Offer> findByCriteria(Map<String, Integer> criteria);
+
+    List<Offer> findAll();
 }

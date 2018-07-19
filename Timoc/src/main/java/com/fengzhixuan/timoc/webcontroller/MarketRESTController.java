@@ -1,6 +1,8 @@
 package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.data.entity.Offer;
+import com.fengzhixuan.timoc.service.OfferService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +17,15 @@ import java.util.Map;
 @RestController
 public class MarketRESTController
 {
+    @Autowired
+    private OfferService offerService;
+
+    @RequestMapping(value = "/market/all", method = RequestMethod.POST)
+    public List<Offer> getAllOffers()
+    {
+        return offerService.findAll();
+    }
+
     @RequestMapping(value = "/market/filter", method = RequestMethod.POST)
     public String getOffers(@RequestParam Map<String, String> criteria)
     {

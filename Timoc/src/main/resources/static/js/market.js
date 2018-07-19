@@ -8,6 +8,10 @@ $(document).ready(function()
         xhr.setRequestHeader(header, token);
     });
 
+    $.post('market/all', function (result) {
+        console.log(result);
+    });
+
     var effectCheckboxes = [$('#cb_attack'), $('#cb_block'), $('#cb_heal'), $('#cb_mana'), $('#cb_aoe'), $('#cb_draw'), $('#cb_revive'), $('#cb_taunt')];
     var suitCheckboxes = [$('#cb_diamond'), $('#cb_club'), $('#cb_heart'), $('#cb_spade')];
     var rankCheckboxes = [$('#cb_1'), $('#cb_2'), $('#cb_3'), $('#cb_4'), $('#cb_5'), $('#cb_6'), $('#cb_7'), $('#cb_8'), $('#cb_9'), $('#cb_10'), $('#cb_11'), $('#cb_12'), $('#cb_13')];
@@ -19,7 +23,6 @@ $(document).ready(function()
     var nEffectCBChecked = 0;
     var nSuitCBChecked = 4;
     var nRankCBChecked = 13;
-
 
     anyEffectCB.change(function () {
         effectCheckboxes.forEach(function (cb) {
