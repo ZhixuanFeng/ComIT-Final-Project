@@ -26,6 +26,13 @@ public class MarketRESTController
         return offerService.findAll();
     }
 
+    @RequestMapping(value = "/market/card_id", method = RequestMethod.POST)
+    public Offer getAllOffers(@RequestParam(value = "id") Long id)
+    {
+        if (id == null) return null;
+        return offerService.findByCardId(id);
+    }
+
     @RequestMapping(value = "/market/filter", method = RequestMethod.POST)
     public String getOffers(@RequestParam Map<String, String> criteria)
     {

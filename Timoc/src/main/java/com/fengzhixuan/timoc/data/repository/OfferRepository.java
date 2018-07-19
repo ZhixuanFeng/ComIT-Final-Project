@@ -19,6 +19,8 @@ public interface OfferRepository extends JpaRepository<Offer, Long>, JpaSpecific
 
     List<Offer> findByExpDate(Date date);
 
+    Offer findByCardId(long id);
+
 //    @Query(value = "SELECT o FROM offer O WHERE o.indecks BETWEEN :suit * 13 and :suit * 13 + 12", nativeQuery = true)
 //    List<Offer> findBySuit(@Param("suit") int suit);
 //

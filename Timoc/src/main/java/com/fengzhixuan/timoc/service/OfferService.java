@@ -20,9 +20,13 @@ public interface OfferService
 //
 //    List<Offer> getOffersByIndecks(int indecks);
 
+    Offer findById(long id);
+
     List<Offer> findByPlayer(Player player);
 
     List<Offer> findByExpDate(String dateString);
+
+    Offer findByCardId(long id);
 
     List<Offer> findByCriteria(Map<String, Integer> criteria);
 

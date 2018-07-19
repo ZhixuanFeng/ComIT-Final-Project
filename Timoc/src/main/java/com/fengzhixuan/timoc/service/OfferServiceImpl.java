@@ -19,6 +19,9 @@ public class OfferServiceImpl implements OfferService
     private OfferRepository offerRepository;
 
     @Autowired
+    private CardService cardService;
+
+    @Autowired
     private PlayerService playerService;
 
     @Autowired
@@ -57,6 +60,7 @@ public class OfferServiceImpl implements OfferService
         Card card = offer.getCard();
         card.setOwnerType(CardOwnerType.Player_Not_In_Deck);
 
+        cardService.saveCard(card);
         offerRepository.delete(offer);
     }
 
@@ -77,6 +81,12 @@ public class OfferServiceImpl implements OfferService
 
         // remove offer
         offerRepository.delete(offer);
+    }
+
+    @Override
+    public Offer findById(long id)
+    {
+        return offerRepository.getOne(id);
     }
 
 //    @Override
@@ -109,6 +119,12 @@ public class OfferServiceImpl implements OfferService
         Date date = createDateFromDateString(dateString);
 
         return offerRepository.findByExpDate(date);
+    }
+
+    @Override
+    public Offer findByCardId(long id)
+    {
+        return offerRepository.findByCardId(id);
     }
 
     @Override

@@ -35,17 +35,61 @@ $(document).ready(function()
 
         // show overlay on click
         $cardArea.children('.card').click(function () {
-            var card = findCardById(this.id);
-            if (typeof(card) != 'undefined') {
-                $overlay.show();
-                $('#ol_buttons').show();
-                $('#ol_confirm_buttons').hide();
-                $('#ol_selling').hide();
+            if ($overlay.is(':visible')) {
+                $overlay.hide();
+                return;
+            }
 
-                $('#ol_card').empty();
-                $message.empty();
-                displayCards([card], $('#ol_card'));
-                $('#bt_turn_into_gold').val('turn into gold: ' + (50 + card.quality));
+            var id = this.id;
+            var card = findCardById(id);
+            $overlay.show();
+            $('#ol_buttons').show();
+            $('#ol_confirm_buttons').hide();
+            $('#ol_selling').hide();
+
+            $('#ol_card').empty();
+            $message.empty();
+            displayCards([card], $('#ol_card'));
+
+            if (id <= 52) {
+                // $message.text('This is a starter card');
+                $('#bt_add_to_deck').show();
+                $('#bt_turn_into_gold').hide();
+                $('#bt_sell').hide();
+                $('#bt_cancel_offer').hide();
+            }
+            else {
+                if (card.ownerType == 3) {
+                    $('#bt_add_to_deck').hide();
+                    $('#bt_turn_into_gold').hide();
+                    $('#bt_sell').hide();
+                    $.post('market/card_id', {id:parseInt(id)}, function (offer) {
+                        var offerId = offer.id;
+                        var price = offer.price;
+                        if (typeof(price) == 'undefined') {
+                            $message.text('Cannot find this card in the market, please refresh the web page');
+                        }
+                        else {
+                            $message.text('This card is being sold on the market for ' + price + ' gold');
+                            $('#bt_cancel_offer').show();
+
+                            $('#bt_cancel_offer').click(function () {
+                                $.post('market/cancel/offer_id', {id:offerId}, function () {
+                                    card.ownerType = 2;
+                                    //TODO: change card status
+                                    $('#overlay').hide();
+                                });
+                            });
+                        }
+                    });
+                }
+                else {
+                    $('#bt_add_to_deck').show();
+                    $('#bt_turn_into_gold').show();
+                    $('#bt_sell').show();
+                    $('#bt_cancel_offer').hide();
+                    $('#bt_turn_into_gold').val('turn into gold: ' + (50 + card.quality));
+                }
             }
         });
 
@@ -87,6 +131,7 @@ $(document).ready(function()
                     $message.text('This card is now in your deck');
                 });
             }
+            //TODO: change card status
         });
 
         $('#bt_turn_into_gold').click(function () {
@@ -111,6 +156,7 @@ $(document).ready(function()
             $('#bt_confirm').click(function () {
                 // TODO: send post request
                 $('#overlay').hide();
+                //TODO: change card status
             });
         });
 
@@ -133,7 +179,7 @@ $(document).ready(function()
 
             $('#bt_confirm_sell').click(function () {
                 var input = parseInt($('#price').val());
-                if (input > 9999 || input <= 0) {
+                if (input > 9999 || input <= 0 || isNaN(input)) {
                     $message.text('Price can only be within 1~9999');
                     return;
                 }
@@ -144,7 +190,8 @@ $(document).ready(function()
                 // TODO: warn player if this card is in deck
                 $('#bt_confirm').click(function () {
                     $.post('market/new_offer', {id:id, price:input}, function () {
-
+                        card.ownerType = 3;
+                        //TODO: change card status
                     });
                     $('#overlay').hide();
                 });
@@ -155,7 +202,7 @@ $(document).ready(function()
 
 $(document).mouseup(function(e) {
     var container = $('#overlay');
-    if (!container.is(e.target) && container.has(e.target).length === 0)
+    if (!container.is(e.target) && container.has(e.target).length === 0 && !$('.card').is(e.target) && $('.card').has(e.target).length === 0)
     {
         container.hide();
     }
@@ -163,10 +210,11 @@ $(document).mouseup(function(e) {
 
 function findCardById(id) {
     var card = undefined;
-    if (id > 52) 
+    if (parseInt(id) > 52) {
         for (var i = 0; i < collection.length && typeof(card) == 'undefined'; i++)
             if (collection[i].id == id)
                 card = collection[i];
+    }
     else
         card = starter[id-1];
     return card;
@@ -191,6 +239,7 @@ function combineSortedCardPiles(cards1, cards2) {
 }
 
 function displayCards(cards, $div) {
+    $div.empty();
     cards.forEach(function (card) {
         addCardBody(card, $div);
     });

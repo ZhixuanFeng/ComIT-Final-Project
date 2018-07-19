@@ -125,7 +125,7 @@ $(document).ready(function()
 function displayCards(cards, $div) {
     for (var i = 0; i < cards.length; i++) {
         var card = (typeof(cards[i]) == 'undefined') ? starter[currentSuit * 13 + i] : cards[i];
-        addCardBody(card, $div);
+        var $cardDiv = addCardBody(card, $div);
 
         var $num = $('<div>').addClass('num').appendTo($cardDiv);
     }

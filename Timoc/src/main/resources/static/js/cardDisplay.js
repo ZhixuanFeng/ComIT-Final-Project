@@ -30,6 +30,8 @@ function addCardBody(card, div) {
     $rankSpan.addClass('rank').appendTo($cardDiv);
     $suitImg.addClass('suit').appendTo($cardDiv);
     $cardEffectDiv.addClass('card_effect').appendTo($cardDiv);
+
+    return $cardDiv;
 }
 
 function addCardEffect(name, amount, suit, cardEffectDiv) {

@@ -12,10 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class OfferController
@@ -95,6 +92,37 @@ public class OfferController
 
         // both card id and price is ok, create offer
         Offer offer = offerService.createOffer(player, card, price);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/market/cancel/offer_id", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> cancelOffer(@RequestParam(value = "id") Long id)
+    {
+        if (id == null) return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByUsername(auth.getName());
+        long userId = user.getId();
+
+        Offer offer = offerService.findById(id);
+
+        // check if offer exists
+        if (offer == null)
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        Player player = offer.getPlayer();
+
+        // check if offer belongs to the user
+        if (player.getId() != userId)
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        offerService.cancelOffer(offer);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

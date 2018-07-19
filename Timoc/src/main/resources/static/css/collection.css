@@ -36,7 +36,7 @@ body
 {
     position: relative;
     left: 50%;
-    margin: 10% 0;
+    margin: 7% 0;
     transform: translateX(-50%);
 }
 
@@ -50,6 +50,6 @@ body
 {
     white-space: normal;
     width: 20%;
-    margin: 6% 10%;
+    margin: 2% 10%;
     line-height: 2rem;
 }
