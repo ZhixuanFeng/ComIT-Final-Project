@@ -1,0 +1,55 @@
+body
+{
+    background-color: wheat;
+}
+
+#card_area
+{
+    width: 100%;
+    height: 100%;
+}
+
+#overlay
+{
+    position: fixed;
+    display: none;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    background-color: white;
+    z-index: 2;
+    border: 2px solid greenyellow;
+}
+
+#message
+{
+    text-align: center;
+}
+
+#ol_card
+{
+    width: 100%;
+}
+
+#ol_card .card
+{
+    position: relative;
+    left: 50%;
+    margin: 10% 0;
+    transform: translateX(-50%);
+}
+
+#ol_buttons, #ol_confirm_buttons, #ol_selling
+{
+    position: relative;
+    text-align: center;
+}
+
+.bt
+{
+    white-space: normal;
+    width: 20%;
+    margin: 6% 10%;
+    line-height: 2rem;
+}

@@ -30,6 +30,16 @@
                     type="Submit">View your deck</button>
         </form>
         <br>
+        <form th:action="@{/collection}" method="get">
+            <button class="btn btn-md btn-info btn-block" name="collection"
+                    type="Submit">View your collection</button>
+        </form>
+        <br>
+        <form th:action="@{/market}" method="get">
+            <button class="btn btn-md btn-info btn-block" name="market"
+                    type="Submit">Go to card market</button>
+        </form>
+        <br>
         <form th:action="@{/logout}" method="get">
             <button class="btn btn-md btn-danger btn-block" name="logout"
                     type="Submit">Logout</button>

@@ -73,9 +73,12 @@ public class CardDeckServiceImpl implements CardDeckService
         Map<Integer, Card> cards = deck.getCards();
         Card card = cards.get(indecks);
 
-        cardService.setDeck(card, null);
-        cards.remove(indecks);
-        cardDeckRepository.save(deck);
+        if (card != null)
+        {
+            cardService.setDeck(card, null);
+            cards.remove(indecks);
+            cardDeckRepository.save(deck);
+        }
     }
 
     @Override

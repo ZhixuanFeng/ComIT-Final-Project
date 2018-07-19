@@ -72,6 +72,14 @@ public class WebController
         return modelAndView;
     }
 
+    @RequestMapping(value = "/collection", method = RequestMethod.GET)
+    public ModelAndView viewCollection()
+    {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("collection");
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/market", method = RequestMethod.GET)
     public ModelAndView viewMarket()
     {

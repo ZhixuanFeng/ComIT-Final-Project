@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Collection</title>
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="css/card.css">
+    <link rel="stylesheet" href="css/collection.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/starterCards.js"></script>
+    <script src="js/collection.js"></script>
+</head>
+<body>
+
+<div id="card_area"></div>
+<div id="overlay">
+    <div id="ol_card"></div>
+    <div id="message"></div>
+    <div id="ol_buttons">
+        <input type="button" class="bt" id="bt_add_to_deck" value="add to deck">
+        <input type="button" class="bt" id="bt_turn_into_gold" value="turn into gold:">
+        <input type="button" class="bt" id="bt_sell" value="sell in market">
+        <input type="button" class="bt" id="bt_dismiss" value="dismiss">
+    </div>
+    <div id="ol_confirm_buttons">
+        <input type="button" class="bt" id="bt_confirm" value="confirm">
+        <input type="button" class="bt" id="bt_cancel" value="cancel">
+    </div>
+    <div id="ol_selling">
+        <input type="number" id="price" placeholder="price">
+        <input type="button" class="bt" id="bt_confirm_sell" value="sell">
+    </div>
+</div>
+
+</body>
+</html>

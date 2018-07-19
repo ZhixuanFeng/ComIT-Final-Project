@@ -100,11 +100,15 @@ $(document).ready(function()
                             var index = cardsInStorage.indexOf(chosen);
                             if (index > -1) { // picking non-starter
                                 cardsInStorage.splice(index, 1);
-                                if (typeof(deck[currentSuit][getRank(chosen) - 1]) != 'undefined')
+                                if (typeof(deck[currentSuit][getRank(chosen) - 1]) != 'undefined') {
+                                    deck[currentSuit][getRank(chosen) - 1].ownerType = 2;
                                     cardsInStorage.push(deck[currentSuit][getRank(chosen) - 1]);
+                                }
+                                chosen.ownerType = 1;
                                 deck[currentSuit][getRank(chosen) - 1] = chosen;
                             }
                             else {
+                                deck[currentSuit][getRank(chosen) - 1].ownerType = 2;
                                 cardsInStorage.push(deck[currentSuit][getRank(chosen) - 1]);
                                 deck[currentSuit][getRank(chosen) - 1] = undefined;
                             }
@@ -122,7 +126,11 @@ function displayCards(cards, $div) {
     for (var i = 0; i < cards.length; i++) {
         var card = (typeof(cards[i]) == 'undefined') ? starter[currentSuit * 13 + i] : cards[i];
         var $cardDiv = $('<div>');
-        var $emptyCardImg = $('<img src="images/empty_card.png" height="61" width="41"/>');
+        var $emptyCardImg;
+        if (card.id <= 52)
+            $emptyCardImg = $('<img src="images/empty_card_starter.png" height="61" width="41"/>');
+        else
+            $emptyCardImg = $('<img src="images/empty_card.png" height="61" width="41"/>');
         var $rankSpan = $('<span></span>');
         var $suitImg = $('<img height="11" width="11"/>');
         var $cardEffectDiv = $('<div>');
