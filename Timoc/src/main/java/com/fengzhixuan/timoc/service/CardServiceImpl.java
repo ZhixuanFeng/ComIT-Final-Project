@@ -3,6 +3,7 @@ package com.fengzhixuan.timoc.service;
 import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.CardCollection;
 import com.fengzhixuan.timoc.data.entity.CardDeck;
+import com.fengzhixuan.timoc.data.entity.Player;
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.enums.CardSuit;
 import com.fengzhixuan.timoc.data.repository.CardRepository;
@@ -16,6 +17,12 @@ public class CardServiceImpl implements CardService
 {
     @Autowired
     private CardRepository cardRepository;
+
+    @Autowired
+    private PlayerService playerService;
+
+    @Autowired
+    private CardDeckService cardDeckService;
 
     @Override
     public Card getCardById(long id)
@@ -362,5 +369,22 @@ public class CardServiceImpl implements CardService
                 return new Card(indecks, 0, 13, 0, 0, 0, 0, 0, 0);
         }
         return null;
+    }
+
+    @Override
+    public void turnIntoGold(Card card, Player player)
+    {
+        int gold = 50 + card.getQuality();
+
+        // remove card from deck if it's in deck
+        if (card.getOwnerTypeEnum() == CardOwnerType.Player_In_Deck)
+        {
+            CardDeck deck = card.getCardDeck();
+            cardDeckService.removeCard(card, deck);  // saves deck
+            card.setCardDeck(null);
+        }
+
+        playerService.addGold(player, gold);  // saves player
+        cardRepository.delete(card);
     }
 }

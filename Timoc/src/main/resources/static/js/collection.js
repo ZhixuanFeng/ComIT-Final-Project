@@ -152,11 +152,24 @@ $(document).ready(function()
             $('#ol_buttons').hide();
             $('#ol_confirm_buttons').show();
             $message.text('Turn this card into ' + amount + ' gold?');
-            // TODO: warn player if this card is in deck
             $('#bt_confirm').click(function () {
-                // TODO: send post request
-                $('#overlay').hide();
-                //TODO: change card status
+                $.post('card/turn_into_gold', {id:id}, function () {
+                    deck = $.grep(deck, function(e){
+                        return typeof(e) == 'undefined' || e.id != id;
+                    });
+                    collection = $.grep(collection, function(e){
+                        return e.id != id;
+                    });
+                    collectionAndStarter = $.grep(collectionAndStarter, function(e){
+                        return e.id != id;
+                    });
+                    $('#' + id).hide();
+                    console.log(collection);
+                    //TODO: display gold
+                    $('#overlay').hide();
+                    //TODO: change card status
+                });
+                $('#bt_confirm').off();
             });
         });
 
@@ -177,6 +190,7 @@ $(document).ready(function()
             $('#ol_selling').show();
             $message.text('Put this card for sale on the market');
 
+            $('#bt_confirm').off();
             $('#bt_confirm_sell').click(function () {
                 var input = parseInt($('#price').val());
                 if (input > 9999 || input <= 0 || isNaN(input)) {
@@ -192,8 +206,9 @@ $(document).ready(function()
                     $.post('market/new_offer', {id:id, price:input}, function () {
                         card.ownerType = 3;
                         //TODO: change card status
+                        $('#overlay').hide();
                     });
-                    $('#overlay').hide();
+                    $('#bt_confirm').off();
                 });
             });
         });
