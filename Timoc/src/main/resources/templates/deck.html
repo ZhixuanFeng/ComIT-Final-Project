@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/card.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/dragscrollable.min.js"></script>
+    <script src="js/jquery.mousewheel.min.js"></script>
     <script src="js/starterCards.js"></script>
     <script src="js/deck.js"></script>
 </head>
@@ -58,4 +59,21 @@
 */-->
 
 </body>
+<!--/*disabling touch-scrolling*/-->
+<script>
+    $(document).ready(function() {
+        disableScroll();
+    });
+
+    function preventDefault(e) {
+        e = e || window.event;
+        if (e.preventDefault)
+            e.preventDefault();
+        e.returnValue = false;
+    }
+
+    function disableScroll() {
+        window.ontouchmove  = preventDefault;
+    }
+</script>
 </html>

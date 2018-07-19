@@ -13,7 +13,7 @@ $(document).ready(function()
     });
 
     $.getJSON("/rest/cards", function (json) {
-        // find cards in deck
+        // find cards the player owns
         json.forEach(function (card) {
             if (card.ownerType == 1)
                 deck[getSuit(card)][getRank(card) - 1] = card;
@@ -171,10 +171,6 @@ function displayCards(cards, $div) {
         $effectIconImg.addClass('effect_icon').appendTo($newEffectDiv);
         $effectAmoundSpan.addClass('effect_amount').appendTo($newEffectDiv);
     }
-}
-
-function printCards() {
-    console.log(cardsInDeck);
 }
 
 function getRank(card) {
