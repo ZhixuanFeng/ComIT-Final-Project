@@ -63,34 +63,33 @@ $(document).ready(function()
                 $($($deckArea).children().eq(i)).children('div.num').text(n);
             };
 
-            var isClick = false;
-            $deckArea.children('.card').mousedown(function () {
-                isClick = true;
-            });
-            $deckArea.children('.card').mousemove(function () {
-                isClick = isClick ? false : false;
-            });
-            $deckArea.children('.card').mouseup(function () {
-                if (!isClick) return;
-                $storageArea.empty();
-                var rank = $(this).children('span.rank').text();
-                if (rank == 'A') rank = 1;
-                else if (rank == 'J') rank = 11;
-                else if (rank == 'Q') rank = 12;
-                else if (rank == 'K') rank = 13;
-                else rank = parseInt(rank);
-                var indecks = currentSuit * 13 + rank - 1;
-                var cardChoices = [];
-                cardsInStorage.forEach(function (card) {
-                    if (card.indecks == indecks) cardChoices.push(card);
-                });
-                if (typeof(deck[currentSuit][rank-1]) != 'undefined')
-                    cardChoices.push(starter[indecks]);
-                displayCards(cardChoices, $storageArea);
+            $deckArea.children('.card').on('mousedown', function(e) {
+                $(this).data('p0', { x: e.pageX, y: e.pageY });
+            }).on('mouseup', function(e) {
+                var p0 = $(this).data('p0');
+                var p1 = { x: e.pageX, y: e.pageY };
+                var d = Math.sqrt(Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y - p0.y, 2));
 
-                $storageArea.children('.card').click(function () {
-                    var id = this.id;
-                    $.post('/deck/set_card', {id:id}, function () {
+                if (d < 4) { // on click
+                    $storageArea.empty();
+                    var rank = $(this).children('span.rank').text();
+                    if (rank == 'A') rank = 1;
+                    else if (rank == 'J') rank = 11;
+                    else if (rank == 'Q') rank = 12;
+                    else if (rank == 'K') rank = 13;
+                    else rank = parseInt(rank);
+                    var indecks = currentSuit * 13 + rank - 1;
+                    var cardChoices = [];
+                    cardsInStorage.forEach(function (card) {
+                        if (card.indecks == indecks) cardChoices.push(card);
+                    });
+                    if (typeof(deck[currentSuit][rank-1]) != 'undefined')
+                        cardChoices.push(starter[indecks]);
+                    displayCards(cardChoices, $storageArea);
+
+                    $storageArea.children('.card').click(function () {
+                        var id = this.id;
+                        $.post('/deck/set_card', {id:id}, function () {
                             $storageArea.empty();
                             $deckArea.empty();
                             var chosen;
@@ -113,10 +112,11 @@ $(document).ready(function()
                                 deck[currentSuit][getRank(chosen) - 1] = undefined;
                             }
                             setCardArea();
-                    }).fail(function() {
-                        window.location.replace('error');
+                        }).fail(function() {
+                            window.location.replace('error');
+                        });
                     });
-                });
+                }
             });
         }
     });
