@@ -99,23 +99,30 @@ $(document).ready(function()
 
         $('#bt_add_to_deck').click(function () {
             var id = $('#ol_card').children('.card')[0].id;
+            var card = findCardById(id);
             if (id > 52) {
-                var card = findCardById(id);
                 if (card.ownerType == 3) {
                     $message.text('You may not use cards that are in the market');
                 }
 
-                if (deck[card.indecks].id == id) {
+                if (typeof(deck[card.indecks]) != 'undefined' && deck[card.indecks].id == id) {
                     $message.text('This card is already in your deck');
                     return;
                 }
 
                 $.post('/deck/set_card', {id:id}, function () {
                     card.ownerType = 1;
-                    if (typeof(deck[card.indecks]) != 'undefined') {
-                        deck[card.indecks].ownerType = 2;
-                    }
+                    var cardReplaced = deck[card.indecks];
                     deck[card.indecks] = card;
+                    if (typeof(cardReplaced) != 'undefined') {
+                        cardReplaced.ownerType = 2;
+                        updateCardStatusDiv(deck[card.indecks], $('#' + deck[card.indecks].id));
+                    }
+                    else {
+                        updateCardStatusDiv(starter[card.indecks], $('#' + (card.indecks + 1)));
+                    }
+                    updateCardStatusDiv(card, $('#' + id));
+                    updateCardStatusDiv(card, $('#ol_card').children('.card')[0]);
                     $message.text('This card is now in your deck');
                 });
             }
@@ -126,12 +133,15 @@ $(document).ready(function()
                 }
 
                 $.post('/deck/set_card', {id:id}, function () {
-                    deck[id-1].ownerType = 2;
+                    var cardReplaced = deck[id-1];
+                    cardReplaced.ownerType = 2;
                     deck[id-1] = undefined;
                     $message.text('This card is now in your deck');
+                    updateCardStatusDiv(cardReplaced, $('#' + cardReplaced.id));
+                    updateCardStatusDiv(card, $('#' + id));
+                    updateCardStatusDiv(card, $('#ol_card').children('.card')[0]);
                 });
             }
-            updateCardStatusDiv(card, $('#' + id));
         });
 
         $('#bt_turn_into_gold').click(function () {
@@ -164,9 +174,13 @@ $(document).ready(function()
                         return e.id != id;
                     });
                     $('#' + id).hide();
-                    console.log(collection);
                     //TODO: display gold
                     $('#overlay').hide();
+                    var indecks = card.indecks;
+                    if (typeof(deck[indecks]) != 'undefined') {
+                        deck[indecks] = undefined;
+                        updateCardStatusDiv(starter[indecks], $('#' + (indecks + 1)));
+                    }
                     updateCardStatusDiv(card, $('#' + id));
                 });
                 $('#bt_confirm').off();
@@ -205,6 +219,11 @@ $(document).ready(function()
                     $.post('market/new_offer', {id:id, price:input}, function () {
                         card.ownerType = 3;
                         updateCardStatusDiv(card, $('#' + id));
+                        var indecks = card.indecks;
+                        if (typeof(deck[indecks]) != 'undefined' && deck[indecks].id == id) {
+                            deck[indecks] = undefined;
+                            updateCardStatusDiv(starter[indecks], $('#' + (indecks + 1)));
+                        }
                         $('#overlay').hide();
                     });
                     $('#bt_confirm').off();
@@ -265,22 +284,36 @@ function updateCardStatusDiv(card, cardDiv) {
     var statusDiv = $(cardDiv).children('.card_status')[0];
     switch (parseInt(card.ownerType)) {
         case 0:
-            if (typeof(deck[card.indecks]) == 'undefined') {
-                $(statusDiv).text('In Use');
-                $(statusDiv).css({'background-color':'rgba(153, 204, 255, 32)'});
-            }
+            if (typeof(deck[card.indecks]) == 'undefined')
+                setCardStatusLabel(statusDiv, 'In Use');
+            else
+                setCardStatusLabel(statusDiv, 'empty');
             break;
         case 1:
-            $(statusDiv).text('In Use');
-            $(statusDiv).css({'background-color':'rgba(153, 204, 255, 32)'});
+            setCardStatusLabel(statusDiv, 'In Use');
             break;
         case 3:
-            $(statusDiv).text('For Sale');
-            $(statusDiv).css({'background-color':'rgba(255, 255, 153, 128)'});
+            setCardStatusLabel(statusDiv, 'For Sale');
             break;
         default:
-            $(statusDiv).empty();
-            $(statusDiv).css({'background-color':'transparent'});
+            setCardStatusLabel(statusDiv, 'empty');
+            break;
+    }
+}
+
+function setCardStatusLabel(div, status) {
+    switch (status) {
+        case 'In Use':
+            $(div).text('In Use');
+            $(div).css({'background-color': 'rgba(153, 204, 255, 32)'});
+            break;
+        case 'For Sale':
+            $(div).text('For Sale');
+            $(div).css({'background-color':'rgba(255, 255, 153, 128)'});
+            break;
+        default :
+            $(div).empty();
+            $(div).css({'background-color':'transparent'});
             break;
     }
 }

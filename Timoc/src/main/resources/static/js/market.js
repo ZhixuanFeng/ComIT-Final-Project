@@ -138,10 +138,11 @@ $(document).ready(function()
             criteria['rank'] = str.substr(0, str.length-1);
         }
 
+        console.log(criteria);
         $.post('market/filter', criteria, function (result) {
             console.log(result);
-        }).fail(function() {
-            window.location.replace('error');
+        /*}).fail(function() {
+            window.location.replace('error');*/
         });
     });
 });

@@ -5,10 +5,15 @@ import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.repository.OfferRepository;
 import com.fengzhixuan.timoc.webcontroller.MarketRESTController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -138,9 +143,9 @@ public class OfferServiceImpl implements OfferService
 
     @Override
     @Transactional(propagation=Propagation.NOT_SUPPORTED)
-    public List<Offer> findByCriteria(Map<String, Integer> criteria)
+    public List<Offer> findByCriteria(Map<String, String> criteria)
     {
-        return offerRepository.findAll(MarketRESTController.findByCriteria(criteria));
+        return offerRepository.findAll(criteriaToSpecification(criteria));
     }
 
     @Override
@@ -179,5 +184,52 @@ public class OfferServiceImpl implements OfferService
         cal.add(Calendar.DATE, days);
 
         return cal.getTime();
+    }
+
+    public static Specification<Offer> criteriaToSpecification(final Map<String, String> searchCriteria)
+    {
+        return new Specification<Offer>() {
+
+            @Override
+            public Predicate toPredicate(
+                    Root<Offer> root,
+                    CriteriaQuery<?> query, CriteriaBuilder cb) {
+
+                Predicate finalPredicate = cb.and();
+                List<Predicate> suitPredicates = new ArrayList<>();
+                List<Predicate> rankPredicates = new ArrayList<>();
+
+                if (searchCriteria.get("suit") != null)
+                {
+                    String[] subs = searchCriteria.get("suit").split("\\|");
+                    for (String suitStr:subs)
+                    {
+                        suitPredicates.add(cb.or(cb.equal(root.get("suit"), suitStr)));
+                    }
+                    finalPredicate = cb.and(cb.or(suitPredicates.toArray(new Predicate[]{})));
+                }
+
+                if (searchCriteria.get("rank") != null)
+                {
+                    String[] subs = searchCriteria.get("rank").split("\\|");
+                    for (String rankStr:subs)
+                    {
+                        rankPredicates.add(cb.or(cb.equal(root.get("rank"), rankStr)));
+                    }
+                    finalPredicate = cb.and(finalPredicate, cb.or(rankPredicates.toArray(new Predicate[]{})));
+                }
+
+                if (searchCriteria.get("effect") != null)
+                {
+                    String[] subs = searchCriteria.get("effect").split("\\&");
+                    for (String effectStr:subs)
+                    {
+                        rankPredicates.add(cb.and(cb.greaterThan(root.get(effectStr), 0)));
+                    }
+                    finalPredicate = cb.and(finalPredicate, cb.and(rankPredicates.toArray(new Predicate[]{})));
+                }
+                return finalPredicate;
+            }
+        };
     }
 }

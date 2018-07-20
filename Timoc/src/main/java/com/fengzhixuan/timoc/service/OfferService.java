@@ -28,7 +28,7 @@ public interface OfferService
 
     Offer findByCardId(long id);
 
-    List<Offer> findByCriteria(Map<String, Integer> criteria);
+    List<Offer> findByCriteria(Map<String, String> criteria);
 
     List<Offer> findAll();
 }
