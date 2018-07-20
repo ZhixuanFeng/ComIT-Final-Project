@@ -10,14 +10,13 @@ h1
 
 .panel
 {
-    border: 3px solid black;
     width: 85vw;
     margin: auto;
 }
 
 .filter
 {
-    border: 3px solid limegreen;
+    border: 3px solid black;
     width: 10rem;
     float: left;
     display: block;
@@ -26,9 +25,8 @@ h1
 
 .offers
 {
-    border: 3px solid yellow;
-    width: 74%;
-    float: left;
+    border: 3px solid black;
+    margin-left: 11rem;
     display: block;
 }
 
@@ -49,4 +47,46 @@ h1
 .cb
 {
     display: block;
+}
+
+.offers .card
+{
+    margin: 1.8vh; /*15% dcw*/
+    width: 12vh; /*dcw*/
+}
+
+.offers .card .rank
+{
+    font-size: 2.4vh; /*20% dcw*/
+}
+
+.offers .card .effect_icon
+{
+    width: 2.4vh; /*20% dcw*/
+    padding-left: 1.2vh; /*10% dcw*/
+}
+
+.offers .card .effect_amount
+{
+    font-size: 1.8vh; /*15% dcw*/
+    padding-left: 1.8vh; /*15% dcw*/
+}
+
+.offers .card .price
+{
+    text-align:center;
+}
+
+.offers .card .price .gold_icon
+{
+    width: 1.5vh;
+    height: auto;
+    display: inline-block;
+    margin-right: 1vh;
+}
+
+.offers .card .price .price_num
+{
+    font-size:1.5vh;
+    display: inline-block;
 }

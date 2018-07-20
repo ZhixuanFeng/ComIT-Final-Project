@@ -8,8 +8,9 @@ $(document).ready(function()
         xhr.setRequestHeader(header, token);
     });
 
+    var offersDiv = $('.offers');
     $.post('market/all', function (result) {
-        console.log(result);
+        displayCards(result, offersDiv);
     });
 
     var effectCheckboxes = [$('#cb_attack'), $('#cb_block'), $('#cb_heal'), $('#cb_mana'), $('#cb_aoe'), $('#cb_draw'), $('#cb_revive'), $('#cb_taunt')];
@@ -138,11 +139,20 @@ $(document).ready(function()
             criteria['rank'] = str.substr(0, str.length-1);
         }
 
-        console.log(criteria);
         $.post('market/filter', criteria, function (result) {
-            console.log(result);
-        /*}).fail(function() {
-            window.location.replace('error');*/
+            displayCards(result, offersDiv);
+        }).fail(function() {
+            window.location.replace('error');
         });
     });
 });
+
+function displayCards(cards, div) {
+    div.empty();
+    cards.forEach(function (card) {
+        var cardDiv = addCardBody(card, div);
+        var $price = $('<div>').addClass('price').appendTo(cardDiv);
+        var $goldIcon = $('<img src="images/gold.png" height="8" width="8"/>').addClass('gold_icon').appendTo($price);
+        var $priceNum = $('<div>').text(card.price).addClass('price_num').appendTo($price);
+    });
+}
