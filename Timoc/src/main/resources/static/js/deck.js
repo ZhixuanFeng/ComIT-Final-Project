@@ -17,7 +17,7 @@ $(document).ready(function()
         json.forEach(function (card) {
             if (card.ownerType == 1)
                 deck[getSuit(card)][getRank(card) - 1] = card;
-            else
+            else if (card.ownerType == 2)
                 cardsInStorage.push(card);
         });
 
