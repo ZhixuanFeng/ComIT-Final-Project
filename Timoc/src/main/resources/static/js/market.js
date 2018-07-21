@@ -1,5 +1,8 @@
 "use strict"
 
+var gold;
+var numOfCards = 0;
+var maxNumOfCards = 52;
 $(document).ready(function()
 {
     var token = $("meta[name='_csrf']").attr("content");
@@ -12,6 +15,16 @@ $(document).ready(function()
     $.post('market/all', function (result) {
         displayCards(result, offersDiv);
     });
+
+    /*$.post('player/gold', function (result) {
+        gold = parseInt(result);
+    });
+
+    $.post('player/number_of_cards', function (result) {
+        gold = parseInt(result);
+    });*/
+    // $('#bt_buy').hide();
+    // $('#bt_dismiss').hide();
 
     var effectCheckboxes = [$('#cb_attack'), $('#cb_block'), $('#cb_heal'), $('#cb_mana'), $('#cb_aoe'), $('#cb_draw'), $('#cb_revive'), $('#cb_taunt')];
     var suitCheckboxes = [$('#cb_diamond'), $('#cb_club'), $('#cb_heart'), $('#cb_spade')];
@@ -149,10 +162,56 @@ $(document).ready(function()
 
 function displayCards(cards, div) {
     div.empty();
-    cards.forEach(function (card) {
-        var cardDiv = addCardBody(card, div);
+    var $overlay = $('#overlay');
+    cards.forEach(function (offer) {
+        var cardDiv = addCardBody(offer, div);
         var $price = $('<div>').addClass('price').appendTo(cardDiv);
         var $goldIcon = $('<img src="images/gold.png" height="8" width="8"/>').addClass('gold_icon').appendTo($price);
-        var $priceNum = $('<div>').text(card.price).addClass('price_num').appendTo($price);
+        var $priceNum = $('<div>').text(offer.price).addClass('price_num').appendTo($price);
+
+        $(cardDiv).click(function () {
+            if ($overlay.is(':visible')) {
+                $overlay.hide();
+                return;
+            }
+
+            $($overlay).show();
+            displayCards([offer], $('#ol_card'));
+            $('#ol_sold_by').text('Sold by: ' + offer.playerName);
+            $('#bt_buy').show();
+            $('#bt_dismiss').show();
+
+            $('#bt_buy').click(function () {
+                if (gold < offer.price) {
+                    $('#message').text('Not enough gold').css('color', 'red');
+                }
+                else if (numOfCards >= maxNumOfCards) {
+                    $('#message').text('Your storage is full').css('color', 'red');
+                }
+                else {
+                    $.post('market/accept/offer_id', {id: offer.id}, function () {
+                        $(cardDiv).hide();
+                        gold -= offer.price;
+                        updateGold();
+                    });
+                }
+            });
+        });
     });
+
+    $('#bt_dismiss').click(function () {
+        $('#overlay').hide();
+    });
+
+    $(document).mouseup(function(e) {
+        var container = $('#overlay');
+        if (container.is(':visible') && !container.is(e.target) && container.has(e.target).length === 0 && !$('.card').is(e.target) && $('.card').has(e.target).length === 0)
+        {
+            container.hide();
+        }
+    });
+
+    function updateGold() {
+
+    }
 }

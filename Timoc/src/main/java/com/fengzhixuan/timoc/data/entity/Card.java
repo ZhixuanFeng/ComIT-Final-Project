@@ -62,7 +62,12 @@ public class Card
     @JsonBackReference
     private CardDeck cardDeck;
 
-    public Card(int indecks, int attack, int block, int heal, int mana, int draw, int taunt, int revive, int aoe)
+    // using @OneToMany to avoid querying offer object when querying card object.  card and offer is actually one-to-one
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
+    private List<Offer> offers = new ArrayList<>();
+
+    // only used by starter cards
+    public Card(int indecks, int attack, int block, int heal, int mana, int aoe, int draw, int revive, int taunt)
     {
         id = indecks + 1;
         this.indecks = indecks;
@@ -80,10 +85,6 @@ public class Card
     }
 
     public Card() {}
-
-    // using @OneToMany to avoid querying offer object when querying card object.  card and offer is actually one-to-one
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Offer> offers = new ArrayList<>();
 
     public long getId()
     {
@@ -285,6 +286,17 @@ public class Card
     public void setCardDeck(CardDeck cardDeck)
     {
         this.cardDeck = cardDeck;
+    }
+
+    @JsonIgnore
+    public List<Offer> getOffers()
+    {
+        return offers;
+    }
+
+    public void setOffers(List<Offer> offers)
+    {
+        this.offers = offers;
     }
 
     @Override

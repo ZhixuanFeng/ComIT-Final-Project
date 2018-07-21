@@ -26,11 +26,14 @@ public class CardServiceImpl implements CardService
     @Autowired
     private CardDeckService cardDeckService;
 
+    @Autowired
+    private CardCollectionService cardCollectionService;
+
     @Override
     @Transactional(propagation=Propagation.NOT_SUPPORTED)
-    public Card getCardById(long id)
+    public Card getCardById(long id, boolean inCache)
     {
-        return cardRepository.getOne(id);
+        return inCache ? cardRepository.getOne(id) : cardRepository.findById(id);
     }
 
     @Override
@@ -392,7 +395,9 @@ public class CardServiceImpl implements CardService
             card.setCardDeck(null);
         }
 
+        CardCollection collection = card.getCardCollection();
         playerService.addGold(player, gold);  // saves player
+        cardCollectionService.removeCard(card, collection); // saves collection
         cardRepository.delete(card);
     }
 }

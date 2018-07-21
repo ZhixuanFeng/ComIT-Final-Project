@@ -40,6 +40,7 @@ public class CardDeckServiceImpl implements CardDeckService
     @Transactional(propagation=Propagation.REQUIRED)
     public void addCard(Card card, CardDeck deck)
     {
+        // if adding a non-starter card into deck
         if (card.getOwnerTypeEnum() == CardOwnerType.Player_Not_In_Deck)
         {
             int indecks = card.getIndecks();
@@ -54,6 +55,11 @@ public class CardDeckServiceImpl implements CardDeckService
             // put new card into deck
             cardService.setDeck(card, deck);
             deck.getCards().replace(indecks, card);
+            cardDeckRepository.save(deck);
+        } else if (card.getOwnerTypeEnum() == CardOwnerType.AllPlayers)
+        {
+            int indecks = card.getIndecks();
+            cardService.setDeck(deck.getCards().get(indecks), null); // saves card
             cardDeckRepository.save(deck);
         }
     }

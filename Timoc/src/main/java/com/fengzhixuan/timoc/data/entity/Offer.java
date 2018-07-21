@@ -20,8 +20,11 @@ public class Offer
     @JsonBackReference
     private Player player;
 
+    @Column(name="player_name", nullable=false, length=31)
+    private String playerName;
+
     // using @ManyToOne to avoid querying offer object when querying card object.  card and offer is actually one-to-one
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "card_id")
     @JsonBackReference
     private Card card;
@@ -70,6 +73,7 @@ public class Offer
     public Offer(Player player, Card card, int price)
     {
         this.player = player;
+        this.playerName = player.getName();
         this.card = card;
         this.indecks = card.getIndecks();
         this.price = price;
@@ -104,6 +108,16 @@ public class Offer
     public void setPlayer(Player player)
     {
         this.player = player;
+    }
+
+    public String getPlayerName()
+    {
+        return playerName;
+    }
+
+    public void setPlayerName(String playerName)
+    {
+        this.playerName = playerName;
     }
 
     public Card getCard()

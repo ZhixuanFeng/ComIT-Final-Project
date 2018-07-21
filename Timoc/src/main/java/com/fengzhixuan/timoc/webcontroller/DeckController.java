@@ -58,7 +58,7 @@ public class DeckController
         }
 
         // make sure the card exist(did player modify the front end?)
-        Card card = cardService.getCardById(id);
+        Card card = cardService.getCardById(id, false);
         if (card == null)
         {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);

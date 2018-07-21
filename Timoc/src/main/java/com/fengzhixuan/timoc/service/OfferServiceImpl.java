@@ -49,8 +49,6 @@ public class OfferServiceImpl implements OfferService
         date = addDays(date, 5);
         offer.setExpDate(date);
 
-        // set card owner type to market
-        card.setOwnerType(CardOwnerType.Market);
         // move card out of a deck if it's in a deck
         CardDeck deck = card.getCardDeck();
         if (deck != null)
@@ -58,6 +56,10 @@ public class OfferServiceImpl implements OfferService
             cardDeckService.removeCard(card, deck);
         }
 
+        // set card owner type to market
+        card.setOwnerType(CardOwnerType.Market);
+
+        cardService.saveCard(card);
         offerRepository.save(offer);
         return offer;
     }
@@ -75,48 +77,30 @@ public class OfferServiceImpl implements OfferService
 
     @Override
     @Transactional(propagation=Propagation.REQUIRED)
-    public void acceptOffer(Offer offer, Player buyer)
+    public void acceptOffer(Offer offer, Player buyer, Player seller)
     {
-        // assuming the buyer's collection is not full and player has enough gold
+        // the buyer's collection should not be full and player should have enough gold
         Card card = offer.getCard();
-        Player seller = offer.getPlayer();
+        int price = offer.getPrice();
 
         // pay gold
-        playerService.removeGold(buyer, offer.getPrice());
-        playerService.addGold(seller, offer.getPrice());
+        playerService.removeGold(buyer, price);
+        playerService.addGold(seller, price);
 
-        // get card
-        card.setOwnerType(CardOwnerType.Player_Not_In_Deck);
-        cardCollectionService.transferCard(card, seller.getCardCollection(), buyer.getCardCollection());
+        // set card
+        cardCollectionService.transferCard(card, seller.getCardCollection(), buyer.getCardCollection()); // saves card
 
         // remove offer
+        cardService.saveCard(card);
         offerRepository.delete(offer);
     }
 
     @Override
     @Transactional(propagation=Propagation.NOT_SUPPORTED)
-    public Offer findById(long id)
+    public Offer findById(long id, boolean inCache)
     {
-        return offerRepository.getOne(id);
+        return inCache ? offerRepository.getOne(id) : offerRepository.findById(id);
     }
-
-//    @Override
-//    public List<Offer> getOffersBySuit(int suit)
-//    {
-//        return offerRepository.findBySuit(suit);
-//    }
-//
-//    @Override
-//    public List<Offer> getOffersByRank(int rank)
-//    {
-//        return offerRepository.findByRank(rank);
-//    }
-//
-//    @Override
-//    public List<Offer> getOffersByIndecks(int indecks)
-//    {
-//        return offerRepository.findByIndecks(indecks);
-//    }
 
     @Override
     @Transactional(propagation=Propagation.NOT_SUPPORTED)

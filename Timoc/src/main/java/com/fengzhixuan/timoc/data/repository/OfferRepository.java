@@ -15,6 +15,8 @@ import java.util.List;
 @Repository
 public interface OfferRepository extends JpaRepository<Offer, Long>, JpaSpecificationExecutor
 {
+    Offer findById(long id);
+
     List<Offer> findByPlayer(Player player);
 
     List<Offer> findByExpDate(Date date);

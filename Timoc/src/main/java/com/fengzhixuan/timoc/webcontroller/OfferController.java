@@ -2,10 +2,7 @@ package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.data.entity.*;
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
-import com.fengzhixuan.timoc.service.CardDeckService;
-import com.fengzhixuan.timoc.service.CardService;
-import com.fengzhixuan.timoc.service.OfferService;
-import com.fengzhixuan.timoc.service.UserService;
+import com.fengzhixuan.timoc.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +19,9 @@ public class OfferController
 
     @Autowired
     private CardDeckService cardDeckService;
+
+    @Autowired
+    private CardCollectionService cardCollectionService;
 
     @Autowired
     private CardService cardService;
@@ -52,7 +52,7 @@ public class OfferController
         }
 
         // make sure the card exist(did player modify the front end?)
-        Card card = cardService.getCardById(id);
+        Card card = cardService.getCardById(id, false);
         if (card == null)
         {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
@@ -106,7 +106,7 @@ public class OfferController
         User user = userService.findUserByUsername(auth.getName());
         long userId = user.getId();
 
-        Offer offer = offerService.findById(id);
+        Offer offer = offerService.findById(id, false);
 
         // check if offer exists
         if (offer == null)
@@ -123,6 +123,45 @@ public class OfferController
         }
 
         offerService.cancelOffer(offer);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/market/accept/offer_id", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseEntity<String> acceptOffer(@RequestParam(value = "id") Long id)
+    {
+        if (id == null) return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByUsername(auth.getName());
+
+        Offer offer = offerService.findById(id, false);
+
+        // check if offer exists
+        if (offer == null)
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        Player buyer = user.getPlayer();
+        Player seller = offer.getPlayer();
+
+        // check if buyer's storage is full
+        CardCollection collection = buyer.getCardCollection();
+        if (cardCollectionService.isStorageFull(collection))
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        // check if buyer has enough gold
+        int price = offer.getPrice();
+        if (buyer.getGold() < price)
+        {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        offerService.acceptOffer(offer, buyer, seller);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

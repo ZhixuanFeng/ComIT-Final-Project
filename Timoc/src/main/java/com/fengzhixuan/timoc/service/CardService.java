@@ -7,7 +7,7 @@ import com.fengzhixuan.timoc.data.entity.Player;
 
 public interface CardService
 {
-    Card getCardById(long id);
+    Card getCardById(long id, boolean inCache);
 
     void saveCard(Card card);
 

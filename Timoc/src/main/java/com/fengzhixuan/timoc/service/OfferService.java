@@ -12,15 +12,9 @@ public interface OfferService
 
     void cancelOffer(Offer offer);
 
-    void acceptOffer(Offer offer, Player buyer);
+    void acceptOffer(Offer offer, Player buyer, Player seller);
 
-//    List<Offer> getOffersBySuit(int suit);
-//
-//    List<Offer> getOffersByRank(int rank);
-//
-//    List<Offer> getOffersByIndecks(int indecks);
-
-    Offer findById(long id);
+    Offer findById(long id, boolean inCache);
 
     List<Offer> findByPlayer(Player player);
 
