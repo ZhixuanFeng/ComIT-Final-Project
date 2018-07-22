@@ -5,6 +5,8 @@ import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.repository.OfferRepository;
 import com.fengzhixuan.timoc.webcontroller.MarketRESTController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -97,9 +99,9 @@ public class OfferServiceImpl implements OfferService
 
     @Override
     @Transactional(propagation=Propagation.NOT_SUPPORTED)
-    public Offer findById(long id, boolean inCache)
+    public Offer findById(long id)
     {
-        return inCache ? offerRepository.getOne(id) : offerRepository.findById(id);
+        return offerRepository.findById(id);
     }
 
     @Override
@@ -127,16 +129,16 @@ public class OfferServiceImpl implements OfferService
 
     @Override
     @Transactional(propagation=Propagation.NOT_SUPPORTED)
-    public List<Offer> findByCriteria(Map<String, String> criteria)
+    public Page<Offer> findByCriteria(Map<String, String> criteria, Pageable pageable)
     {
-        return offerRepository.findAll(criteriaToSpecification(criteria));
+        return offerRepository.findAll(criteriaToSpecification(criteria), pageable);
     }
 
     @Override
     @Transactional(propagation=Propagation.NOT_SUPPORTED)
-    public List<Offer> findAll()
+    public Page<Offer> findAll(Pageable pageable)
     {
-        return offerRepository.findAll();
+        return offerRepository.findAll(pageable);
     }
 
     // helper method for creating a Date object from a string

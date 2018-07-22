@@ -106,7 +106,7 @@ public class OfferController
         User user = userService.findUserByUsername(auth.getName());
         long userId = user.getId();
 
-        Offer offer = offerService.findById(id, false);
+        Offer offer = offerService.findById(id);
 
         // check if offer exists
         if (offer == null)
@@ -136,7 +136,7 @@ public class OfferController
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByUsername(auth.getName());
 
-        Offer offer = offerService.findById(id, false);
+        Offer offer = offerService.findById(id);
 
         // check if offer exists
         if (offer == null)

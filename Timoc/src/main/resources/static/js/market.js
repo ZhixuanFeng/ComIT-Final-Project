@@ -3,6 +3,7 @@
 var gold;
 var numOfCards = 0;
 var maxNumOfCards = 52;
+var activePageNum = 0;
 $(document).ready(function()
 {
     var token = $("meta[name='_csrf']").attr("content");
@@ -11,9 +12,18 @@ $(document).ready(function()
         xhr.setRequestHeader(header, token);
     });
 
-    var offersDiv = $('.offers');
-    $.post('market/all', function (result) {
-        displayCards(result, offersDiv);
+    var cardAreaDiv = $('#card_area');
+    $.post('market/all', {page:0}, function (result) {
+        displayCards(result.content, cardAreaDiv);
+
+        var totalPages = result.totalPages;
+        $('#page_numbers').empty();
+
+        prevOrNextPageBt('market/all', {page:0}, false, totalPages);
+        for (var i = 0; i < totalPages && i < 6; i++) {
+            newPageNumBt(i, 'market/all', {page:i}, totalPages);
+        }
+        prevOrNextPageBt('market/all', {page:0}, true, totalPages);
     });
 
     /*$.post('player/gold', function (result) {
@@ -152,8 +162,18 @@ $(document).ready(function()
             criteria['rank'] = str.substr(0, str.length-1);
         }
 
+        criteria['page'] = 0;
+
         $.post('market/filter', criteria, function (result) {
-            displayCards(result, offersDiv);
+            displayCards(result.content, cardAreaDiv);
+
+            var totalPages = result.totalPages;
+            $('#page_numbers').empty();
+            prevOrNextPageBt('market/filter', criteria, false, totalPages);
+            for (var i = 0; i < totalPages && i < 6; i++) {
+                newPageNumBt(i, 'market/filter', criteria, totalPages);
+            }
+            prevOrNextPageBt('market/filter', criteria, true, totalPages);
         }).fail(function() {
             window.location.replace('error');
         });
@@ -193,6 +213,7 @@ function displayCards(cards, div) {
                         $(cardDiv).hide();
                         gold -= offer.price;
                         updateGold();
+                        $overlay.hide();
                     });
                 }
             });
@@ -213,5 +234,82 @@ function displayCards(cards, div) {
 
     function updateGold() {
 
+    }
+}
+
+function newPageNumBt(pageNum, postURL, postData, totalPages) {
+    var $page = $('<a href="#">');
+    $page.text(pageNum+1);
+    if (pageNum == activePageNum) {
+        $page.addClass('active_page');
+    }
+
+    $page.click(function () {
+        var page = this;
+        activePageNum = $(page).text() - 1;
+        postData.page = activePageNum;
+        $.post(postURL, postData, function (result) {
+            displayCards(result.content, $('#card_area'));
+            updateActivePageBt(page, totalPages);
+        });
+    });
+    $page.appendTo($('#page_numbers'));
+    return $page;
+}
+
+function prevOrNextPageBt(postURL, postData, isNext, totalPages) {
+    var $bt = $('<a href="#">');
+
+    if (isNext) $bt.text('>');
+    else $bt.text('<');
+
+    $bt.click(function () {
+        if (isNext && activePageNum < totalPages - 1) activePageNum++;
+        else if (!isNext && activePageNum > 0) activePageNum--;
+        else return;
+        postData.page = activePageNum;
+        $.post(postURL, postData, function (result) {
+            displayCards(result.content, $('#card_area'));
+            updateActivePageBt($bt, totalPages);
+        });
+    });
+    $bt.appendTo($('#page_numbers'));
+}
+
+function updateActivePageBt(clicked, totalPages) {
+    if (totalPages > 6) {
+        var start = activePageNum - 1;
+        var end = activePageNum + 4;
+        if (start < 1) {
+            start = 1;
+            end = 6;
+        }
+        else if (end > totalPages) {
+            end = totalPages;
+            start = end - 5;
+        }
+        var pageNums = $('#page_numbers').children();
+        for (var i = 1; i <= 6; i++) {
+            $(pageNums[i]).text(start + i - 1);
+            if (start + i - 2 == activePageNum) {
+                $('.active_page').removeClass('active_page');
+                $(pageNums[i]).addClass('active_page');
+            }
+        }
+    }
+    else {
+        if ($(clicked).text() === '<') {
+            var active = $('.active_page');
+            $('.active_page').removeClass('active_page');
+            active.prev().addClass('active_page');
+        }
+        else if ($(clicked).text() === '>') {
+            var active = $('.active_page');
+            $('.active_page').removeClass('active_page');
+            active.next().addClass('active_page');
+        }
+        else {
+            $(clicked).addClass('active_page');
+        }
     }
 }
