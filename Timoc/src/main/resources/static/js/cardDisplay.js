@@ -23,7 +23,7 @@ function addCardBody(card, div) {
     if (card.aoe > 0) addCardEffect('aoe', card.aoe, suit, $cardEffectDiv);
     if (card.draw > 0) addCardEffect('draw', card.draw, suit, $cardEffectDiv);
     if (card.revive > 0) addCardEffect('revive', card.revive, suit, $cardEffectDiv);
-    if (card.taunt > 0) addCardEffect('taunt', card.taunt, suit, $cardEffectDiv);
+    if (card.taunt > 0) addCardEffect('hate', card.taunt, suit, $cardEffectDiv);
 
     $cardDiv.addClass('card').appendTo(div);
     $emptyCardImg.addClass('empty_card').appendTo($cardDiv);

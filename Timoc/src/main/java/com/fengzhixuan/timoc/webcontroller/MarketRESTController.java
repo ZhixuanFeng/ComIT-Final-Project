@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -20,7 +19,7 @@ public class MarketRESTController
     public Page<Offer> getAllOffers(@RequestParam(value = "page") Integer page)
     {
         if (page == null) return null;
-        return offerService.findAll(PageRequest.of(page, 2));
+        return offerService.findAll(PageRequest.of(page, 20));
     }
 
     @RequestMapping(value = "/market/card_id", method = RequestMethod.POST)
@@ -33,6 +32,6 @@ public class MarketRESTController
     @RequestMapping(value = "/market/filter", method = RequestMethod.POST)
     public Page<Offer> getOffers(@RequestParam Map<String, String> criteria, @RequestParam(value = "page") Integer page)
     {
-        return offerService.findByCriteria(criteria, PageRequest.of(page, 2));
+        return offerService.findByCriteria(criteria, PageRequest.of(page, 20));
     }
 }
