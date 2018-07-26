@@ -28,7 +28,7 @@ public class DeckController
     private CardService cardService;
 
     @RequestMapping(value = "/deck/set_card", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<String> setCard(@ModelAttribute("id") String idString)
+    public @ResponseBody ResponseEntity<String> setCard(@RequestParam("id") String idString)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByUsername(auth.getName());

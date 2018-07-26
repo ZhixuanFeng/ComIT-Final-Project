@@ -1,4 +1,4 @@
-package com.fengzhixuan.timoc.springmvcsecurity.config;
+package com.fengzhixuan.timoc.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package com.fengzhixuan.timoc.springmvcsecurity.config;
+package com.fengzhixuan.timoc.config;
 
 import com.fengzhixuan.timoc.data.entity.*;
 import com.fengzhixuan.timoc.data.repository.RoleRepository;

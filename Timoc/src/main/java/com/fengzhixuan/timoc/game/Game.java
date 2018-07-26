@@ -1,4 +1,4 @@
-package com.fengzhixuan.timoc.service.game;
+package com.fengzhixuan.timoc.game;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +20,7 @@ public class Game
 
     public static Game getGameByCode(String code)
     {
-        return getGameByCode(GameCodeGenerator.codeToInt(code));
+        return getGameByCode(GameCodeGenerator.stringToInt(code));
     }
 
     public static boolean gameCodeExist(int code)
@@ -30,6 +30,6 @@ public class Game
 
     public String toString()
     {
-        return "Game Session " + GameCodeGenerator.intToCode(code) + " - " + code;
+        return "Game Session " + GameCodeGenerator.intToString(code) + " - " + code;
     }
 }

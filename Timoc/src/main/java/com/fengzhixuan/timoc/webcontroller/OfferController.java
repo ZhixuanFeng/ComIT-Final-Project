@@ -31,8 +31,8 @@ public class OfferController
 
     @RequestMapping(value = "/market/new_offer", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseEntity<String> createOffer(@ModelAttribute("id") String cardIdString,
-                                       @ModelAttribute("price") String priceString)
+    ResponseEntity<String> createOffer(@RequestParam("id") String cardIdString,
+                                       @RequestParam("price") String priceString)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByUsername(auth.getName());

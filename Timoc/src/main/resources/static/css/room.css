@@ -1,0 +1,98 @@
+body
+{
+    background-color: wheat;
+}
+
+#room_code
+{
+    text-align: center;
+    font-size: 2rem;
+}
+
+#player_list
+{
+    border: 2px solid black;
+    border-radius: 10px;
+    position: relative;
+    left: 2.5%;
+    width: 95%;
+    height: 75vh;
+    margin: 2% 0;
+}
+
+.player
+{
+    border: 2px solid black;
+    border-radius: 10px;
+    float: left;
+    width: 23%;
+    height: 90%;
+    margin: 1.5% 0.2%;
+    display: block;
+}
+
+#start_bt
+{
+    position: relative;
+    left: 2.5%;
+    width: 95%;
+    display: block;
+    color: red;
+    text-align: center;
+    font-size: 2vw;
+    padding: 0.5vw 0.6vw;
+    text-decoration: none;
+    background-color: yellow;
+    border-radius: 10px;
+}
+
+#start_bt:hover
+{
+    background-color: gold;
+}
+
+#start_bt:active
+{
+    background-color: goldenrod;
+}
+
+#overlay
+{
+    position: fixed;
+    display: none;
+    width: 80%;
+    height: 80%;
+    top: 10%;
+    left: 10%;
+    background-color: white;
+    z-index: 2;
+    border: 2px solid greenyellow;
+}
+
+#ol_panel
+{
+    text-align: center;
+    line-height: 5vh;
+    position: relative;
+    top: 30%;
+}
+
+#ol_create
+{
+    display: block;
+    color: white;
+    width: 20rem;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2vw;
+    padding: 0.5vw 0.6vw;
+    text-decoration: none;
+    background-color: greenyellow;
+    border-radius: 10px;
+}
+
+#ol_create:hover
+{
+    background-color: #afff7f;
+}

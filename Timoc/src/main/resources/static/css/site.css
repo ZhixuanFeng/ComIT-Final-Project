@@ -15,7 +15,6 @@
 }
 
 body {
-    background: black;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;

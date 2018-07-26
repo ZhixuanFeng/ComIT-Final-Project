@@ -1,4 +1,4 @@
-package com.fengzhixuan.timoc.springmvcsecurity.config;
+package com.fengzhixuan.timoc.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

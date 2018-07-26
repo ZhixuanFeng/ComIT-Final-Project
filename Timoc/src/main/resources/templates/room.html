@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Room</title>
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="css/room.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="js/room.js"></script>
+</head>
+
+<div id="room_code"></div>
+<body>
+<div id="player_list">
+    <div id="0" class="player"></div>
+    <div id="1" class="player"></div>
+    <div id="2" class="player"></div>
+    <div id="3" class="player"></div>
+</div>
+<a href="#" id="start_bt">Start!</a>
+
+<div id="overlay">
+    <div id="ol_panel">
+        <a href="#" id="ol_create">Create a Game</a>
+        <div id="ol_divider">- or -</div>
+        <input id="ol_code_input" type="text" placeholder="enter code to join" th:maxlength="${maxlength}"/>
+        <div id="ol_message"></div>
+    </div>
+</div>
+
+</body>
+</html>

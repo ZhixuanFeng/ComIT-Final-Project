@@ -1,4 +1,4 @@
-package com.fengzhixuan.timoc.service.game;
+package com.fengzhixuan.timoc.game;
 
 public class Player
 {

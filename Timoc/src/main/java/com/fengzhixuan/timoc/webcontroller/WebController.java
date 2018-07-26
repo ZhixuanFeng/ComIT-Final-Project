@@ -87,4 +87,13 @@ public class WebController
         modelAndView.setViewName("market");
         return modelAndView;
     }
+
+    @RequestMapping(value = "/room", method = RequestMethod.GET)
+    public ModelAndView viewRoom()
+    {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("room");
+        modelAndView.addObject("maxlength", 4);
+        return modelAndView;
+    }
 }

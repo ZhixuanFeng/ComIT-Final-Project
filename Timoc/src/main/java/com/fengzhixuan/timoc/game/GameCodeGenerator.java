@@ -1,4 +1,4 @@
-package com.fengzhixuan.timoc.service.game;
+package com.fengzhixuan.timoc.game;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,7 +14,7 @@ public class GameCodeGenerator
     public static int[] codeListInInt = null;
     private static int codeListCurrentIndex = 0;
 
-    public static int getNextCode()
+    public static int getNextCodeInt()
     {
         // generate all possible codes and shuffle them, only run when first game session is created
         if (codeListInInt == null)
@@ -41,8 +41,13 @@ public class GameCodeGenerator
         return codeListInInt[codeListCurrentIndex-1];
     }
 
+    public static String getNextCode()
+    {
+        return intToString(getNextCodeInt());
+    }
+
     // convert an integer into four-letter code, assuming 0 <= i < 456976
-    public static String intToCode(int i)
+    public static String intToString(int i)
     {
         int firstLetterInt = i / (int) Math.pow(ALPHABET_RANGE, 3);
         char[] firstLetter = Character.toChars(firstLetterInt + 65);
@@ -60,7 +65,7 @@ public class GameCodeGenerator
     }
 
     // convert four-letter code into integer, assuming code is four letters long
-    public static int codeToInt(String code)
+    public static int stringToInt(String code)
     {
         return  code == null ? 0 : (code.charAt(0) - 65) * (int) Math.pow(ALPHABET_RANGE, 3) +
                 (code.charAt(1) - 65) * (int) Math.pow(ALPHABET_RANGE, 2) +
@@ -71,5 +76,16 @@ public class GameCodeGenerator
     public static boolean isCodeValid(int code)
     {
         return code >= 0 && code < MAX_SESSIONS;
+    }
+
+    public static boolean isCodeValid(String code)
+    {
+        int biggestLetter = 65 + ALPHABET_RANGE - 1;
+        return code != null && code.length() == 4 &&
+                code.charAt(0) >= 65 && code.charAt(0) <= biggestLetter &&
+                code.charAt(1) >= 65 && code.charAt(1) <= biggestLetter &&
+                code.charAt(2) >= 65 && code.charAt(2) <= biggestLetter &&
+                code.charAt(3) >= 65 && code.charAt(3) <= biggestLetter;
+
     }
 }
