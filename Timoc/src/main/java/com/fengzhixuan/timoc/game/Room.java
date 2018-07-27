@@ -65,7 +65,7 @@ public class Room
     // add player to player list
     public void addPlayer(Player player)
     {
-        players.add(player);
+        if (!containsPlayer(player)) players.add(player);
     }
 
     // remove player from player list

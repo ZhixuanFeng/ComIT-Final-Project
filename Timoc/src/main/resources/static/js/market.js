@@ -309,6 +309,7 @@ function updateActivePageBt(clicked, totalPages) {
             active.next().addClass('active_page');
         }
         else {
+            $('.active_page').removeClass('active_page');
             $(clicked).addClass('active_page');
         }
     }

@@ -1,5 +1,8 @@
 package com.fengzhixuan.timoc.game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Card
 {
     private int indecks;
@@ -27,6 +30,21 @@ public class Card
         this.draw = draw;
         this.revive = revive;
         this.taunt = taunt;
+    }
+
+    public static Card cardEntityToCard(com.fengzhixuan.timoc.data.entity.Card card)
+    {
+        return new Card(card.getIndecks(), card.getSuit(), card.getRank(), card.getAttack(), card.getBlock(), card.getHeal(), card.getMana(), card.getAoe(), card.getDraw(), card.getRevive(), card.getTaunt());
+    }
+
+    public static Map<Integer, Card> cardEntitiesToCards(Map<Integer, com.fengzhixuan.timoc.data.entity.Card> entities)
+    {
+        Map<Integer, Card> cards = new HashMap<>();
+        entities.forEach((key, value) -> {
+            cards.put(key, cardEntityToCard(value));
+        });
+
+        return cards;
     }
 
     public int getIndecks()

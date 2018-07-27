@@ -1,10 +1,15 @@
 package com.fengzhixuan.timoc.game;
 
+import java.util.Map;
+
 public class Player
 {
     private String name;
 
-    private Card[] deck;
+    private Map<Integer, Card> deck;
+
+    private static Card[] starters; // store starter cards separately in static to save memory
+    private static Map<Long, Player> players; // stores existing players (users who have entered a room or a game)
 
     private int hp;
     private int maxHp;
@@ -17,7 +22,7 @@ public class Player
     private int damageHeal;
     private int manaRestored;
 
-    public Player(String name, Card[] deck)
+    public Player(long id, String name, Map<Integer, Card> deck)
     {
         this.name = name;
         this.deck = deck;
@@ -26,6 +31,8 @@ public class Player
         mana = maxMana = 100;
         hate = 0;
         damageDealt = damageBlocked = damageHeal = manaRestored = 0;
+
+        players.put(id, this);
     }
 
     public String getName()
@@ -33,7 +40,7 @@ public class Player
         return name;
     }
 
-    public Card[] getDeck()
+    public Map<Integer, Card> getDeck()
     {
         return deck;
     }
@@ -126,5 +133,18 @@ public class Player
     public void setManaRestored(int manaRestored)
     {
         this.manaRestored = manaRestored;
+    }
+
+    public static Card[] getStarters()
+    {
+        return starters;
+    }
+
+    public static void setStarters(Card[] starters)
+    {
+        if (Player.starters == null)
+        {
+            Player.starters = starters;
+        }
     }
 }

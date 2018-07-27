@@ -78,6 +78,12 @@ public class SubscribeStompEventHandler implements ApplicationListener<SessionSu
             {
                 return "Invalid code";
             }
+
+            // room full
+            if (Room.getRoomByCode(code).isFull())
+            {
+                return "Room full";
+            }
         }
         return null;
     }
