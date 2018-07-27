@@ -202,6 +202,7 @@ $(document).ready(function()
 
             $('#ol_buttons').hide();
             $('#ol_selling').show();
+            $('#price').focus();
             $message.text('Put this card for sale on the market');
 
             $('#bt_confirm').off();
@@ -285,12 +286,12 @@ function updateCardStatusDiv(card, cardDiv) {
     switch (parseInt(card.ownerType)) {
         case 0:
             if (typeof(deck[card.indecks]) == 'undefined')
-                setCardStatusLabel(statusDiv, 'In Use');
+                setCardStatusLabel(statusDiv, 'In Deck');
             else
                 setCardStatusLabel(statusDiv, 'empty');
             break;
         case 1:
-            setCardStatusLabel(statusDiv, 'In Use');
+            setCardStatusLabel(statusDiv, 'In Deck');
             break;
         case 3:
             setCardStatusLabel(statusDiv, 'For Sale');
@@ -303,8 +304,8 @@ function updateCardStatusDiv(card, cardDiv) {
 
 function setCardStatusLabel(div, status) {
     switch (status) {
-        case 'In Use':
-            $(div).text('In Use');
+        case 'In Deck':
+            $(div).text('In Deck');
             $(div).css({'background-color': 'rgba(153, 204, 255, 32)'});
             break;
         case 'For Sale':

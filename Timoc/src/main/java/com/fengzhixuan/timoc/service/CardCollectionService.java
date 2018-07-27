@@ -2,6 +2,7 @@ package com.fengzhixuan.timoc.service;
 
 import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.CardCollection;
+import com.fengzhixuan.timoc.data.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,13 +10,13 @@ import java.util.List;
 @Service
 public interface CardCollectionService
 {
-    void addCard(Card card, CardCollection collection);
+    CardCollection findById(long id);
 
-    void removeCard(Card card, CardCollection collection);
+    void addCard(Card card, CardCollection collection, User user);
 
-    void transferCard(Card card, CardCollection collection_from, CardCollection collection_to);
+    void removeCard(Card card, CardCollection collection, User user);
 
-    boolean isStorageFull(CardCollection collection);
+    void transferCard(Card card, User user_from, User user_to);
 
     void saveCardCollection(CardCollection collection);
 

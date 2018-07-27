@@ -2,7 +2,7 @@ package com.fengzhixuan.timoc.service;
 
 import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.Offer;
-import com.fengzhixuan.timoc.data.entity.Player;
+import com.fengzhixuan.timoc.data.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -11,15 +11,15 @@ import java.util.Map;
 
 public interface OfferService
 {
-    Offer createOffer(Player player, Card card, int price);
+    Offer createOffer(User user, Card card, int price);
 
     void cancelOffer(Offer offer);
 
-    void acceptOffer(Offer offer, Player buyer, Player seller);
+    void acceptOffer(Offer offer, User buyer, User seller);
 
     Offer findById(long id);
 
-    List<Offer> findByPlayer(Player player);
+    List<Offer> findByUser(User user);
 
     List<Offer> findByExpDate(String dateString);
 

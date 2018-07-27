@@ -3,7 +3,7 @@ package com.fengzhixuan.timoc.service;
 import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.CardCollection;
 import com.fengzhixuan.timoc.data.entity.CardDeck;
-import com.fengzhixuan.timoc.data.entity.Player;
+import com.fengzhixuan.timoc.data.entity.User;
 
 public interface CardService
 {
@@ -21,5 +21,5 @@ public interface CardService
 
     Card getStarterCard(int indecks);
 
-    void turnIntoGold(Card card, Player player);
+    void turnIntoGold(Card card, User user);
 }

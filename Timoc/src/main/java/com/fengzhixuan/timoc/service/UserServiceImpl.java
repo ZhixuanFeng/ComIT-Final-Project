@@ -27,4 +27,47 @@ public class UserServiceImpl implements UserService
     {
         userRepository.save(user);
     }
+
+    @Override
+    @Transactional(propagation=Propagation.REQUIRED)
+    public void addGold(User user, int gold)
+    {
+        user.setGold(user.getGold() + gold);
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional(propagation=Propagation.REQUIRED)
+    public void removeGold(User user, int gold)
+    {
+        user.setGold(user.getGold() - gold);
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional(propagation=Propagation.NOT_SUPPORTED)
+    public boolean isStorageFull(User user)
+    {
+        return user.getMaxCardStorage() <= user.getCardsOwned();
+    }
+
+    @Override
+    public void incrementCardCount(User user)
+    {
+        if (user.getCardsOwned() < user.getMaxCardStorage())
+        {
+            user.setCardsOwned(user.getCardsOwned() + 1);
+        }
+        userRepository.save(user);
+    }
+
+    @Override
+    public void decrementCardCount(User user)
+    {
+        if (user.getCardsOwned() > 0)
+        {
+            user.setCardsOwned(user.getCardsOwned() - 1);
+        }
+        userRepository.save(user);
+    }
 }

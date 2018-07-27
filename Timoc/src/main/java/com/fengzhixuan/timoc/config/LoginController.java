@@ -4,7 +4,6 @@ import com.fengzhixuan.timoc.data.entity.*;
 import com.fengzhixuan.timoc.data.repository.RoleRepository;
 import com.fengzhixuan.timoc.service.CardCollectionService;
 import com.fengzhixuan.timoc.service.CardDeckService;
-import com.fengzhixuan.timoc.service.PlayerService;
 import com.fengzhixuan.timoc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -25,9 +24,6 @@ public class LoginController
 {
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private PlayerService playerService;
 
     @Autowired
     private CardCollectionService cardCollectionService;
@@ -95,18 +91,14 @@ public class LoginController
             modelAndView.addObject("user", new User());
             modelAndView.setViewName("registration");
 
-            // create associated player entity
-            Player player = new Player(user);
-
             // create associated card collection
-            CardCollection cardCollection = new CardCollection(player);
+            CardCollection cardCollection = new CardCollection(user.getId());
 
             userService.saveUser(user);
-            playerService.savePlayer(player);
             cardCollectionService.saveCardCollection(cardCollection);
 
             // create associated card deck
-            CardDeck cardDeck = new CardDeck(player.getId());
+            CardDeck cardDeck = new CardDeck(user.getId());
             cardDeckService.initializeDeck(cardDeck);  // this saves card deck
         }
         return modelAndView;

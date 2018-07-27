@@ -41,13 +41,12 @@ public class WebController
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByUsername(auth.getName());
-        Player player = user.getPlayer();
-        CardCollection cardCollection = player.getCardCollection();
-        if (!cardCollectionService.isStorageFull(cardCollection))
+        CardCollection cardCollection = cardCollectionService.findById(user.getId());
+        if (!userService.isStorageFull(user))
         {
-            Card newCard = cardService.createCard(player.getLevel(), 10);
-            cardCollectionService.addCard(newCard, player.getCardCollection());
-            cardDeckService.addCard(newCard, cardDeckService.getCardDeckById(player.getId())); // test deck
+            Card newCard = cardService.createCard(user.getLevel(), 10);
+            cardCollectionService.addCard(newCard, cardCollection, user);
+            cardDeckService.addCard(newCard, cardDeckService.getCardDeckById(user.getId())); // test deck
         }
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("hello");

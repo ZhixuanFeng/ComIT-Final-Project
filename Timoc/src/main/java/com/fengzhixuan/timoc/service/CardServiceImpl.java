@@ -3,7 +3,7 @@ package com.fengzhixuan.timoc.service;
 import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.CardCollection;
 import com.fengzhixuan.timoc.data.entity.CardDeck;
-import com.fengzhixuan.timoc.data.entity.Player;
+import com.fengzhixuan.timoc.data.entity.User;
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.enums.CardSuit;
 import com.fengzhixuan.timoc.data.repository.CardRepository;
@@ -18,10 +18,10 @@ import java.util.Random;
 public class CardServiceImpl implements CardService
 {
     @Autowired
-    private CardRepository cardRepository;
+    private UserService userService;
 
     @Autowired
-    private PlayerService playerService;
+    private CardRepository cardRepository;
 
     @Autowired
     private CardDeckService cardDeckService;
@@ -259,7 +259,6 @@ public class CardServiceImpl implements CardService
                 }
             }
         }
-        System.out.println(r + " Created card: " + card.toString());
         return card;
     }
 
@@ -383,7 +382,7 @@ public class CardServiceImpl implements CardService
 
     @Override
     @Transactional(propagation=Propagation.REQUIRED)
-    public void turnIntoGold(Card card, Player player)
+    public void turnIntoGold(Card card, User user)
     {
         int gold = 50 + card.getQuality();
 
@@ -396,8 +395,8 @@ public class CardServiceImpl implements CardService
         }
 
         CardCollection collection = card.getCardCollection();
-        playerService.addGold(player, gold);  // saves player
-        cardCollectionService.removeCard(card, collection); // saves collection
+        userService.addGold(user, gold);  // saves user
+        cardCollectionService.removeCard(card, collection, user); // saves collection
         cardRepository.delete(card);
     }
 }

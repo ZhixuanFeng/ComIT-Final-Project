@@ -1,7 +1,7 @@
 package com.fengzhixuan.timoc.data.repository;
 
 import com.fengzhixuan.timoc.data.entity.Offer;
-import com.fengzhixuan.timoc.data.entity.Player;
+import com.fengzhixuan.timoc.data.entity.User;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -14,7 +14,7 @@ public interface OfferRepository extends PagingAndSortingRepository<Offer, Long>
 {
     Offer findById(long id);
 
-    List<Offer> findByPlayer(Player player);
+    List<Offer> findByUser(User user);
 
     List<Offer> findByExpDate(Date date);
 

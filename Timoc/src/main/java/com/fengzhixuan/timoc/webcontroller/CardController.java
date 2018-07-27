@@ -2,7 +2,6 @@ package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.CardCollection;
-import com.fengzhixuan.timoc.data.entity.Player;
 import com.fengzhixuan.timoc.data.entity.User;
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.service.CardService;
@@ -32,8 +31,7 @@ public class CardController
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByUsername(auth.getName());
-        Player player = user.getPlayer();
-        long playerId = player.getId();
+        long userId = user.getId();
 
         // make sure it's not a starter card
         if (id <= 52)
@@ -56,12 +54,12 @@ public class CardController
 
         // make sure the card belongs to the player
         CardCollection collection = card.getCardCollection();
-        if (collection.getId() != playerId)
+        if (collection.getId() != userId)
         {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        cardService.turnIntoGold(card, player);
+        cardService.turnIntoGold(card, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

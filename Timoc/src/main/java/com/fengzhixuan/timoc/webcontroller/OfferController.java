@@ -18,12 +18,6 @@ public class OfferController
     private UserService userService;
 
     @Autowired
-    private CardDeckService cardDeckService;
-
-    @Autowired
-    private CardCollectionService cardCollectionService;
-
-    @Autowired
     private CardService cardService;
 
     @Autowired
@@ -36,7 +30,6 @@ public class OfferController
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByUsername(auth.getName());
-        Player player = user.getPlayer();
         long userId = user.getId();
         long id;
         int price;
@@ -91,7 +84,7 @@ public class OfferController
         }
 
         // both card id and price is ok, create offer
-        Offer offer = offerService.createOffer(player, card, price);
+        Offer offer = offerService.createOffer(user, card, price);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -114,10 +107,10 @@ public class OfferController
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        Player player = offer.getPlayer();
+        User owner = offer.getUser();
 
         // check if offer belongs to the user
-        if (player.getId() != userId)
+        if (owner.getId() != userId)
         {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
@@ -134,7 +127,7 @@ public class OfferController
         if (id == null) return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByUsername(auth.getName());
+        User buyer = userService.findUserByUsername(auth.getName());
 
         Offer offer = offerService.findById(id);
 
@@ -144,12 +137,10 @@ public class OfferController
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        Player buyer = user.getPlayer();
-        Player seller = offer.getPlayer();
+        User seller = offer.getUser();
 
         // check if buyer's storage is full
-        CardCollection collection = buyer.getCardCollection();
-        if (cardCollectionService.isStorageFull(collection))
+        if (userService.isStorageFull(buyer))
         {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }

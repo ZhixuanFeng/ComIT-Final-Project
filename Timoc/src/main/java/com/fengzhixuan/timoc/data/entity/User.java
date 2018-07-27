@@ -6,6 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -42,9 +44,20 @@ public class User
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY, optional = false)
-    private Player player;
+    @Column(name="level", nullable=false, columnDefinition="TINYINT DEFAULT 1")
+    private int level;
+
+    @Column(name="gold", nullable=false, columnDefinition="INT DEFAULT 0")
+    private int gold;
+
+    @Column(name="max_card_storage", nullable=false, columnDefinition="SMALLINT DEFAULT 52")
+    private int maxCardStorage;
+
+    @Column(name="cards_owned", nullable=false, columnDefinition="SMALLINT DEFAULT 0")
+    private int cardsOwned;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Offer> offers = new ArrayList<>();
 
     public User(){}
 
@@ -108,13 +121,53 @@ public class User
         this.roles = roles;
     }
 
-    public Player getPlayer()
+    public int getLevel()
     {
-        return player;
+        return level;
     }
 
-    public void setPlayer(Player player)
+    public void setLevel(int level)
     {
-        this.player = player;
+        this.level = level;
+    }
+
+    public int getGold()
+    {
+        return gold;
+    }
+
+    public void setGold(int gold)
+    {
+        this.gold = gold;
+    }
+
+    public int getMaxCardStorage()
+    {
+        return maxCardStorage;
+    }
+
+    public void setMaxCardStorage(int maxCardStorage)
+    {
+        this.maxCardStorage = maxCardStorage;
+    }
+
+    public int getCardsOwned()
+    {
+        return cardsOwned;
+    }
+
+    public void setCardsOwned(int cardsOwned)
+    {
+        this.cardsOwned = cardsOwned;
+    }
+
+    public List<Offer> getOffers()
+    {
+        return offers;
+    }
+
+    public void setOffers(List<Offer> offers)
+    {
+        this.offers = offers;
     }
 }

@@ -16,9 +16,9 @@ public class Offer
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "player_id")
+    @JoinColumn(name = "user_id")
     @JsonBackReference
-    private Player player;
+    private User user;
 
     @Column(name="player_name", nullable=false, length=31)
     private String playerName;
@@ -70,10 +70,10 @@ public class Offer
 
     public Offer(){}
 
-    public Offer(Player player, Card card, int price)
+    public Offer(User user, Card card, int price)
     {
-        this.player = player;
-        this.playerName = player.getName();
+        this.user = user;
+        this.playerName = user.getUsername();
         this.card = card;
         this.indecks = card.getIndecks();
         this.price = price;
@@ -100,14 +100,14 @@ public class Offer
         this.id = id;
     }
 
-    public Player getPlayer()
+    public User getUser()
     {
-        return player;
+        return user;
     }
 
-    public void setPlayer(Player player)
+    public void setUser(User user)
     {
-        this.player = player;
+        this.user = user;
     }
 
     public String getPlayerName()

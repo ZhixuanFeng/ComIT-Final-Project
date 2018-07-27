@@ -9,10 +9,8 @@ public class CardDeck
 {
     @Id
     @Column(name = "id")
-    private long id;
+    private long id;  // will be the same as user id
 
-    /*@OneToMany(mappedBy = "cardDeck", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Card> allCards = new ArrayList<>();*/
     @OneToMany(mappedBy="cardDeck", fetch = FetchType.LAZY)
     @MapKey(name="indecks")
     private Map<Integer, Card> cards;

@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CardCollectionRepository extends JpaRepository<CardCollection, Long>
 {
-
+    CardCollection findById(long id);
 }

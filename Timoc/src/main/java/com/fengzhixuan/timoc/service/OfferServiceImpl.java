@@ -24,13 +24,13 @@ import java.util.*;
 public class OfferServiceImpl implements OfferService
 {
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private OfferRepository offerRepository;
 
     @Autowired
     private CardService cardService;
-
-    @Autowired
-    private PlayerService playerService;
 
     @Autowired
     private CardDeckService cardDeckService;
@@ -42,9 +42,9 @@ public class OfferServiceImpl implements OfferService
 
     @Override
     @Transactional(propagation=Propagation.REQUIRED)
-    public Offer createOffer(Player player, Card card, int price)
+    public Offer createOffer(User user, Card card, int price)
     {
-        Offer offer = new Offer(player, card, price);
+        Offer offer = new Offer(user, card, price);
         // set expiry date to be 5 days later
         Date date = new Date();
         date = addDays(date, 5);
@@ -78,18 +78,18 @@ public class OfferServiceImpl implements OfferService
 
     @Override
     @Transactional(propagation=Propagation.REQUIRED)
-    public void acceptOffer(Offer offer, Player buyer, Player seller)
+    public void acceptOffer(Offer offer, User buyer, User seller)
     {
-        // the buyer's collection should not be full and player should have enough gold
+        // the buyer's collection should not be full and user should have enough gold
         Card card = offer.getCard();
         int price = offer.getPrice();
 
         // pay gold
-        playerService.removeGold(buyer, price);
-        playerService.addGold(seller, price);
+        userService.removeGold(buyer, price);
+        userService.addGold(seller, price);
 
         // set card
-        cardCollectionService.transferCard(card, seller.getCardCollection(), buyer.getCardCollection()); // saves card
+        cardCollectionService.transferCard(card, seller, buyer); // saves card
 
         // remove offer
         cardService.saveCard(card);
@@ -105,9 +105,9 @@ public class OfferServiceImpl implements OfferService
 
     @Override
     @Transactional(propagation=Propagation.NOT_SUPPORTED)
-    public List<Offer> findByPlayer(Player player)
+    public List<Offer> findByUser(User user)
     {
-        return offerRepository.findByPlayer(player);
+        return offerRepository.findByUser(user);
     }
 
     @Override

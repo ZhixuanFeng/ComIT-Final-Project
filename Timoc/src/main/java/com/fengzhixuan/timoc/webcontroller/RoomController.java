@@ -1,8 +1,8 @@
 package com.fengzhixuan.timoc.webcontroller;
 
-import com.fengzhixuan.timoc.data.entity.Player;
-import com.fengzhixuan.timoc.service.PlayerService;
+import com.fengzhixuan.timoc.data.entity.User;
 import com.fengzhixuan.timoc.game.Room;
+import com.fengzhixuan.timoc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -18,7 +18,7 @@ import java.security.Principal;
 public class RoomController
 {
     @Autowired
-    private PlayerService playerService;
+    private UserService userService;
 
     @RequestMapping(value = "/room/create", method = RequestMethod.POST)
     public @ResponseBody
@@ -32,7 +32,7 @@ public class RoomController
     @SendTo("/topic/room/{code}")
     public String enterRoom(@DestinationVariable String code, Principal principal)
     {
-        Player player = playerService.findPlayerByName(principal.getName());
+        User user = userService.findUserByUsername(principal.getName());
         return principal.getName() + " entered room " + code;
     }
 }
