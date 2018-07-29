@@ -3,18 +3,20 @@ package com.fengzhixuan.timoc.webcontroller;
 import com.fengzhixuan.timoc.data.entity.CardDeck;
 import com.fengzhixuan.timoc.data.entity.User;
 import com.fengzhixuan.timoc.game.Card;
+import com.fengzhixuan.timoc.game.GameCodeGenerator;
 import com.fengzhixuan.timoc.game.Player;
 import com.fengzhixuan.timoc.game.Room;
 import com.fengzhixuan.timoc.service.CardDeckService;
 import com.fengzhixuan.timoc.service.UserService;
+import com.fengzhixuan.timoc.websocket.message.room.RoomInfoMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -35,26 +37,43 @@ public class RoomController
         return room.getCodeString();
     }
 
-    @MessageMapping("/room.enter/{code}")
-    @SendTo("/topic/room/{code}")
-    public String enterRoom(@DestinationVariable String code, Principal principal)
+    @RequestMapping(value = "/room/enter", method = RequestMethod.POST)
+    public @ResponseBody
+    String enterRoom(@RequestParam String code)
     {
-        String name = principal.getName();
-        User user = userService.findUserByUsername(name);
-        if (user == null) { return "error"; }
-
-        CardDeck deck = cardDeckService.getCardDeckById(user.getId());
-        if (deck == null) { return "error"; }
+        // code invalid
+        if (!GameCodeGenerator.isCodeValid(code)) { return "Invalid code"; }
 
         Room room = Room.getRoomByCode(code);
-        if (room == null || room.isFull())
-        {
-            // shouldn't happen as SubscribeStompEventHandler already checked this
-            return "error";
-        }
 
-        Player player = new Player(user.getId(), name, Card.cardEntitiesToCards(deck.getCards()));
+        // room not exist
+        if (room == null) { return "Invalid code"; }
+
+        // room full
+        if (room.isFull()) { return "Room full"; }
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.findUserByUsername(auth.getName());
+        long userId = user.getId();
+        CardDeck deck = cardDeckService.getCardDeckById(userId);
+
+        // create player object and add into room
+        Player player = new Player(user.getUsername(), room.getCode(), Card.cardEntitiesToCards(deck.getCards()));
         room.addPlayer(player);
-        return principal.getName() + " entered room " + code;
+
+        return "OK";
+    }
+
+    @MessageMapping("/room.enter/{code}")
+    @SendTo("/topic/room/{code}")
+    public RoomInfoMessage enterRoom(@DestinationVariable String code, Principal principal)
+    {
+        Room room = Room.getRoomByCode(code);
+        if (room == null)
+        {
+            // shouldn't happen as StompSubscribeEventHandler already checked this
+            return null;
+        }
+        return RoomInfoMessage.createMessage(room.getPlayers());
     }
 }

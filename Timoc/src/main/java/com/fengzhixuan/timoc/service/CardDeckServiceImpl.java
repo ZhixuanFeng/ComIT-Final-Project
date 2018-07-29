@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class CardDeckServiceImpl implements CardDeckService
     @Transactional(propagation=Propagation.NOT_SUPPORTED)
     public CardDeck getCardDeckById(long id)
     {
-        return cardDeckRepository.getOne(id);
+        return cardDeckRepository.findById(id);
     }
 
     @Override
@@ -111,6 +112,20 @@ public class CardDeckServiceImpl implements CardDeckService
                 cards.add(cardService.getStarterCard(i));
             }
         }
+        return cards;
+    }
+
+    // turn card object entities to card objects to be stored in memory
+    // TODO: could be a bad idea to have two classes with the same name "Card", do something?
+    @Override
+    public Map<Integer, com.fengzhixuan.timoc.game.Card> getCardsFromCardEntities(CardDeck deck)
+    {
+        Map<Integer, com.fengzhixuan.timoc.game.Card> cards = new HashMap<>();
+        Map<Integer, com.fengzhixuan.timoc.data.entity.Card> entities = deck.getCards();
+        entities.forEach((key, value) -> {
+            cards.put(key, com.fengzhixuan.timoc.game.Card.cardEntityToCard(value));
+        });
+
         return cards;
     }
 }

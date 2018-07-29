@@ -20,29 +20,35 @@
                     <span th:utext="${welcome}"></span>
                 </div>
                 <p>
-                    Note: The UIs are functional, but not user-friendly and look bad.
+                    The UIs are functional, but not user-friendly and look bad.
+                    <br>
                     I'll focus on UI/UX design next month :)
                 </p>
             </div>
         </div>
         <br>
-        <form th:action="@{/deck}" method="get">
-            <button class="btn btn-md btn-info btn-block" name="deck"
-                    type="Submit">Manage your deck</button>
+        <form th:action="@{/room}" method="get">
+            <button class="btn btn-md btn-primary btn-block"
+                    type="Submit">Play!</button>
         </form>
         <br>
         <form th:action="@{/collection}" method="get">
-            <button class="btn btn-md btn-info btn-block" name="collection"
+            <button class="btn btn-md btn-info btn-block"
                     type="Submit">View your collection</button>
         </form>
         <br>
+        <form th:action="@{/deck}" method="get">
+            <button class="btn btn-md btn-success btn-block"
+                    type="Submit">Manage your deck</button>
+        </form>
+        <br>
         <form th:action="@{/market}" method="get">
-            <button class="btn btn-md btn-info btn-block" name="market"
+            <button class="btn btn-md btn-warning btn-block"
                     type="Submit">Go to card market</button>
         </form>
         <br>
         <form th:action="@{/logout}" method="get">
-            <button class="btn btn-md btn-danger btn-block" name="logout"
+            <button class="btn btn-md btn-danger btn-block"
                     type="Submit">Logout</button>
         </form>
     </div>

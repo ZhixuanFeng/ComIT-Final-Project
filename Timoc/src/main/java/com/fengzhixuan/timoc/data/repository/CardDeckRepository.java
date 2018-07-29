@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CardDeckRepository extends JpaRepository<CardDeck, Long>
 {
+    CardDeck findById(long id);
 }

@@ -71,12 +71,20 @@ public class Room
     // remove player from player list
     public void removePlayer(Player player)
     {
-        players.remove(player);
+        if (containsPlayer(player)) players.remove(player);
     }
 
     public boolean containsPlayer(Player player)
     {
         return players.contains(player);
+    }
+
+    public boolean containsPlayer(String name)
+    {
+        for (Player player : players)
+            if (player.getName().equals(name))
+                return true;
+        return false;
     }
 
     public boolean isFull()
@@ -87,5 +95,10 @@ public class Room
     public boolean isEmpty()
     {
         return players.isEmpty();
+    }
+
+    public static void removeRoom(int code)
+    {
+        if (rooms.containsKey(code)) rooms.remove(code);
     }
 }

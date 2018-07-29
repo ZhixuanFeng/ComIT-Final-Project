@@ -1,16 +1,20 @@
 package com.fengzhixuan.timoc.game;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Player
 {
+    // stores existing players (users who have entered a room or a game)
+    // mapped by username
+    private static Map<String, Player> players = new HashMap<>();
+    // store starter cards separately in static to save memory
+    // GameController initializes this at application launch
+    private static Card[] starters;
+
     private String name;
-
+    private int code;
     private Map<Integer, Card> deck;
-
-    private static Card[] starters; // store starter cards separately in static to save memory
-    private static Map<Long, Player> players; // stores existing players (users who have entered a room or a game)
-
     private int hp;
     private int maxHp;
     private int mana;
@@ -22,9 +26,10 @@ public class Player
     private int damageHeal;
     private int manaRestored;
 
-    public Player(long id, String name, Map<Integer, Card> deck)
+    public Player(String name, int code, Map<Integer, Card> deck)
     {
         this.name = name;
+        this.code = code;
         this.deck = deck;
 
         hp = maxHp = 100;
@@ -32,12 +37,27 @@ public class Player
         hate = 0;
         damageDealt = damageBlocked = damageHeal = manaRestored = 0;
 
-        players.put(id, this);
+        players.put(name, this);
+    }
+
+    public static Player findPlayerByName(String name)
+    {
+        return players.containsKey(name) ? players.get(name) : null;
+    }
+
+    public static void removePlayer(String name)
+    {
+        if (players.containsKey(name)) players.remove(name);
     }
 
     public String getName()
     {
         return name;
+    }
+
+    public int getCode()
+    {
+        return code;
     }
 
     public Map<Integer, Card> getDeck()

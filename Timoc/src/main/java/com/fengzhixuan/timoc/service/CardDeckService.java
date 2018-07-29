@@ -4,6 +4,7 @@ import com.fengzhixuan.timoc.data.entity.Card;
 import com.fengzhixuan.timoc.data.entity.CardDeck;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CardDeckService
 {
@@ -19,4 +20,6 @@ public interface CardDeckService
     void removeCardAt(int indecks, CardDeck deck);
 
     List<Card> getCards(CardDeck deck);
+
+    Map<Integer, com.fengzhixuan.timoc.game.Card> getCardsFromCardEntities(CardDeck deck);
 }

@@ -15,7 +15,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import java.security.Principal;
 
 @Component
-public class SubscribeStompEventHandler implements ApplicationListener<SessionSubscribeEvent>
+public class StompSubscribeEventHandler implements ApplicationListener<SessionSubscribeEvent>
 {
     @Autowired
     @Qualifier("clientOutboundChannel")
@@ -73,16 +73,24 @@ public class SubscribeStompEventHandler implements ApplicationListener<SessionSu
                 return "Invalid code";
             }
 
+            Room room = Room.getRoomByCode(code);
             // room not exist
-            if (Room.getRoomByCode(code) == null)
+            if (room == null)
             {
                 return "Invalid code";
             }
 
             // room full
-            if (Room.getRoomByCode(code).isFull())
+            if (room.isFull())
             {
                 return "Room full";
+            }
+
+            // the post request right before this subscription puts player object into the room object
+            // unless some error happens or user modifies the front end, otherwise this shouldn't happen
+            if (!room.containsPlayer(principal.getName()))
+            {
+                return "Error";
             }
         }
         return null;

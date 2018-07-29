@@ -20,7 +20,7 @@ body
     margin: 2% 0;
 }
 
-.player
+.playerDiv
 {
     border: 2px solid black;
     border-radius: 10px;
@@ -29,6 +29,20 @@ body
     height: 90%;
     margin: 1.5% 0.2%;
     display: block;
+}
+
+.player
+{
+    position: relative;
+    text-align: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.avatar
+{
+    width: 40%;
+    height: auto;
 }
 
 #start_bt
@@ -46,12 +60,12 @@ body
     border-radius: 10px;
 }
 
-#start_bt:hover
+#ready_bt:hover
 {
     background-color: gold;
 }
 
-#start_bt:active
+#ready_bt:active
 {
     background-color: goldenrod;
 }
