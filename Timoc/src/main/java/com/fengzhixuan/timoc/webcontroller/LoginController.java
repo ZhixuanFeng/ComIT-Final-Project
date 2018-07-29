@@ -1,4 +1,4 @@
-package com.fengzhixuan.timoc.config;
+package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.data.entity.*;
 import com.fengzhixuan.timoc.data.repository.RoleRepository;
@@ -130,7 +130,7 @@ public class LoginController
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByUsername(auth.getName());
         modelAndView.addObject("welcome", "Welcome " + user.getUsername());
-        modelAndView.setViewName("/hello");
+        modelAndView.setViewName("hello");
         return modelAndView;
     }
 }
