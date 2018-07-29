@@ -9,6 +9,7 @@ import com.fengzhixuan.timoc.game.Room;
 import com.fengzhixuan.timoc.service.CardDeckService;
 import com.fengzhixuan.timoc.service.UserService;
 import com.fengzhixuan.timoc.websocket.message.room.RoomInfoMessage;
+import com.fengzhixuan.timoc.websocket.message.room.RoomReadyMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -37,6 +38,10 @@ public class RoomController
         return room.getCodeString();
     }
 
+    /*
+     * Handle post request to create player object and put it in the room object
+     * Could have done it in the messageMapping but it does not have JPA access
+     */
     @RequestMapping(value = "/room/enter", method = RequestMethod.POST)
     public @ResponseBody
     String enterRoom(@RequestParam String code)
@@ -64,16 +69,32 @@ public class RoomController
         return "OK";
     }
 
+    /*
+     * When a player enter a room, broadcast the info of players in the room to everyone inside
+     */
     @MessageMapping("/room.enter/{code}")
     @SendTo("/topic/room/{code}")
     public RoomInfoMessage enterRoom(@DestinationVariable String code, Principal principal)
     {
+        if (principal == null) { return null; }
         Room room = Room.getRoomByCode(code);
-        if (room == null)
-        {
-            // shouldn't happen as StompSubscribeEventHandler already checked this
-            return null;
-        }
+        if (room == null) { return null; }
         return RoomInfoMessage.createMessage(room.getPlayers());
+    }
+
+    /*
+     * When a player clicks the ready button, toggle their ready status and tell everyone
+     */
+    @MessageMapping("/room.ready/{code}")
+    @SendTo("/topic/room/{code}")
+    public RoomReadyMessage toggleReady(@DestinationVariable String code, Principal principal)
+    {
+        if (principal == null) { return null; }
+        Room room = Room.getRoomByCode(code);
+        if (room == null) { return null; }
+        String username = principal.getName();
+        Player player = Player.findPlayerByName(username);
+        room.setPlayerReady(player, !room.isPlayerReady(player)); // toggle ready status
+        return new RoomReadyMessage(username, room.isPlayerReady(player));
     }
 }

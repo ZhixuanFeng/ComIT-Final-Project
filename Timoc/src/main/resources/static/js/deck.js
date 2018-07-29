@@ -1,13 +1,13 @@
 "use strict";
 
-var cardsInStorage = [];
-var deck = [new Array(13), new Array(13), new Array(13), new Array(13)];
-var currentSuit = 0;
+let cardsInStorage = [];
+let deck = [new Array(13), new Array(13), new Array(13), new Array(13)];
+let currentSuit = 0;
 
 $(document).ready(function()
 {
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function(e,xhr,options) {
         xhr.setRequestHeader(header, token);
     });
@@ -22,17 +22,17 @@ $(document).ready(function()
         });
 
         // major divs
-        var $suitFilterDiv = $('<div class="suit_filter">').appendTo('body');
-        var $diamondBtn = $('<img src="images/diamond.png"/>');
-        var $clubBtn = $('<img src="images/club.png"/>');
-        var $heartBtn = $('<img src="images/heart.png"/>');
-        var $spadeBtn = $('<img src="images/spade.png"/>');
-        var suitBtns = [$diamondBtn, $clubBtn, $heartBtn, $spadeBtn];
-        var $deckArea = $('<div>').addClass('card_area').appendTo('body');
-        var $storageArea = $('<div>').addClass('card_area').addClass('storage_area').appendTo('body');
+        let $suitFilterDiv = $('<div class="suit_filter">').appendTo('body');
+        let $diamondBtn = $('<img src="images/diamond.png"/>');
+        let $clubBtn = $('<img src="images/club.png"/>');
+        let $heartBtn = $('<img src="images/heart.png"/>');
+        let $spadeBtn = $('<img src="images/spade.png"/>');
+        let suitBtns = [$diamondBtn, $clubBtn, $heartBtn, $spadeBtn];
+        let $deckArea = $('<div>').addClass('card_area').appendTo('body');
+        let $storageArea = $('<div>').addClass('card_area').addClass('storage_area').appendTo('body');
 
         // suit button onclick
-        for (var i = 0; i < 4; i++)
+        for (let i = 0; i < 4; i++)
         {
             suitBtns[i].attr('id', i).addClass('suit_btn').appendTo($suitFilterDiv);
             suitBtns[i].click(function () {
@@ -53,9 +53,9 @@ $(document).ready(function()
 
         function setCardArea() {
             displayCards(deck[currentSuit], $deckArea);
-            for (var i = 0; i < 13; i++) {
-                var indecks = currentSuit * 13 + i;
-                var n = 0;
+            for (let i = 0; i < 13; i++) {
+                let indecks = currentSuit * 13 + i;
+                let n = 0;
                 if (typeof(deck[currentSuit][i]) != 'undefined' ) n++;
                 cardsInStorage.forEach(function (cardInStorage) {
                     if (cardInStorage.indecks == indecks) n++;
@@ -66,20 +66,20 @@ $(document).ready(function()
             $deckArea.children('.card').on('mousedown', function(e) {
                 $(this).data('p0', { x: e.pageX, y: e.pageY });
             }).on('mouseup', function(e) {
-                var p0 = $(this).data('p0');
-                var p1 = { x: e.pageX, y: e.pageY };
-                var d = Math.sqrt(Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y - p0.y, 2));
+                let p0 = $(this).data('p0');
+                let p1 = { x: e.pageX, y: e.pageY };
+                let d = Math.sqrt(Math.pow(p1.x - p0.x, 2) + Math.pow(p1.y - p0.y, 2));
 
                 if (d < 4) { // on click
                     $storageArea.empty();
-                    var rank = $(this).children('span.rank').text();
+                    let rank = $(this).children('span.rank').text();
                     if (rank == 'A') rank = 1;
                     else if (rank == 'J') rank = 11;
                     else if (rank == 'Q') rank = 12;
                     else if (rank == 'K') rank = 13;
                     else rank = parseInt(rank);
-                    var indecks = currentSuit * 13 + rank - 1;
-                    var cardChoices = [];
+                    let indecks = currentSuit * 13 + rank - 1;
+                    let cardChoices = [];
                     cardsInStorage.forEach(function (card) {
                         if (card.indecks == indecks) cardChoices.push(card);
                     });
@@ -88,15 +88,15 @@ $(document).ready(function()
                     displayCards(cardChoices, $storageArea);
 
                     $storageArea.children('.card').click(function () {
-                        var id = this.id;
+                        let id = this.id;
                         $.post('/deck/set_card', {id:id}, function () {
                             $storageArea.empty();
                             $deckArea.empty();
-                            var chosen;
+                            let chosen;
                             cardChoices.forEach(function (card) {
                                 if (card.id == id) chosen = card;
                             });
-                            var index = cardsInStorage.indexOf(chosen);
+                            let index = cardsInStorage.indexOf(chosen);
                             if (index > -1) { // picking non-starter
                                 cardsInStorage.splice(index, 1);
                                 if (typeof(deck[currentSuit][getRank(chosen) - 1]) != 'undefined') {
@@ -123,11 +123,11 @@ $(document).ready(function()
 });
 
 function displayCards(cards, $div) {
-    for (var i = 0; i < cards.length; i++) {
-        var card = (typeof(cards[i]) == 'undefined') ? starter[currentSuit * 13 + i] : cards[i];
-        var $cardDiv = addCardBody(card, $div);
+    for (let i = 0; i < cards.length; i++) {
+        let card = (typeof(cards[i]) == 'undefined') ? starter[currentSuit * 13 + i] : cards[i];
+        let $cardDiv = addCardBody(card, $div);
 
-        var $num = $('<div>').addClass('num').appendTo($cardDiv);
+        let $num = $('<div>').addClass('num').appendTo($cardDiv);
     }
     $($div).dragscrollable({
         dragSelector: '.card'

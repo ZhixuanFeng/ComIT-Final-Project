@@ -11,6 +11,7 @@ public class Room
 
     private int code;
     private List<Player> players = new ArrayList<>();
+    private Map<Player, PlayerStatus> playerStatuses = new HashMap<>();
 
     public Room(int code)
     {
@@ -65,13 +66,21 @@ public class Room
     // add player to player list
     public void addPlayer(Player player)
     {
-        if (!containsPlayer(player)) players.add(player);
+        if (!containsPlayer(player))
+        {
+            players.add(player);
+            playerStatuses.put(player, new PlayerStatus());
+        }
     }
 
     // remove player from player list
     public void removePlayer(Player player)
     {
-        if (containsPlayer(player)) players.remove(player);
+        if (containsPlayer(player))
+        {
+            players.remove(player);
+            playerStatuses.remove(player);
+        }
     }
 
     public boolean containsPlayer(Player player)
@@ -100,5 +109,35 @@ public class Room
     public static void removeRoom(int code)
     {
         if (rooms.containsKey(code)) rooms.remove(code);
+    }
+
+    public boolean isPlayerReady(Player player)
+    {
+        return playerStatuses.get(player).isReady();
+    }
+
+    public void setPlayerReady(Player player, boolean isReady)
+    {
+        playerStatuses.get(player).setReady(isReady);
+    }
+}
+
+class PlayerStatus
+{
+    private boolean isReady;
+
+    public PlayerStatus()
+    {
+        isReady = false;
+    }
+
+    public boolean isReady()
+    {
+        return isReady;
+    }
+
+    public void setReady(boolean ready)
+    {
+        isReady = ready;
     }
 }

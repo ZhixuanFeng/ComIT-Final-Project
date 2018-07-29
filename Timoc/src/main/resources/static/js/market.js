@@ -1,26 +1,26 @@
 "use strict"
 
-var gold;
-var numOfCards = 0;
-var maxNumOfCards = 52;
-var activePageNum = 0;
+let gold;
+let numOfCards = 0;
+let maxNumOfCards = 52;
+let activePageNum = 0;
 $(document).ready(function()
 {
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
+    let token = $("meta[name='_csrf']").attr("content");
+    let header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function(e,xhr,options) {
         xhr.setRequestHeader(header, token);
     });
 
-    var cardAreaDiv = $('#card_area');
+    let cardAreaDiv = $('#card_area');
     $.post('market/all', {page:0}, function (result) {
         displayCards(result.content, cardAreaDiv);
 
-        var totalPages = result.totalPages;
+        let totalPages = result.totalPages;
         $('#page_numbers').empty();
 
         prevOrNextPageBt('market/all', {page:0}, false, totalPages);
-        for (var i = 0; i < totalPages && i < 6; i++) {
+        for (let i = 0; i < totalPages && i < 6; i++) {
             newPageNumBt(i, 'market/all', {page:i}, totalPages);
         }
         prevOrNextPageBt('market/all', {page:0}, true, totalPages);
@@ -36,17 +36,17 @@ $(document).ready(function()
     // $('#bt_buy').hide();
     // $('#bt_dismiss').hide();
 
-    var effectCheckboxes = [$('#cb_attack'), $('#cb_block'), $('#cb_heal'), $('#cb_mana'), $('#cb_aoe'), $('#cb_draw'), $('#cb_revive'), $('#cb_taunt')];
-    var suitCheckboxes = [$('#cb_diamond'), $('#cb_club'), $('#cb_heart'), $('#cb_spade')];
-    var rankCheckboxes = [$('#cb_1'), $('#cb_2'), $('#cb_3'), $('#cb_4'), $('#cb_5'), $('#cb_6'), $('#cb_7'), $('#cb_8'), $('#cb_9'), $('#cb_10'), $('#cb_11'), $('#cb_12'), $('#cb_13')];
+    let effectCheckboxes = [$('#cb_attack'), $('#cb_block'), $('#cb_heal'), $('#cb_mana'), $('#cb_aoe'), $('#cb_draw'), $('#cb_revive'), $('#cb_taunt')];
+    let suitCheckboxes = [$('#cb_diamond'), $('#cb_club'), $('#cb_heart'), $('#cb_spade')];
+    let rankCheckboxes = [$('#cb_1'), $('#cb_2'), $('#cb_3'), $('#cb_4'), $('#cb_5'), $('#cb_6'), $('#cb_7'), $('#cb_8'), $('#cb_9'), $('#cb_10'), $('#cb_11'), $('#cb_12'), $('#cb_13')];
 
-    var anyEffectCB = $('#cb_effect_any');
-    var allSuitCB = $('#cb_suit_all');
-    var allRankCB = $('#cb_rank_all');
+    let anyEffectCB = $('#cb_effect_any');
+    let allSuitCB = $('#cb_suit_all');
+    let allRankCB = $('#cb_rank_all');
 
-    var nEffectCBChecked = 0;
-    var nSuitCBChecked = 4;
-    var nRankCBChecked = 13;
+    let nEffectCBChecked = 0;
+    let nSuitCBChecked = 4;
+    let nRankCBChecked = 13;
 
     anyEffectCB.change(function () {
         effectCheckboxes.forEach(function (cb) {
@@ -129,7 +129,7 @@ $(document).ready(function()
     });
 
     $('.apply').click(function () {
-        var criteria = {};
+        let criteria = {};
 
         if (nEffectCBChecked > 0) {
             criteria['effect'] = '';
@@ -137,7 +137,7 @@ $(document).ready(function()
                 if (cb.is(':checked'))
                     criteria['effect'] += cb.val() + '&';
             });
-            var str = criteria['effect'];
+            let str = criteria['effect'];
             criteria['effect'] = str.substr(0, str.length-1); // remove the last '&'
         }
 
@@ -148,7 +148,7 @@ $(document).ready(function()
                 if (cb.is(':checked'))
                     criteria['suit'] += cb.val() + '|';
             });
-            var str = criteria['suit'];
+            let str = criteria['suit'];
             criteria['suit'] = str.substr(0, str.length-1);
         }
 
@@ -158,7 +158,7 @@ $(document).ready(function()
                 if (cb.is(':checked'))
                     criteria['rank'] += cb.val() + '|';
             });
-            var str = criteria['rank'];
+            let str = criteria['rank'];
             criteria['rank'] = str.substr(0, str.length-1);
         }
 
@@ -167,10 +167,10 @@ $(document).ready(function()
         $.post('market/filter', criteria, function (result) {
             displayCards(result.content, cardAreaDiv);
 
-            var totalPages = result.totalPages;
+            let totalPages = result.totalPages;
             $('#page_numbers').empty();
             prevOrNextPageBt('market/filter', criteria, false, totalPages);
-            for (var i = 0; i < totalPages && i < 6; i++) {
+            for (let i = 0; i < totalPages && i < 6; i++) {
                 newPageNumBt(i, 'market/filter', criteria, totalPages);
             }
             prevOrNextPageBt('market/filter', criteria, true, totalPages);
@@ -182,12 +182,12 @@ $(document).ready(function()
 
 function displayCards(cards, div) {
     div.empty();
-    var $overlay = $('#overlay');
+    let $overlay = $('#overlay');
     cards.forEach(function (offer) {
-        var cardDiv = addCardBody(offer, div);
-        var $price = $('<div>').addClass('price').appendTo(cardDiv);
-        var $goldIcon = $('<img src="images/gold.png" height="8" width="8"/>').addClass('gold_icon').appendTo($price);
-        var $priceNum = $('<div>').text(offer.price).addClass('price_num').appendTo($price);
+        let cardDiv = addCardBody(offer, div);
+        let $price = $('<div>').addClass('price').appendTo(cardDiv);
+        let $goldIcon = $('<img src="images/gold.png" height="8" width="8"/>').addClass('gold_icon').appendTo($price);
+        let $priceNum = $('<div>').text(offer.price).addClass('price_num').appendTo($price);
 
         $(cardDiv).click(function () {
             if ($overlay.is(':visible')) {
@@ -225,7 +225,7 @@ function displayCards(cards, div) {
     });
 
     $(document).mouseup(function(e) {
-        var container = $('#overlay');
+        let container = $('#overlay');
         if (container.is(':visible') && !container.is(e.target) && container.has(e.target).length === 0 && !$('.card').is(e.target) && $('.card').has(e.target).length === 0)
         {
             container.hide();
@@ -238,14 +238,14 @@ function displayCards(cards, div) {
 }
 
 function newPageNumBt(pageNum, postURL, postData, totalPages) {
-    var $page = $('<a href="#">');
+    let $page = $('<a href="#">');
     $page.text(pageNum+1);
     if (pageNum == activePageNum) {
         $page.addClass('active_page');
     }
 
     $page.click(function () {
-        var page = this;
+        let page = this;
         activePageNum = $(page).text() - 1;
         postData.page = activePageNum;
         $.post(postURL, postData, function (result) {
@@ -258,7 +258,7 @@ function newPageNumBt(pageNum, postURL, postData, totalPages) {
 }
 
 function prevOrNextPageBt(postURL, postData, isNext, totalPages) {
-    var $bt = $('<a href="#">');
+    let $bt = $('<a href="#">');
 
     if (isNext) $bt.text('>');
     else $bt.text('<');
@@ -278,8 +278,8 @@ function prevOrNextPageBt(postURL, postData, isNext, totalPages) {
 
 function updateActivePageBt(clicked, totalPages) {
     if (totalPages > 6) {
-        var start = activePageNum - 1;
-        var end = activePageNum + 4;
+        let start = activePageNum - 1;
+        let end = activePageNum + 4;
         if (start < 1) {
             start = 1;
             end = 6;
@@ -288,8 +288,8 @@ function updateActivePageBt(clicked, totalPages) {
             end = totalPages;
             start = end - 5;
         }
-        var pageNums = $('#page_numbers').children();
-        for (var i = 1; i <= 6; i++) {
+        let pageNums = $('#page_numbers').children();
+        for (let i = 1; i <= 6; i++) {
             $(pageNums[i]).text(start + i - 1);
             if (start + i - 2 == activePageNum) {
                 $('.active_page').removeClass('active_page');
@@ -299,12 +299,12 @@ function updateActivePageBt(clicked, totalPages) {
     }
     else {
         if ($(clicked).text() === '<') {
-            var active = $('.active_page');
+            let active = $('.active_page');
             $('.active_page').removeClass('active_page');
             active.prev().addClass('active_page');
         }
         else if ($(clicked).text() === '>') {
-            var active = $('.active_page');
+            let active = $('.active_page');
             $('.active_page').removeClass('active_page');
             active.next().addClass('active_page');
         }

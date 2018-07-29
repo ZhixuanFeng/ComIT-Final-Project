@@ -16,7 +16,7 @@ function Card(cardInfo, game, x, y) {
     // this.revive = cardInfo.revive;
     // this.taunt = cardInfo.taunt;
 
-    // var group = game.add.group();
+    // let group = game.add.group();
     // group.create(80, 80, 'emptyCard');
     // group.create()
     this.inputEnabled = true;
@@ -62,11 +62,11 @@ Game.resize = function () {
 };
 
 
-var game;
-var deck = new Array[52];
+let game;
+let deck = new Array[52];
 window.onload = function () {
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function(e,xhr,options) {
         xhr.setRequestHeader(header, token);
     });

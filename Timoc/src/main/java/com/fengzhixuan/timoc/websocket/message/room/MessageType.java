@@ -4,5 +4,6 @@ public enum MessageType
 {
     Info,
     Chat,  // TODO: implement chat
-    Leave
+    Leave,
+    Ready
 }

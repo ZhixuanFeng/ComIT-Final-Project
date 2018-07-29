@@ -1,4 +1,4 @@
-var starter=[
+let starter=[
 {'aoe':'0','attack':'1','block':'','heal':'0','id':'1','indecks':'0','mana':'0','ownerType':'0','quality':'0','draw':'0','revive':'0','taunt':'0'},
 {'aoe':'0','attack':'2','block':'0','heal':'0','id':'2','indecks':'1','mana':'0','ownerType':'0','quality':'0','draw':'0','revive':'0','taunt':'0'},
 {'aoe':'0','attack':'3','block':'0','heal':'0','id':'3','indecks':'2','mana':'0','ownerType':'0','quality':'0','draw':'0','revive':'0','taunt':'0'},

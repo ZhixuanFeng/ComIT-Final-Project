@@ -1,17 +1,18 @@
 "use strict";
 
-var roomCode;
-var players = [];
+let roomCode;
+let players = [];
 $(document).ready(function() {
-    var token = $("meta[name='_csrf']").attr("content");
-    var header = $("meta[name='_csrf_header']").attr("content");
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function (e, xhr, options) {
         xhr.setRequestHeader(header, token);
     });
 
-    var $overlay = $('#overlay');
+    let $overlay = $('#overlay');
+    let $readyBt = $('#ready_bt');
     $('#player_list').hide();
-    $('#start_bt').hide();
+    $readyBt.hide();
     $overlay.show();
 
     $('#ol_create').click(function () {
@@ -20,9 +21,9 @@ $(document).ready(function() {
         });
     });
 
-    var $input = $('#ol_code_input');
+    let $input = $('#ol_code_input');
     $input.on('input', function(e){
-        var code = $input.val().toUpperCase();
+        let code = $input.val().toUpperCase();
         $input.val(code);
         if (code.length == 4) {
             enterRoom(code);
@@ -31,12 +32,16 @@ $(document).ready(function() {
             $('#ol_message').text('');
         }
     });
+
+    $readyBt.click(function () {
+        sendMessage('/app/room.ready/' + roomCode, {}); // toggle
+    });
 });
 
-var stompClient = null;
+let stompClient = null;
 
 function connect(code) {
-    var socket = new SockJS('/room');
+    let socket = new SockJS('/room');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
         stompClient.subscribe('/topic/room/' + code, onMessageReceived);
@@ -53,7 +58,7 @@ function disconnect() {
 
 function onError(error) {
     if (typeof(error) === "string" && error.indexOf('Whoops!') !== -1) {
-        var $overlay = $('#overlay');
+        let $overlay = $('#overlay');
         $overlay.empty();
         $('<div>').text('Connection Lost. Please refresh the page.').appendTo($overlay);
         $overlay.show();
@@ -66,9 +71,9 @@ function onError(error) {
 }
 
 function onMessageReceived(message) {
-    var messageBody = JSON.parse(message.body);
+    let messageBody = JSON.parse(message.body);
     if (messageBody.type === 'Info') {
-        var newPlayers = findNewPlayers(messageBody.players);
+        let newPlayers = findNewPlayers(messageBody.players);
         displayPlayers(newPlayers);
     }
     else if (messageBody.type === 'Chat') {
@@ -77,10 +82,13 @@ function onMessageReceived(message) {
     else if (messageBody.type === 'Leave') {
         removePlayer(messageBody.name);
     }
+    else if (messageBody.type === 'Ready') {
+        setPlayerReady(messageBody.name, messageBody.ready);
+    }
 }
 
-function sendMessage() {
-    stompClient.send("/room", {}, {});
+function sendMessage(destination, data) {
+    stompClient.send(destination, {}, data);
 }
 
 function enterRoom(code) {
@@ -99,16 +107,16 @@ function enterRoom(code) {
 
 function hideOverlay(roomCode) {
     $('#player_list').show();
-    $('#start_bt').show();
+    $('#ready_bt').show();
     $('#overlay').hide();
     $('#room_code').text(roomCode);
 }
 
 function findNewPlayers(playerInfoes) {
-    var newPlayers = [];
+    let newPlayers = [];
     // find the ones not already displayed
     playerInfoes.forEach(function (playerInfo) {
-        var exists = false;
+        let exists = false;
         players.forEach(function (player) {
             if (player.name === playerInfo.name) {
                 exists = true;
@@ -122,29 +130,34 @@ function findNewPlayers(playerInfoes) {
 }
 
 function displayPlayers(player) {
-    var availableDivs = [];
+    let availableDivs = [];
     $('.playerDiv').toArray().forEach(function (div) {
         if (!$(div).hasClass('occupied')) {
             availableDivs.push(div);
         }
     });
-    for (var i = 0; i < player.length; i++) {
-        var $player = $('<div>').addClass('player').appendTo(availableDivs[i]);
+    for (let i = 0; i < player.length; i++) {
+        let $player = $('<div>').addClass('player').appendTo(availableDivs[i]);
         $('<div>').text(player[i].name).addClass('name').appendTo($player);
         $('<img src="images/player.png" height="32" width="32"/>').addClass('avatar').appendTo($player);
+        $('<div>').text('Ready').addClass('ready').hide().appendTo($player);
         $(availableDivs[i]).addClass('occupied');
+        $(availableDivs[i]).attr('id', player[i].name);
         players.push(player[i]);
     }
 }
 
 function removePlayer(name) {
-    $('.playerDiv').toArray().forEach(function (div) {
-        if ($($(div).find('.name')[0]).text() === name) {
-            $(div).empty();
-            $(div).removeClass('occupied');
-            players = $.grep(players, function (e) {
-                return e.name !== name;
-            });
-        }
+    let playerDiv = $('#' + name);
+    $(playerDiv).empty();
+    $(playerDiv).removeClass('occupied');
+    $(playerDiv).removeAttr('id');
+    players = $.grep(players, function (e) {
+        return e.name !== name;
     });
+}
+
+function setPlayerReady(name, isReady) {
+    let $playerDiv = $('#' + name);
+    isReady ? $playerDiv.find('.ready').show() : $playerDiv.find('.ready').hide();
 }

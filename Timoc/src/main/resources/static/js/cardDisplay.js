@@ -1,17 +1,17 @@
 "use strict";
 
 function addCardBody(card, div) {
-    var $cardDiv = $('<div>');
-    var $emptyCardImg;
+    let $cardDiv = $('<div>');
+    let $emptyCardImg;
     if (card.id <= 52)
         $emptyCardImg = $('<img src="images/empty_card_starter.png" height="61" width="41"/>');
     else
         $emptyCardImg = $('<img src="images/empty_card.png" height="61" width="41"/>');
-    var $rankSpan = $('<span></span>');
-    var $suitImg = $('<img height="11" width="11"/>');
-    var $cardEffectDiv = $('<div>');
-    var rank = getRank(card);
-    var suit = getSuit(card);
+    let $rankSpan = $('<span></span>');
+    let $suitImg = $('<img height="11" width="11"/>');
+    let $cardEffectDiv = $('<div>');
+    let rank = getRank(card);
+    let suit = getSuit(card);
     $cardDiv.attr('id', card.id);
     $rankSpan.text(rank == 1 ? 'A' : rank == 11 ? 'J' : rank == 12 ? 'Q' : rank == 13 ? 'K' : rank);
     $rankSpan.attr('style', suit == 0 || suit == 2 ? 'color: red' : 'color:black');
@@ -35,9 +35,9 @@ function addCardBody(card, div) {
 }
 
 function addCardEffect(name, amount, suit, cardEffectDiv) {
-    var $newEffectDiv = $('<div />').appendTo(cardEffectDiv);
-    var $effectIconImg = $('<img class="effect_icon" height="16" width="16"/>');
-    var $effectAmoundSpan = $('<span class="effect_amount""></span>');
+    let $newEffectDiv = $('<div />').appendTo(cardEffectDiv);
+    let $effectIconImg = $('<img class="effect_icon" height="16" width="16"/>');
+    let $effectAmoundSpan = $('<span class="effect_amount""></span>');
     $effectIconImg.attr('src', 'images/' + name + '.png');
     $effectAmoundSpan.text(amount);
     $effectAmoundSpan.attr('style', suit == 0 || suit == 2 ? 'color: red' : 'color:black');
