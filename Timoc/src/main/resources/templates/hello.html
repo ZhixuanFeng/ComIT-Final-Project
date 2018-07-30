@@ -20,9 +20,16 @@
                     <span th:utext="${welcome}"></span>
                 </div>
                 <p>
-                    The UIs are functional, but not user-friendly and look bad.
+                    The UIs are functional, but not user-friendly and look bad.<br>
+                    I'll focus on UI/UX design next month :)<br>
                     <br>
-                    I'll focus on UI/UX design next month :)
+                    No tutorials yet, so some explanation here<br>
+                    <b>Play</b>: you can create or join a room, but can't enter a game yet<br>
+                    <b>Collection</b>: manage the cards you own<br>
+                    <b>Deck</b>: a more efficient tool to manage your deck, top row is the cards
+                    in deck that you bring to battles, the bottom row is the alternatives for the selected card<br>
+                    <b>Market</b>: this is where you shop. Your gold is not displayed yet.<br>
+                    <b>For testing</b>: go to timoc.me/getCard and you will receive a card for free.
                 </p>
             </div>
         </div>
@@ -34,17 +41,17 @@
         <br>
         <form th:action="@{/collection}" method="get">
             <button class="btn btn-md btn-info btn-block"
-                    type="Submit">View your collection</button>
+                    type="Submit">Collection</button>
         </form>
         <br>
         <form th:action="@{/deck}" method="get">
             <button class="btn btn-md btn-success btn-block"
-                    type="Submit">Manage your deck</button>
+                    type="Submit">Deck</button>
         </form>
         <br>
         <form th:action="@{/market}" method="get">
             <button class="btn btn-md btn-warning btn-block"
-                    type="Submit">Go to card market</button>
+                    type="Submit">Market</button>
         </form>
         <br>
         <form th:action="@{/logout}" method="get">
