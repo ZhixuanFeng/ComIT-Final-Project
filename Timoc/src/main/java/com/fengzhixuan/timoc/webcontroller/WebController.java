@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -92,7 +93,15 @@ public class WebController
     {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("room");
-        modelAndView.addObject("maxlength", 4);
+        modelAndView.addObject("maxcodelength", 4);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/game", method = RequestMethod.GET)
+    public ModelAndView enterGame(@RequestParam("code") String code)
+    {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("game");
         return modelAndView;
     }
 }

@@ -1,6 +1,7 @@
 package com.fengzhixuan.timoc.websocket.message.room;
 
 import com.fengzhixuan.timoc.game.Player;
+import com.fengzhixuan.timoc.game.Room;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +17,12 @@ public class RoomInfoMessage
         this.players = players;
     }
 
-    public static RoomInfoMessage createMessage(List<Player> players)
+    public static RoomInfoMessage createMessage(Room room, List<Player> players)
     {
         List<PlayerInfo> names = new ArrayList<>();
         for (Player player : players)
         {
-            names.add(new PlayerInfo(player.getName()));
+            names.add(new PlayerInfo(player.getName(), room.isPlayerReady(player)));
         }
         return new RoomInfoMessage(names);
     }

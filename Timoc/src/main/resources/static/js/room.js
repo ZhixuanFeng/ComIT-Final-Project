@@ -85,6 +85,9 @@ function onMessageReceived(message) {
     else if (messageBody.type === 'Ready') {
         setPlayerReady(messageBody.name, messageBody.ready);
     }
+    else if (messageBody.type === 'Start') {
+        window.location.replace('/game?code=' + roomCode);
+    }
 }
 
 function sendMessage(destination, data) {
@@ -97,7 +100,7 @@ function enterRoom(code) {
             connect(code);
             roomCode = code;
         }
-        else {
+        else if (response.length < 20) {
             if ($('#ol_message').is(':visible')) {
                 $('#ol_message').text(response);
             }
@@ -145,6 +148,10 @@ function displayPlayers(player) {
         $(availableDivs[i]).attr('id', player[i].name);
         players.push(player[i]);
     }
+    stopCountdown();
+    player.forEach(function (p) {
+        setPlayerReady(p.name, p.ready);
+    });
 }
 
 function removePlayer(name) {
@@ -152,6 +159,7 @@ function removePlayer(name) {
     $(playerDiv).empty();
     $(playerDiv).removeClass('occupied');
     $(playerDiv).removeAttr('id');
+    stopCountdown();
     players = $.grep(players, function (e) {
         return e.name !== name;
     });
@@ -160,4 +168,45 @@ function removePlayer(name) {
 function setPlayerReady(name, isReady) {
     let $playerDiv = $('#' + name);
     isReady ? $playerDiv.find('.ready').show() : $playerDiv.find('.ready').hide();
+    if (isReady && areAllPlayersReady()) {
+        startCountdown(5);
+    }
+    else if (!isReady) {
+        stopCountdown();
+    }
+}
+
+function areAllPlayersReady() {
+    let $playerDivs = $('.playerDiv');
+    let result = true;
+    $playerDivs.toArray().forEach(function (div) {
+        if ($(div).hasClass('occupied') && !$(div).find('.ready').is(':visible')) {
+            result = false;
+        }
+    });
+    return result;
+}
+
+let cd = undefined;
+let waitTime;
+function startCountdown(time) {
+    waitTime = time;
+    cd = setInterval(countdown, 1000);
+}
+
+function stopCountdown() {
+    if (typeof (cd) !== 'undefined') {
+        clearInterval(cd);
+        cd = undefined;
+    }
+    $('#ready_bt').text('Ready!');
+}
+
+function countdown() {
+    $('#ready_bt').text('Ready(' + waitTime + ')');
+    if (waitTime === 0 && areAllPlayersReady()) {
+        stopCountdown();
+        sendMessage('/app/room.start/' + roomCode, {});
+    }
+    waitTime--;
 }

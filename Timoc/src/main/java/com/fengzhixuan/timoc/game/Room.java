@@ -120,6 +120,15 @@ public class Room
     {
         playerStatuses.get(player).setReady(isReady);
     }
+
+    public boolean areAllPlayersReady(Room room)
+    {
+        for (Map.Entry<Player, PlayerStatus> entry : playerStatuses.entrySet())
+        {
+            if (!entry.getValue().isReady()) return false;
+        }
+        return true;
+    }
 }
 
 class PlayerStatus

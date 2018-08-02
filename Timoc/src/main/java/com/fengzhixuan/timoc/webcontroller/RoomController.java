@@ -2,14 +2,12 @@ package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.data.entity.CardDeck;
 import com.fengzhixuan.timoc.data.entity.User;
-import com.fengzhixuan.timoc.game.Card;
-import com.fengzhixuan.timoc.game.GameCodeGenerator;
-import com.fengzhixuan.timoc.game.Player;
-import com.fengzhixuan.timoc.game.Room;
+import com.fengzhixuan.timoc.game.*;
 import com.fengzhixuan.timoc.service.CardDeckService;
 import com.fengzhixuan.timoc.service.UserService;
 import com.fengzhixuan.timoc.websocket.message.room.RoomInfoMessage;
 import com.fengzhixuan.timoc.websocket.message.room.RoomReadyMessage;
+import com.fengzhixuan.timoc.websocket.message.room.RoomStartMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -79,7 +77,7 @@ public class RoomController
         if (principal == null) { return null; }
         Room room = Room.getRoomByCode(code);
         if (room == null) { return null; }
-        return RoomInfoMessage.createMessage(room.getPlayers());
+        return RoomInfoMessage.createMessage(room, room.getPlayers());
     }
 
     /*
@@ -94,7 +92,39 @@ public class RoomController
         if (room == null) { return null; }
         String username = principal.getName();
         Player player = Player.findPlayerByName(username);
-        room.setPlayerReady(player, !room.isPlayerReady(player)); // toggle ready status
-        return new RoomReadyMessage(username, room.isPlayerReady(player));
+
+        boolean currentIsReady = room.isPlayerReady(player);
+        room.setPlayerReady(player, !currentIsReady); // toggle ready status
+        return new RoomReadyMessage(username, !currentIsReady);
+    }
+
+    @MessageMapping("/room.start/{code}")
+    @SendTo("/topic/room/{code}")
+    public RoomStartMessage createGame(@DestinationVariable String code, Principal principal)
+    {
+        if (principal == null) { return null; }
+        Room room = Room.getRoomByCode(code);
+        int codeInt = GameCodeGenerator.stringToInt(code);
+        if (room == null)
+        {
+            // if game is already created, room should be null
+            // check if the game is already created and the player belongs in the game
+            if (Game.gameCodeExist(codeInt) && Game.getGameByCode(codeInt).isPlayerInThisGame(principal.getName()))
+            {
+                return new RoomStartMessage();
+            }
+            else
+            {
+                return null;
+            }
+        }
+        if (room.areAllPlayersReady(room))
+        {
+            Game game = Game.createGame(codeInt, room.getPlayers());
+            Room.removeRoom(codeInt);
+            return new RoomStartMessage();
+        }
+
+        return null;
     }
 }

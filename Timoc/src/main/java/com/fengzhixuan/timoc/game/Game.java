@@ -9,9 +9,25 @@ public class Game
     private static Map<Integer, Game> games = new HashMap<>();
 
     private int code;
-    private List<Player> players;
+    private Map<String, Player> players = new HashMap<>(); // username is key
 
+    private Game(int code, Map<String, Player> players)
+    {
+        this.code = code;
+        this.players = players;
+    }
 
+    public static Game createGame(int code, List<Player> playerList)
+    {
+        Map<String, Player> players = new HashMap<>();
+        for (Player player : playerList)
+        {
+            players.put(player.getName(), player);
+        }
+        Game game = new Game(code, players);
+        games.put(code, game);
+        return game;
+    }
 
     public static Game getGameByCode(int code)
     {
@@ -26,6 +42,11 @@ public class Game
     public static boolean gameCodeExist(int code)
     {
         return games.containsKey(code);
+    }
+
+    public boolean isPlayerInThisGame(String name)
+    {
+        return players.containsKey(name);
     }
 
     public String toString()

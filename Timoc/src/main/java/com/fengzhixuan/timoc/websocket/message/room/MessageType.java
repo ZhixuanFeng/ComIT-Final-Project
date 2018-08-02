@@ -5,5 +5,6 @@ public enum MessageType
     Info,
     Chat,  // TODO: implement chat
     Leave,
-    Ready
+    Ready,
+    Start
 }
