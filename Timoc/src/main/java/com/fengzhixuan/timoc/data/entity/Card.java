@@ -2,6 +2,7 @@ package com.fengzhixuan.timoc.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fengzhixuan.timoc.data.enums.CardOwnerType;
 import com.fengzhixuan.timoc.data.enums.CardSuit;
 
@@ -188,6 +189,7 @@ public class Card
         return indecks - getSuit() * 13 + 1;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getAttack()
     {
         return attack;
@@ -198,6 +200,7 @@ public class Card
         this.attack = attack;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getBlock()
     {
         return block;
@@ -208,6 +211,7 @@ public class Card
         this.block = block;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getHeal()
     {
         return heal;
@@ -218,6 +222,7 @@ public class Card
         this.heal = heal;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getMana()
     {
         return mana;
@@ -228,6 +233,7 @@ public class Card
         this.mana = mana;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getDraw()
     {
         return draw;
@@ -238,6 +244,7 @@ public class Card
         this.draw = draw;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getTaunt()
     {
         return taunt;
@@ -248,6 +255,7 @@ public class Card
         this.taunt = taunt;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getRevive()
     {
         return revive;
@@ -258,6 +266,7 @@ public class Card
         this.revive = revive;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getAoe()
     {
         return aoe;
