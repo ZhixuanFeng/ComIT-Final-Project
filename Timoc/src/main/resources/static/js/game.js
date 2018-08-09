@@ -1,6 +1,7 @@
 "use strict";
 
 let game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'game', this);
+let myInfo;
 let deck = new Array(52);
 let code;
 let gameStart = false;
@@ -19,6 +20,10 @@ function init() {
 
 function preload() {
     this.load.pack('game', 'assets/Pack.json');
+
+    $.post('userInfo/myInfo', function (result) {
+        myInfo = result;
+    });
 
     // load deck information
     $.post('deck/cards', function (result) {
@@ -81,7 +86,6 @@ function onError(error) {
 }
 
 function onMessageReceived(message) {
-    console.log(message);
     let messageBody = JSON.parse(message.body);
     switch (messageBody.type) {
         case 'EnterSuccessful':
