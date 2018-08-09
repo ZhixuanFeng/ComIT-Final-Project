@@ -9,7 +9,7 @@ public class WebSocketAuthorizationSecurityConfig extends AbstractSecurityWebSoc
     protected void configureInbound(final MessageSecurityMetadataSourceRegistry messages) {
         // You can customize your authorization mapping here.
         messages.anyMessage().authenticated();
-        messages.simpDestMatchers("/app/room").authenticated()//.hasRole("ADMIN")
-                .simpSubscribeDestMatchers("/topic/room").authenticated();
+        messages.simpDestMatchers("/app/room", "/app/game").authenticated()//.hasRole("ADMIN")
+                .simpSubscribeDestMatchers("/topic/room", "/topic/game").authenticated();
     }
 }

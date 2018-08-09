@@ -1,100 +1,9 @@
-"use strict"
-/*
-let game;
-let deck = new Array(52);
-$(document).ready(function() {
-    const token = $("meta[name='_csrf']").attr("content");
-    const header = $("meta[name='_csrf_header']").attr("content");
-    $(document).ajaxSend(function(e,xhr,options) {
-        xhr.setRequestHeader(header, token);
-    });
-
-    // load information
-    $.post('deck/cards', function (result) {
-        result.forEach(function (card) {
-            card['suit'] = Math.floor(card.indecks / 13);
-            card['rank'] = card.indecks - card.suit * 13 + 1;
-            deck[card.indecks] = card;
-        });
-    });
-
-
-    function Card(cardInfo, game, x, y) {
-        Phaser.Sprite.call(this, game, x, y, 'emptyCard');
-
-        // this.id = cardInfo.id;
-        // this.ownerType = cardInfo.ownerType;
-        // this.quality = cardInfo.quality;
-        // this.indecks = cardInfo.quality;
-        // this.suit = Math.floor(this.indecks / 13);
-        // this.rank = this.indecks - this.suit * 13 + 1;
-        // this.attack = cardInfo.attack;
-        // this.block = cardInfo.block;
-        // this.heal = cardInfo.heal;
-        // this.mana = cardInfo.mana;
-        // this.aoe = cardInfo.aoe;
-        // this.random = cardInfo.random;
-        // this.revive = cardInfo.revive;
-        // this.taunt = cardInfo.taunt;
-
-        let group = game.add.group();
-        group.create(80, 80, 'emptyCard');
-        this.inputEnabled = true;
-        this.events.onInputDown.add(function (card) {
-            card.position.x -= 1;
-            console.log("clicked");
-        }, this);
-
-    }
-    Card.prototype = Object.create(Phaser.Sprite.prototype);
-    Card.prototype.constructor = Card;
-
-    Card.prototype.update = function () {
-        this.position.x += 0.1;
-    };
-
-
-
-    let Game = {};
-
-    Game.preload = function () {
-        game.load.image('emptyCard', 'images/empty_card.png');
-        game.load.image('diamond', 'images/diamond.png');
-        game.load.image('club', 'images/club.png');
-        game.load.image('heart', 'images/heart.png');
-        game.load.image('spade', 'images/spade.png');
-        game.load.image('attack', 'images/attack.png');
-        game.load.image('block', 'images/block.png');
-        game.load.image('heal', 'images/heal.png');
-        game.load.image('mana', 'images/mana.png');
-        game.load.image('aoe', 'images/aoe.png');
-        game.load.image('draw', 'images/draw.png');
-        game.load.image('revive', 'images/revive.png');
-        game.load.image('taunt', 'images/hate.png');
-    };
-
-    Game.create = function () {
-        let card = new Card(deck[0], game, 80, 80);
-    };
-
-    Game.resize = function () {
-
-    };
-
-
-
-
-
-    game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'game');
-    game.state.add('game', Game);
-    game.state.start('game');
-});
-*/
-
-
+"use strict";
 
 let game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'game', this);
 let deck = new Array(52);
+let code;
+let gameStart = false;
 
 function init() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -125,17 +34,82 @@ function preload() {
                 deck[i]['rank'] = i - deck[i].suit * 13 + 1;
             }
         }
-        console.log(deck);
     });
+
+    code = getUrlParameter('code');
+    connect(code);
 }
 
 function create() {
-    var card = new Card(this.game, undefined, 'card', false, false, Phaser.Physics.ARCADE, 0, 0, deck[0]);
-    card = new Card(this.game, undefined, 'card', false, false, Phaser.Physics.ARCADE, 80, 80, deck[4]);
 
-    var right = new RightPanel(this.game, undefined, 'rightPanel', false, false, Phaser.Physics.ARCADE);
 }
 
 function update() {
 
+}
+
+function setUpUI() {
+    let card = new Card(this.game, undefined, 'card', false, false, Phaser.Physics.ARCADE, 0, 0, deck[0]);
+    card = new Card(this.game, undefined, 'card', false, false, Phaser.Physics.ARCADE, 80, 80, deck[4]);
+
+    let right = new RightPanel(this.game, undefined, 'rightPanel', false, false, Phaser.Physics.ARCADE);
+}
+
+
+let stompClient = null;
+
+function connect(code) {
+    let socket = new SockJS('/game');
+    stompClient = Stomp.over(socket);
+    stompClient.connect({}, function(frame) {
+        stompClient.subscribe('/topic/game/' + code, onMessageReceived);
+        stompClient.send('/app/game.enter/' + code, {}, code);
+    }, onError);
+}
+
+function disconnect() {
+    if(stompClient != null) {
+        stompClient.disconnect();
+    }
+}
+
+function onError(error) {
+    if (typeof(error) === "string" && error.indexOf('Whoops!') !== -1) {
+        // lost connection
+    }
+    // disconnect();
+}
+
+function onMessageReceived(message) {
+    console.log(message);
+    let messageBody = JSON.parse(message.body);
+    switch (messageBody.type) {
+        case 'EnterSuccessful':
+            console.log('success');
+            break;
+        case 'GameStart':
+            console.log('start');
+            break;
+        default:
+            break;
+    }
+}
+
+function sendMessage(destination, data) {
+    stompClient.send(destination, {}, data);
+}
+
+function getUrlParameter(sParam) {
+    let sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
 }

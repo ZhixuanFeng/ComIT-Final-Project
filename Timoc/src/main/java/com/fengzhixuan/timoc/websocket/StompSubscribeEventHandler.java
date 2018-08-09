@@ -1,5 +1,6 @@
 package com.fengzhixuan.timoc.websocket;
 
+import com.fengzhixuan.timoc.game.Game;
 import com.fengzhixuan.timoc.game.GameCodeGenerator;
 import com.fengzhixuan.timoc.game.Room;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +90,30 @@ public class StompSubscribeEventHandler implements ApplicationListener<SessionSu
             // the post request right before this subscription puts player object into the room object
             // unless some error happens or user modifies the front end, otherwise this shouldn't happen
             if (!room.containsPlayer(principal.getName()))
+            {
+                return "Error";
+            }
+        }
+
+        // game subscription
+        else if (subs[2].equals("game"))
+        {
+            String code = subs[3];
+            // code invalid
+            if (!GameCodeGenerator.isCodeValid(code))
+            {
+                return "Invalid code";
+            }
+
+            Game game = Game.getGameByCode(code);
+            // game not exist
+            if (game == null)
+            {
+                return "Invalid code";
+            }
+
+            // check if the user is subscribing to the correct code
+            if (!game.isPlayerInThisGame(principal.getName()))
             {
                 return "Error";
             }

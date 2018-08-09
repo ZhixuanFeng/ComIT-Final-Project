@@ -86,6 +86,7 @@ function onMessageReceived(message) {
         setPlayerReady(messageBody.name, messageBody.ready);
     }
     else if (messageBody.type === 'Start') {
+        disconnect();
         window.location.replace('/game?code=' + roomCode);
     }
 }

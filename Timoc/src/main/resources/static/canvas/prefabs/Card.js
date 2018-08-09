@@ -44,9 +44,7 @@ function Card(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType,
 	let rank = this.game.add.text(x + 3.0, y + 3.0, cardInfo.rank, rankFontStyle, this);
 	rank.scale.setTo(0.5, 0.5);
 
-
 	this.scale.setTo(2.0, 2.0);
-
 }
 
 /** @type Phaser.Group */

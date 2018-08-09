@@ -55,7 +55,7 @@ public class Room
 
     public static Room getRoomByCode(int code)
     {
-        return rooms.containsKey(code) ? rooms.get(code) : null;
+        return rooms.getOrDefault(code, null);
     }
 
     public static Room getRoomByCode(String code)
