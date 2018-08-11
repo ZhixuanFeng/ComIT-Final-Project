@@ -170,7 +170,7 @@ function setPlayerReady(name, isReady) {
     let $playerDiv = $('#' + name);
     isReady ? $playerDiv.find('.ready').show() : $playerDiv.find('.ready').hide();
     if (isReady && areAllPlayersReady()) {
-        startCountdown(5);
+        startCountdown(1);
     }
     else if (!isReady) {
         stopCountdown();

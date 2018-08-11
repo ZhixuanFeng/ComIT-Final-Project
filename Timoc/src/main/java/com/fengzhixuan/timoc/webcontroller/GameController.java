@@ -41,11 +41,29 @@ public class GameController
         // set status
         game.setPlayerOnlineStatus(username, true);
 
+        /*// if game is already started, meaning this player is reconnecting
+        if (game.isGameStarted())
+        {
+            // TODO: reconnect
+        }
+        // if game is not started yet
+        else
+        {
+            // if all players have joined, start game
+            if (game.areAllPlayersConnected())
+            {
+                game.gameStart(messagingTemplate);
+            }
+        }*/
+
         // if all players have joined, start game
+        // use this block of code for testing purpose(refresh to restart game), otherwise, use commented code above
         if (game.areAllPlayersConnected())
         {
-            messagingTemplate.convertAndSend("/topic/game/" + code, new GameMessage(MessageType.GameStart));
+            game.gameStart(messagingTemplate);
         }
+
+
         return new GameMessage(MessageType.EnterSuccessful);
     }
 

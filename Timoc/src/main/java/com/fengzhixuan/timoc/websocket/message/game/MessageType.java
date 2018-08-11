@@ -5,5 +5,6 @@ public enum MessageType
     Empty,
     Error,
     EnterSuccessful,
-    GameStart
+    GameStart,
+    Hand
 }

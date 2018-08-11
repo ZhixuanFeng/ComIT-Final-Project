@@ -10,6 +10,6 @@ public class WebSocketAuthorizationSecurityConfig extends AbstractSecurityWebSoc
         // You can customize your authorization mapping here.
         messages.anyMessage().authenticated();
         messages.simpDestMatchers("/app/room", "/app/game").authenticated()//.hasRole("ADMIN")
-                .simpSubscribeDestMatchers("/topic/room", "/topic/game").authenticated();
+                .simpSubscribeDestMatchers("/topic/room", "/topic/game", "/user/").authenticated();
     }
 }

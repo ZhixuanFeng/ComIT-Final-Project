@@ -19,41 +19,41 @@
 function RightPanel(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType) {
 	
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
-	this.game.add.text(579.0, 189.0, 'A', {"font":"bold 20px Arial"}, this);
+	this.game.add.text(720.0, 189.0, 'A', {"font":"bold 20px Arial"}, this);
 	
-	this.game.add.text(579.0, 170.0, 'A', {"font":"bold 20px Arial"}, this);
+	this.game.add.text(720.0, 170.0, 'A', {"font":"bold 20px Arial"}, this);
 	
-	this.game.add.text(579.0, 150.0, 'A', {"font":"bold 20px Arial"}, this);
+	this.game.add.text(720.0, 150.0, 'A', {"font":"bold 20px Arial"}, this);
 	
-	this.game.add.text(579.0, 130.0, 'A', {"font":"bold 20px Arial"}, this);
+	this.game.add.text(720.0, 130.0, 'A', {"font":"bold 20px Arial"}, this);
 	
-	this.game.add.text(579.0, 110.0, 'A', {"font":"bold 20px Arial"}, this);
+	this.game.add.text(720.0, 110.0, 'A', {"font":"bold 20px Arial"}, this);
 	
-	this.game.add.text(579.0, 90.0, 'A', {"font":"bold 20px Arial"}, this);
+	this.game.add.text(720.0, 90.0, 'A', {"font":"bold 20px Arial"}, this);
 	
-	this.game.add.text(579.0, 70.0, 'A', {"font":"bold 20px Arial"}, this);
+	this.game.add.text(720.0, 70.0, 'A', {"font":"bold 20px Arial"}, this);
 	
-	this.game.add.sprite(549.0, 194.0, 'card', 'revive', this);
+	this.game.add.sprite(690.0, 194.0, 'card', 'revive', this);
 	
-	this.game.add.sprite(549.0, 174.0, 'card', 'draw', this);
+	this.game.add.sprite(690.0, 174.0, 'card', 'draw', this);
 	
-	this.game.add.sprite(549.0, 155.0, 'card', 'aoe', this);
+	this.game.add.sprite(690.0, 155.0, 'card', 'aoe', this);
 	
-	this.game.add.sprite(549.0, 135.0, 'card', 'mana', this);
+	this.game.add.sprite(690.0, 135.0, 'card', 'mana', this);
 	
-	this.game.add.sprite(549.0, 115.0, 'card', 'heal', this);
+	this.game.add.sprite(690.0, 115.0, 'card', 'heal', this);
 	
-	this.game.add.sprite(549.0, 95.0, 'card', 'block', this);
+	this.game.add.sprite(690.0, 95.0, 'card', 'block', this);
 	
-	this.game.add.sprite(549.0, 75.0, 'card', 'attack', this);
+	this.game.add.sprite(690.0, 75.0, 'card', 'attack', this);
 	
-	let _cancelbutton = this.game.add.button(525.0, 10.0, 'ui', null, this, 'cancelbutton', 'cancelbutton', 'cancelbuttonpressed', 'cancelbutton', this);
+	let _cancelbutton = this.game.add.button(665.0, 10.0, 'ui', null, this, 'cancelbutton', 'cancelbutton', 'cancelbuttonpressed', 'cancelbutton', this);
 	_cancelbutton.scale.setTo(1.5, 1.5);
 	
-	let _playbutton = this.game.add.button(525.0, 222.0, 'ui', null, this, 'playbutton', 'playbutton', 'playbuttonpressed', 'playbutton', this);
+	let _playbutton = this.game.add.button(665.0, 222.0, 'ui', null, this, 'playbutton', 'playbutton', 'playbuttonpressed', 'playbutton', this);
 	_playbutton.scale.setTo(1.5, 1.5);
 	
-	let _discardbutton = this.game.add.button(525.0, 296.0, 'ui', null, this, 'discardbutton', 'discardbutton', 'discardbuttonpressed', 'discardbutton', this);
+	let _discardbutton = this.game.add.button(665.0, 296.0, 'ui', null, this, 'discardbutton', 'discardbutton', 'discardbuttonpressed', 'discardbutton', this);
 	_discardbutton.scale.setTo(1.5, 1.5);
 	
 	

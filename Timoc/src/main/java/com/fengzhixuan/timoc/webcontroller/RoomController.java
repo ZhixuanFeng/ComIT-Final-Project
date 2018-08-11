@@ -61,7 +61,7 @@ public class RoomController
         CardDeck deck = cardDeckService.getCardDeckById(userId);
 
         // create player object and add into room
-        Player player = new Player(user.getUsername(), room.getCode(), Card.cardEntitiesToCards(deck.getCards()));
+        Player player = new Player(user.getUsername(), code, Card.cardEntitiesToCards(deck.getCards()));
         room.addPlayer(player);
 
         return "OK";

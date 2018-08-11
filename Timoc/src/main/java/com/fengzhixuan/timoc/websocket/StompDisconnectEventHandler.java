@@ -32,8 +32,8 @@ public class StompDisconnectEventHandler implements ApplicationListener<SessionD
             String username = userPrincipal.getName();
             Player player = Player.findPlayerByName(username);
             if (player == null) { return; }
-            int code = player.getCode();
-            Room room = Room.getRoomByCode(code);
+            String codeString = player.getCode();
+            Room room = Room.getRoomByCode(codeString);
 
             // if room is not null, it means that user disconnects when being in a room
             if (room != null)
@@ -42,12 +42,11 @@ public class StompDisconnectEventHandler implements ApplicationListener<SessionD
                 if (room.isEmpty())
                 {
                     // remove empty room
-                    Room.removeRoom(code);
+                    Room.removeRoom(GameCodeGenerator.stringToInt(codeString));
                 }
                 else
                 {
                     // if there are still players in this room, tell them a player left
-                    String codeString = GameCodeGenerator.intToString(code);
                     RoomLeaveMessage message = new RoomLeaveMessage(username);
                     messagingTemplate.convertAndSend("/topic/room/" + codeString, message);
                 }

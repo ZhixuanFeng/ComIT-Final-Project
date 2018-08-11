@@ -58,16 +58,25 @@ public class StompSubscribeEventHandler implements ApplicationListener<SessionSu
             return "Invalid request";
         }
 
-        // invalid prefix
-        if (!subs[1].equals("topic"))
+        int index = 1;
+        if (subs[index].equals("user"))
+        {
+            index++;
+        }
+        if (subs[index].equals("topic"))
+        {
+            index++;
+        }
+        else
         {
             return "Invalid request";
         }
 
         // room subscription
-        if (subs[2].equals("room"))
+        if (subs[index].equals("room"))
         {
-            String code = subs[3];
+            index++;
+            String code = subs[index];
             // code invalid
             if (!GameCodeGenerator.isCodeValid(code))
             {
@@ -96,9 +105,10 @@ public class StompSubscribeEventHandler implements ApplicationListener<SessionSu
         }
 
         // game subscription
-        else if (subs[2].equals("game"))
+        else if (subs[index].equals("game"))
         {
-            String code = subs[3];
+            index++;
+            String code = subs[index];
             // code invalid
             if (!GameCodeGenerator.isCodeValid(code))
             {

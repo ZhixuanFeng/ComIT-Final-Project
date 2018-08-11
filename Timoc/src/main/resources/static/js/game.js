@@ -1,8 +1,13 @@
 "use strict";
 
-let game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, 'game', this);
+/*
+ * Phaser setup
+ */
+
+let game = new Phaser.Game(/*window.innerWidth, window.innerHeight*/800, 600, Phaser.AUTO, 'game', this);
 let myInfo;
 let deck = new Array(52);
+let hand;
 let code;
 let gameStart = false;
 
@@ -46,20 +51,25 @@ function preload() {
 }
 
 function create() {
+    console.log('create state');
 
+    let right = new RightPanel(this.game, undefined, 'rightPanel', false, false, Phaser.Physics.ARCADE);
 }
 
 function update() {
 
 }
 
-function setUpUI() {
-    let card = new Card(this.game, undefined, 'card', false, false, Phaser.Physics.ARCADE, 0, 0, deck[0]);
-    card = new Card(this.game, undefined, 'card', false, false, Phaser.Physics.ARCADE, 80, 80, deck[4]);
-
-    let right = new RightPanel(this.game, undefined, 'rightPanel', false, false, Phaser.Physics.ARCADE);
+function setHand(pile) {
+    hand = [];
+    for (let i = 0; i < pile.length; i++) {
+        hand.push(new Card(game, undefined, 'card1', false, false, Phaser.Physics.ARCADE, 50 + i * 50, 200, deck[pile[i]]));
+    }
 }
 
+/*
+ * Websocket connectivity
+ */
 
 let stompClient = null;
 
@@ -68,6 +78,7 @@ function connect(code) {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
         stompClient.subscribe('/topic/game/' + code, onMessageReceived);
+        stompClient.subscribe('/user/topic/game/' + code, onMessageReceived);
         stompClient.send('/app/game.enter/' + code, {}, code);
     }, onError);
 }
@@ -89,10 +100,11 @@ function onMessageReceived(message) {
     let messageBody = JSON.parse(message.body);
     switch (messageBody.type) {
         case 'EnterSuccessful':
-            console.log('success');
             break;
         case 'GameStart':
-            console.log('start');
+            break;
+        case 'Hand':
+            setHand(messageBody.pile);
             break;
         default:
             break;
