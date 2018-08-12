@@ -6,5 +6,9 @@ public enum MessageType
     Error,
     EnterSuccessful,
     GameStart,
-    Hand
+    Hand,
+    NewEnemy,
+    RemoveEnemy,
+    EnemyDrawCard,
+    EnemyPlayCard
 }

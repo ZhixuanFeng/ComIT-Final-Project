@@ -1,11 +1,11 @@
 package com.fengzhixuan.timoc.game;
 
+import com.fengzhixuan.timoc.websocket.message.game.GameEnemyMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GameMessage;
 import com.fengzhixuan.timoc.websocket.message.game.MessageType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,23 +18,30 @@ public class Game
     private static Map<Integer, Game> games = new HashMap<>();
 
     private int code;
+    private String codeString;
     private Map<String, Player> players = new HashMap<>(); // username is key
     private Map<Player, Boolean> playerOnlineStatuses = new HashMap<>(); // true means online/connected
-    private boolean gameStarted;
+    private List<Enemy> enemies = new ArrayList<>();
+    private int enemyCount;  // increments each time an enemy is spawn, then is given to the spawned enemy as id
+    private boolean gameStarted;  // whether the game has started
+    private int roundNum;  // current round number
 
     private Game(int code, Map<String, Player> players)
     {
         this.code = code;
+        codeString = GameCodeGenerator.intToString(code);
         this.players = players;
         // fill in the status map, initialize to all false
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             playerOnlineStatuses.put(playerEntry.getValue(), false);
         }
+        enemyCount = 0;
         gameStarted = false;
+        roundNum = 0;
     }
 
-    // use this method which calls the constructor to create a game objct
+    // use this method which calls the constructor to create a game object
     public static Game createGame(int code, List<Player> playerList)
     {
         Map<String, Player> players = new HashMap<>();
@@ -56,7 +63,7 @@ public class Game
         {
             playerEntry.getValue().onGameStart(messagingTemplate);
         }
-        messagingTemplate.convertAndSend("/topic/game/" + GameCodeGenerator.intToString(code), new GameMessage(MessageType.GameStart));
+        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.GameStart));
 
         // start first round
         roundStartPhase();
@@ -64,14 +71,34 @@ public class Game
 
     private void roundStartPhase()
     {
+        roundNum++;
+
         // deal with all players
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             playerEntry.getValue().onRoundStart();
         }
+
+        // spawn enemies
+        spawnEnemy();
+
+        // deal with all enemies
+        for (Enemy enemy : enemies)
+        {
+            enemy.onRoundStart();
+        }
     }
 
-
+    private void spawnEnemy()
+    {
+        if (roundNum == 1)
+        {
+            Enemy newEnemy = new Enemy(codeString, "goblin", enemyCount, messagingTemplate);
+            enemies.add(newEnemy);
+            enemyCount++;
+            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.NewEnemy, newEnemy));
+        }
+    }
 
 
     public static Game getGameByCode(int code)

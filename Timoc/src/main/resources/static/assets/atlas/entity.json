@@ -1,0 +1,49 @@
+{
+  "frames": {
+    "goblin": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 18,
+        "h": 24
+      },
+      "spriteSourceSize": {
+        "x": 7,
+        "y": 5,
+        "w": 18,
+        "h": 24
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    },
+    "player": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 2,
+        "y": 28,
+        "w": 18,
+        "h": 26
+      },
+      "spriteSourceSize": {
+        "x": 7,
+        "y": 4,
+        "w": 18,
+        "h": 26
+      },
+      "sourceSize": {
+        "w": 32,
+        "h": 32
+      }
+    }
+  },
+  "meta": {
+    "app": "Phaser Editor",
+    "version": "1",
+    "image": "entity.png"
+  }
+}

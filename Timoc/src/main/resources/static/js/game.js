@@ -8,6 +8,7 @@ let game = new Phaser.Game(/*window.innerWidth, window.innerHeight*/800, 600, Ph
 let myInfo;
 let deck = new Array(52);
 let hand;
+let enemies = [];
 let code;
 let gameStart = false;
 
@@ -47,11 +48,11 @@ function preload() {
     });
 
     code = getUrlParameter('code');
-    connect(code);
 }
 
 function create() {
     console.log('create state');
+    connect(code);
 
     let right = new RightPanel(this.game, undefined, 'rightPanel', false, false, Phaser.Physics.ARCADE);
 }
@@ -63,8 +64,12 @@ function update() {
 function setHand(pile) {
     hand = [];
     for (let i = 0; i < pile.length; i++) {
-        hand.push(new Card(game, undefined, 'card1', false, false, Phaser.Physics.ARCADE, 50 + i * 50, 200, deck[pile[i]]));
+        hand.push(new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, 50 + i * 50, 200, deck[pile[i]]));
     }
+}
+
+function spawnEnemy(enemyInfo) {
+    enemies.push(new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 31, 65, enemyInfo));
 }
 
 /*
@@ -105,6 +110,9 @@ function onMessageReceived(message) {
             break;
         case 'Hand':
             setHand(messageBody.pile);
+            break;
+        case 'NewEnemy':
+            spawnEnemy(messageBody.enemy);
             break;
         default:
             break;

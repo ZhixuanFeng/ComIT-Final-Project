@@ -16,10 +16,10 @@
  * @param {boolean} aEnableBody If true all Sprites created with {@link #create} or {@link #createMulitple} will have a physics body created on them. Change the body type with {@link #physicsBodyType}.
  * @param {number} aPhysicsBodyType The physics body type to use when physics bodies are automatically added. See {@link #physicsBodyType} for values.
  */
-function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType) {
+function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, x, y, enemyInfo) {
 	
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
-	this.game.add.sprite(31.0, 56.0, 'entity', 'goblin', this);
+	this.game.add.sprite(x, y, 'entity', enemyInfo.name, this);
 	
 	
 	

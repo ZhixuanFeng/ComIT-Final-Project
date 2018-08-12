@@ -28,7 +28,7 @@ public class Player
     private int mana;  // current mana of the player
     private int maxMana;  // maximum mana
     private int hate;  // current hate of the player, enemies only target player with the highest hate
-    private int drawNum;  // how many cards the player draw at the start of a round
+    private int drawNum;  // how many cards the player draws at the start of a round
 
     // statistic attributes
     private int damageDealt;  // records the total damage the player has dealt to enemies
@@ -54,7 +54,7 @@ public class Player
         drawPile = new ArrayList<>();
         handPile = new ArrayList<>();
         discardPile = new ArrayList<>();
-        for (int i = 0; i < 52; i++) drawPile.add(i);  // generate 52 numbers which represent 52 cards in a deck
+        for (int i = 0; i < 52; i++) drawPile.add(i);  // generate numbers which represent cards in a deck
         Collections.shuffle(drawPile);  // shuffle
 
         hp = maxHp = 100;
