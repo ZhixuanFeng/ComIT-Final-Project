@@ -6,7 +6,7 @@ public class GameErrorMessage extends GameMessage
 
     public GameErrorMessage(String message)
     {
-        type = MessageType.Error;
+        super(MessageType.Error);
         this.message = message;
     }
 

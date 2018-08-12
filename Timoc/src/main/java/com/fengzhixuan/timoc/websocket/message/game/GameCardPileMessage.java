@@ -6,7 +6,7 @@ public class GameCardPileMessage extends GameMessage
 
     public GameCardPileMessage(int[] pile)
     {
-        type = MessageType.Hand;
+        super(MessageType.Hand);
         this.pile = pile;
     }
 

@@ -1,6 +1,8 @@
 package com.fengzhixuan.timoc.game;
 
 import com.fengzhixuan.timoc.websocket.message.game.GameCardPileMessage;
+import com.fengzhixuan.timoc.websocket.message.game.GamePlayerMessage;
+import com.fengzhixuan.timoc.websocket.message.game.MessageType;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import java.util.*;
@@ -75,6 +77,11 @@ public class Player
         drawCards(drawNum);
 
         messagingTemplate.convertAndSendToUser(name, "/topic/game/" + code, new GameCardPileMessage(getHandIndeckses()));
+    }
+
+    public void onTurnStart()
+    {
+        messagingTemplate.convertAndSend("/topic/game" + code, new GamePlayerMessage(MessageType.PlayersTurn, name));
     }
 
     // draw certain number of cards, meaning move cards from draw pile to hand pile, if draw pile is empty, shuffle discard pile to draw pile

@@ -21,6 +21,8 @@ public class Game
     private String codeString;
     private Map<String, Player> players = new HashMap<>(); // username is key
     private Map<Player, Boolean> playerOnlineStatuses = new HashMap<>(); // true means online/connected
+    private String[] playerOrder;  // stores all players' names, represents the order of players(who's player1, who plays first) in attack phase
+    private int currentPlayer;  // current index to playerOrder array, represents whose turn it is now
     private List<Enemy> enemies = new ArrayList<>();
     private int enemyCount;  // increments each time an enemy is spawn, then is given to the spawned enemy as id
     private boolean gameStarted;  // whether the game has started
@@ -72,6 +74,7 @@ public class Game
     private void roundStartPhase()
     {
         roundNum++;
+        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.RoundStart));
 
         // deal with all players
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
@@ -87,6 +90,54 @@ public class Game
         {
             enemy.onRoundStart();
         }
+
+        startAttackPhase();
+    }
+
+    // players' turns
+    private void startAttackPhase()
+    {
+        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.AttackPhase));
+        currentPlayer = 0;
+        starterPlayerTurn();
+    }
+
+    private void starterPlayerTurn()
+    {
+        Player player = players.get(playerOrder[currentPlayer]);
+
+    }
+
+    public void finishPlayerTurn()
+    {
+        currentPlayer++;
+        // if all players have finished their turns
+        if (currentPlayer == playerOrder.length)
+        {
+            startDefendPhase();
+        }
+        else
+        {
+            starterPlayerTurn();
+        }
+    }
+
+    // enemies' turns
+    private void startDefendPhase()
+    {
+        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.DefendPhase));
+        for (Enemy enemy : enemies)
+        {
+            // enemy action
+        }
+        // combine all enemy actions into a single message and send
+
+        roundEndPhase();
+    }
+
+    private void roundEndPhase()
+    {
+        roundStartPhase();
     }
 
     private void spawnEnemy()

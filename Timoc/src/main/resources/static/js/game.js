@@ -11,6 +11,9 @@ let hand;
 let enemies = [];
 let code;
 let gameStart = false;
+let isMyTurn = false;
+let gamePhase;
+let currentPlayer;
 
 function init() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -72,6 +75,13 @@ function spawnEnemy(enemyInfo) {
     enemies.push(new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 31, 65, enemyInfo));
 }
 
+function setCurrentPlayer(currentPlayerName) {
+    currentPlayer = currentPlayerName;
+    if (currentPlayerName === myInfo.name) {
+        isMyTurn = true;
+    }
+}
+
 /*
  * Websocket connectivity
  */
@@ -107,6 +117,18 @@ function onMessageReceived(message) {
         case 'EnterSuccessful':
             break;
         case 'GameStart':
+            break;
+        case 'RoundStart':
+            gamePhase = 'RoundStart';
+            break;
+        case 'AttackPhase':
+            gamePhase = 'AttackPhase';
+            break;
+        case 'DefendPhase':
+            gamePhase = 'DefendPhase';
+            break;
+        case 'PlayersTurn':
+            setCurrentPlayer(messageBody.name);
             break;
         case 'Hand':
             setHand(messageBody.pile);

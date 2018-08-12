@@ -5,8 +5,6 @@ public class GameMessage
 {
     protected MessageType type;
 
-    public GameMessage() { this.type = MessageType.Empty; }
-
     public GameMessage(MessageType type)
     {
         this.type = type;

@@ -8,7 +8,7 @@ public class GameEnemyMessage extends GameMessage
 
     public GameEnemyMessage(MessageType type, Enemy enemy)
     {
-        this.type = type;
+        super(type);
         this.enemy = enemy;
     }
 

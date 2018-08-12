@@ -6,9 +6,13 @@ public enum MessageType
     Error,
     EnterSuccessful,
     GameStart,
+    RoundStart,
+    AttackPhase,
+    DefendPhase,
     Hand,
     NewEnemy,
     RemoveEnemy,
     EnemyDrawCard,
-    EnemyPlayCard
+    EnemyPlayCard,
+    PlayersTurn
 }
