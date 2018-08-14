@@ -50,7 +50,7 @@
               "info": {
                 "editorName": "effect7amount",
                 "x": 579,
-                "y": 189,
+                "y": 132,
                 "text": "A"
               }
             },
@@ -60,7 +60,7 @@
               "info": {
                 "editorName": "effect6amount",
                 "x": 579,
-                "y": 170,
+                "y": 113,
                 "text": "A"
               }
             },
@@ -70,7 +70,7 @@
               "info": {
                 "editorName": "effect5amount",
                 "x": 579,
-                "y": 150,
+                "y": 93,
                 "text": "A"
               }
             },
@@ -80,7 +80,7 @@
               "info": {
                 "editorName": "effect4amount",
                 "x": 579,
-                "y": 130,
+                "y": 73,
                 "text": "A"
               }
             },
@@ -90,7 +90,7 @@
               "info": {
                 "editorName": "effect3amount",
                 "x": 579,
-                "y": 110,
+                "y": 53,
                 "text": "A"
               }
             },
@@ -100,7 +100,7 @@
               "info": {
                 "editorName": "effect2amount",
                 "x": 579,
-                "y": 90,
+                "y": 33,
                 "text": "A"
               }
             },
@@ -110,7 +110,7 @@
               "info": {
                 "editorName": "effect1amount",
                 "x": 579,
-                "y": 70,
+                "y": 13,
                 "text": "A"
               }
             },
@@ -121,7 +121,7 @@
               "info": {
                 "editorName": "effect7icon",
                 "x": 549,
-                "y": 194
+                "y": 137
               }
             },
             {
@@ -131,7 +131,7 @@
               "info": {
                 "editorName": "effect6icon",
                 "x": 549,
-                "y": 174
+                "y": 117
               }
             },
             {
@@ -141,7 +141,7 @@
               "info": {
                 "editorName": "effect5icon",
                 "x": 549,
-                "y": 155
+                "y": 98
               }
             },
             {
@@ -151,7 +151,7 @@
               "info": {
                 "editorName": "effect4icon",
                 "x": 549,
-                "y": 135
+                "y": 78
               }
             },
             {
@@ -161,7 +161,7 @@
               "info": {
                 "editorName": "effect3icon",
                 "x": 549,
-                "y": 115
+                "y": 58
               }
             },
             {
@@ -171,7 +171,7 @@
               "info": {
                 "editorName": "effect2icon",
                 "x": 549,
-                "y": 95
+                "y": 38
               }
             },
             {
@@ -181,7 +181,7 @@
               "info": {
                 "editorName": "effect1icon",
                 "x": 549,
-                "y": 75
+                "y": 18
               }
             },
             {
@@ -191,7 +191,7 @@
               "info": {
                 "editorName": "cancelbutton",
                 "x": 525,
-                "y": 10,
+                "y": 225,
                 "scale.x": 1.5,
                 "scale.y": 1.5,
                 "overFrame": "cancelbutton",
@@ -206,7 +206,7 @@
               "info": {
                 "editorName": "playbutton",
                 "x": 525,
-                "y": 222,
+                "y": 165,
                 "scale.x": 1.5,
                 "scale.y": 1.5,
                 "overFrame": "playbutton",
@@ -221,12 +221,27 @@
               "info": {
                 "editorName": "discardbutton",
                 "x": 525,
-                "y": 296,
+                "y": 285,
                 "scale.x": 1.5,
                 "scale.y": 1.5,
                 "overFrame": "discardbutton",
                 "downFrame": "discardbuttonpressed",
                 "upFrame": "discardbutton"
+              }
+            },
+            {
+              "type": "button",
+              "id": "8a501702-9a0f-4187-9794-d9e7f98717d7",
+              "asset": "10",
+              "info": {
+                "editorName": "endturnbutton",
+                "x": 525,
+                "y": 345,
+                "scale.x": 1.5,
+                "scale.y": 1.5,
+                "overFrame": "endturnbutton",
+                "downFrame": "endturnbuttonpressed",
+                "upFrame": "endturnbutton"
               }
             }
           ]
@@ -295,6 +310,12 @@
       "section": "game",
       "asset": "ui",
       "sprite": "discardbutton"
+    },
+    "10": {
+      "file": "WebContent/assets/Pack.json",
+      "section": "game",
+      "asset": "ui",
+      "sprite": "endturnbutton"
     }
   },
   "prefab-table": {}

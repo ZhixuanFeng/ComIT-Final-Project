@@ -81,7 +81,7 @@ public class Player
 
     public void onTurnStart()
     {
-        messagingTemplate.convertAndSend("/topic/game" + code, new GamePlayerMessage(MessageType.PlayersTurn, name));
+        messagingTemplate.convertAndSend("/topic/game" + code, new GamePlayerMessage(MessageType.PlayerStartsTurn, name));
     }
 
     // draw certain number of cards, meaning move cards from draw pile to hand pile, if draw pile is empty, shuffle discard pile to draw pile

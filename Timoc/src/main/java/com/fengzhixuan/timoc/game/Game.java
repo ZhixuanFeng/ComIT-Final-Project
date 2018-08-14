@@ -2,6 +2,7 @@ package com.fengzhixuan.timoc.game;
 
 import com.fengzhixuan.timoc.websocket.message.game.GameEnemyMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GameMessage;
+import com.fengzhixuan.timoc.websocket.message.game.GamePlayerMessage;
 import com.fengzhixuan.timoc.websocket.message.game.MessageType;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
@@ -33,10 +34,16 @@ public class Game
         this.code = code;
         codeString = GameCodeGenerator.intToString(code);
         this.players = players;
-        // fill in the status map, initialize to all false
+
+        playerOrder = new String[players.size()];
+        int count = 0;
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
+            // fill in the status map, initialize to all false
             playerOnlineStatuses.put(playerEntry.getValue(), false);
+            // fill in the playerOrder array with all the names
+            playerOrder[count] = playerEntry.getValue().getName();
+            count++;
         }
         enemyCount = 0;
         gameStarted = false;
@@ -105,12 +112,14 @@ public class Game
     private void starterPlayerTurn()
     {
         Player player = players.get(playerOrder[currentPlayer]);
-
+        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
     }
 
     public void finishPlayerTurn()
     {
         currentPlayer++;
+        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.PlayerEndsTurn));
+
         // if all players have finished their turns
         if (currentPlayer == playerOrder.length)
         {

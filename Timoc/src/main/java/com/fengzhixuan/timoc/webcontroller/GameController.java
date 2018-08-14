@@ -67,4 +67,19 @@ public class GameController
         return new GameMessage(MessageType.EnterSuccessful);
     }
 
+    @MessageMapping("/game.endTurn/{code}")
+    @SendTo("/topic/game/{code}")
+    public void endTurn(@DestinationVariable String code, Principal principal)
+    {
+        // check if message is valid, ignore if invalid
+        if (principal == null) { return; }
+        String username = principal.getName();
+        Game game = Game.getGameByCode(code);
+        if (game == null) { return; }
+        Player player = Player.findPlayerByName(username);
+        if (player == null) { return; }
+        if (!game.isPlayerInThisGame(username)) { return; }
+
+        game.finishPlayerTurn();
+    }
 }

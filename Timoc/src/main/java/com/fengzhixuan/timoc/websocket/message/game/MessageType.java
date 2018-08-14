@@ -14,5 +14,6 @@ public enum MessageType
     RemoveEnemy,
     EnemyDrawCard,
     EnemyPlayCard,
-    PlayersTurn
+    PlayerStartsTurn,
+    PlayerEndsTurn
 }

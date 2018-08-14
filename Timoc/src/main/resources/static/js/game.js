@@ -82,6 +82,29 @@ function setCurrentPlayer(currentPlayerName) {
     }
 }
 
+function playCard() {
+    if (!isMyTurn) return;
+}
+
+function cancelSelection() {
+    if (!isMyTurn) return;
+
+}
+
+function discardCard() {
+    if (!isMyTurn) return;
+
+}
+
+function endTurn() {
+    if (!isMyTurn) return;
+
+    sendMessage('/app/game.endTurn/' + code, {});
+}
+
+
+
+
 /*
  * Websocket connectivity
  */
@@ -127,7 +150,7 @@ function onMessageReceived(message) {
         case 'DefendPhase':
             gamePhase = 'DefendPhase';
             break;
-        case 'PlayersTurn':
+        case 'PlayerStartsTurn':
             setCurrentPlayer(messageBody.name);
             break;
         case 'Hand':
