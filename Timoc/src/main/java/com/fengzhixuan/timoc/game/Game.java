@@ -106,10 +106,10 @@ public class Game
     {
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.AttackPhase));
         currentPlayer = 0;
-        starterPlayerTurn();
+        startPlayerTurn();
     }
 
-    private void starterPlayerTurn()
+    private void startPlayerTurn()
     {
         Player player = players.get(playerOrder[currentPlayer]);
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
@@ -127,7 +127,7 @@ public class Game
         }
         else
         {
-            starterPlayerTurn();
+            startPlayerTurn();
         }
     }
 

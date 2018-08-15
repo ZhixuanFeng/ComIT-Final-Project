@@ -3,7 +3,11 @@
 let suitNames = ['diamond', 'club', 'heart', 'spade'];
 let effectNames = ['attack', 'block', 'heal', 'mana', 'aoe', 'draw', 'revive', 'hate'];
 
-function clicked() { console.log('clicked');}
+function clicked() {
+    this.isSelected = !this.isSelected;
+    this.isSelected ? addSelectedCard(this.info) : removeSelectedCard(this.info);
+    setEffects();
+}
 
 /* --- start generated code --- */
 
@@ -23,6 +27,8 @@ function clicked() { console.log('clicked');}
 function Card(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, x, y, cardInfo) {
 
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
+
+	this.info = cardInfo;
 	this.game.add.button(x, y, 'card', clicked, this, null, 'empty_card', null, null, this);
 
 	let numOfEffect = 0;
