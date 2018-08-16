@@ -18,7 +18,6 @@ function setEffects() {
         effect.amount.visible = false;
         effect.amount.setText('0');
     });
-    console.log(selectedCards);
     selectedCards.forEach(function (card) {
         if (typeof card.attack !== 'undefined') attack.amount.setText(+attack.amount.text + +card.attack);
         if (typeof card.heal !== 'undefined') heal.amount.setText(+heal.amount.text + +card.heal);
