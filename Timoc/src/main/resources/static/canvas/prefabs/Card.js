@@ -2,10 +2,21 @@
 // -- user code here --
 let suitNames = ['diamond', 'club', 'heart', 'spade'];
 let effectNames = ['attack', 'block', 'heal', 'mana', 'aoe', 'draw', 'revive', 'hate'];
+let borderWidth, borderHeight;
+let xScale = 2, yScale = 2;
 
 function clicked() {
     this.isSelected = !this.isSelected;
-    this.isSelected ? addSelectedCard(this.info) : removeSelectedCard(this.info);
+    if (this.isSelected) {
+        addSelectedCard(this.info);
+        this.graphics = game.add.graphics();
+        this.graphics.lineStyle(4, 0xFFFF00, 1);
+        this.graphics.drawRoundedRect(this.cardFrame.x * xScale - 3, this.cardFrame.y * yScale - 3, borderWidth, borderHeight, 10);
+    }
+    else {
+        removeSelectedCard(this.info);
+        this.graphics.destroy();
+    }
     setEffects();
 }
 
@@ -29,7 +40,7 @@ function Card(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType,
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
 
 	this.info = cardInfo;
-	this.game.add.button(x, y, 'card', clicked, this, null, 'empty_card', null, null, this);
+	this.cardFrame = this.game.add.button(x, y, 'card', clicked, this, null, 'empty_card', null, null, this);
 
 	let numOfEffect = 0;
 	for (let i = 0; i < 8 && numOfEffect < 4; i++) {
@@ -50,7 +61,10 @@ function Card(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType,
 	let rank = this.game.add.text(x + 3.0, y + 3.0, cardInfo.rank, rankFontStyle, this);
 	rank.scale.setTo(0.5, 0.5);
 
-	this.scale.setTo(2.0, 2.0);
+	this.scale.setTo(xScale, yScale);
+
+	borderWidth = this.cardFrame.width * xScale + 6;
+	borderHeight = this.cardFrame.height * yScale + 6;
 }
 
 /** @type Phaser.Group */
