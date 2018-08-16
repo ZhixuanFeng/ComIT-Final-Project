@@ -12,12 +12,16 @@ function removeSelectedCard(card) {
     selectedCards = selectedCards.filter( c => c.indecks !== card.indecks );
 }
 
-function setEffects() {
+function clearEffects() {
     effects.forEach(function (effect) {
         effect.icon.visible = false;
         effect.amount.visible = false;
         effect.amount.setText('0');
     });
+}
+
+function setEffects() {
+    clearEffects();
     selectedCards.forEach(function (card) {
         if (typeof card.attack !== 'undefined') attack.amount.setText(+attack.amount.text + +card.attack);
         if (typeof card.heal !== 'undefined') heal.amount.setText(+heal.amount.text + +card.heal);

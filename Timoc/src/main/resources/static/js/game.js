@@ -85,20 +85,30 @@ function setCurrentPlayer(currentPlayerName) {
 
 function playCard() {
     if (!isMyTurn) return;
+    cancelSelection();
 }
 
 function cancelSelection() {
     if (!isMyTurn) return;
 
+    hand.forEach(function (card) {
+        card.cancelSelection();
+    });
+    enemies.forEach(function (enemy) {
+        enemy.cancelSelection();
+    });
+    selectedCards = [];
+    clearEffects();
 }
 
 function discardCard() {
     if (!isMyTurn) return;
-
+    cancelSelection();
 }
 
 function endTurn() {
     if (!isMyTurn) return;
+    cancelSelection();
 
     sendMessage('/app/game.endTurn/' + code, {});
 }

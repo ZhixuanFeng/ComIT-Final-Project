@@ -7,16 +7,21 @@ function cardClicked() {
     this.isSelected = !this.isSelected;
     if (this.isSelected) {
         addSelectedCard(this.info);
-        this.graphics = game.add.graphics();
-        this.graphics.lineStyle(4, 0xFFFF00, 1);
-        this.graphics.drawRoundedRect(this.cardFrame.x * this.scale.x - 3, this.cardFrame.y * this.scale.y - 3, this.borderWidth, this.borderHeight, 10);
+        this.graphics.visible = true;
     }
     else {
         removeSelectedCard(this.info);
-        this.graphics.destroy();
+        this.graphics.visible = false;
     }
     setEffects();
 }
+
+function cancelCardSelection() {
+    removeSelectedCard(this.info);
+    this.isSelected = false;
+    this.graphics.visible = false;
+}
+
 
 /* --- start generated code --- */
 
@@ -63,6 +68,11 @@ function Card(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType,
 
 	this.borderWidth = this.cardFrame.width * this.scale.x + 6;
 	this.borderHeight = this.cardFrame.height * this.scale.y + 6;
+
+    this.graphics = game.add.graphics();
+    this.graphics.lineStyle(4, 0xFFFF00, 1);
+    this.graphics.drawRoundedRect(this.cardFrame.x * this.scale.x - 3, this.cardFrame.y * this.scale.y - 3, this.borderWidth, this.borderHeight, 10);
+    this.graphics.visible = false;
 }
 
 /** @type Phaser.Group */
@@ -72,3 +82,4 @@ Card.prototype.constructor = Card;
 
 /* --- end generated code --- */
 // -- user code here --
+Card.prototype.cancelSelection = cancelCardSelection;

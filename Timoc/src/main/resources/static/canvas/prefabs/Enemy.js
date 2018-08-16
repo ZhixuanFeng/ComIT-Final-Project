@@ -1,16 +1,23 @@
 
 // -- user code here --
+let selectedEnemy;
+
 function enemyClicked() {
     this.isSelected = !this.isSelected;
     if (this.isSelected) {
-        this.graphics = game.add.graphics();
-        this.graphics.lineStyle(4, 0xFFFF00, 1);
-        this.graphics.drawRoundedRect(this.sprite.x * this.scale.x - 3, this.sprite.y * this.scale.y - 3, this.borderWidth, this.borderHeight, 10);
+        selectedEnemy = this.info;
+        this.graphics.visible = true;
     }
     else {
-        this.graphics.destroy();
+        selectedEnemy = undefined;
+        this.graphics.visible = false;
     }
-    setEffects();
+}
+
+function cancelEnemySelection() {
+    selectedEnemy = undefined;
+    this.isSelected = false;
+    this.graphics.visible = false;
 }
 /* --- start generated code --- */
 
@@ -30,12 +37,20 @@ function enemyClicked() {
 function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, x, y, enemyInfo) {
 	
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
+
+	this.info = enemyInfo;
+
     this.sprite = this.game.add.button(x, y, 'entity', enemyClicked, this, null, enemyInfo.name, null, null, this);
 
     this.scale.setTo(2, 2);
 
     this.borderWidth = this.sprite.width * this.scale.x + 6;
     this.borderHeight = this.sprite.height * this.scale.y + 6;
+
+    this.graphics = game.add.graphics();
+    this.graphics.lineStyle(4, 0xFFFF00, 1);
+    this.graphics.drawRoundedRect(this.sprite.x * this.scale.x - 3, this.sprite.y * this.scale.y - 3, this.borderWidth, this.borderHeight, 10);
+    this.graphics.visible = false;
 }
 
 /** @type Phaser.Group */
@@ -45,3 +60,4 @@ Enemy.prototype.constructor = Enemy;
 
 /* --- end generated code --- */
 // -- user code here --
+Enemy.prototype.cancelSelection = cancelEnemySelection;
