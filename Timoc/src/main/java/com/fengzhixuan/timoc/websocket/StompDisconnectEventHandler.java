@@ -52,6 +52,7 @@ public class StompDisconnectEventHandler implements ApplicationListener<SessionD
                 }
                 Player.removePlayer(username);
             }
+            // TODO: if (game != null)
         }
     }
 }

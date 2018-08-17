@@ -9,6 +9,8 @@ public enum MessageType
     RoundStart,
     AttackPhase,
     DefendPhase,
+    PlayerInfo,
+    EnemyInfo,
     Hand,
     NewEnemy,
     RemoveEnemy,

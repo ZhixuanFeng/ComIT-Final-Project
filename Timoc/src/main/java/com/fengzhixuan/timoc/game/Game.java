@@ -1,9 +1,6 @@
 package com.fengzhixuan.timoc.game;
 
-import com.fengzhixuan.timoc.websocket.message.game.GameEnemyMessage;
-import com.fengzhixuan.timoc.websocket.message.game.GameMessage;
-import com.fengzhixuan.timoc.websocket.message.game.GamePlayerMessage;
-import com.fengzhixuan.timoc.websocket.message.game.MessageType;
+import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import java.util.ArrayList;
@@ -73,6 +70,7 @@ public class Game
             playerEntry.getValue().onGameStart(messagingTemplate);
         }
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.GameStart));
+        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerInfoMessage(players.values().toArray(new Player[0])));
 
         // start first round
         roundStartPhase();

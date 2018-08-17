@@ -1,5 +1,6 @@
 package com.fengzhixuan.timoc.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.websocket.message.game.GameCardPileMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GamePlayerMessage;
 import com.fengzhixuan.timoc.websocket.message.game.MessageType;
@@ -106,6 +107,7 @@ public class Player
     }
 
     // get cards in hand
+    @JsonIgnore
     public Card[] getHand()
     {
         Card[] hand = new Card[handPile.size()];
@@ -117,6 +119,7 @@ public class Player
     }
 
     // returns indeckses of the cards in hand pile
+    @JsonIgnore
     public int[] getHandIndeckses()
     {
         int[] hand = new int[handPile.size()];
@@ -157,11 +160,13 @@ public class Player
         return name;
     }
 
+    @JsonIgnore
     public String getCode()
     {
         return code;
     }
 
+    @JsonIgnore
     public Map<Integer, Card> getDeck()
     {
         return deck;
@@ -217,6 +222,7 @@ public class Player
         this.hate = hate;
     }
 
+    @JsonIgnore
     public int getDrawNum()
     {
         return drawNum;
@@ -227,6 +233,7 @@ public class Player
         this.drawNum = drawNum;
     }
 
+    @JsonIgnore
     public int getDamageDealt()
     {
         return damageDealt;
@@ -237,6 +244,7 @@ public class Player
         this.damageDealt = damageDealt;
     }
 
+    @JsonIgnore
     public int getDamageBlocked()
     {
         return damageBlocked;
@@ -247,6 +255,7 @@ public class Player
         this.damageBlocked = damageBlocked;
     }
 
+    @JsonIgnore
     public int getDamageTaken()
     {
         return damageTaken;
@@ -257,6 +266,7 @@ public class Player
         this.damageTaken = damageTaken;
     }
 
+    @JsonIgnore
     public int getDamageHealed()
     {
         return damageHealed;
@@ -267,6 +277,7 @@ public class Player
         this.damageHealed = damageHealed;
     }
 
+    @JsonIgnore
     public int getManaRestored()
     {
         return manaRestored;

@@ -8,6 +8,7 @@ let game = new Phaser.Game(/*window.innerWidth, window.innerHeight*/800, 600, Ph
 let myInfo;
 let deck = new Array(52);
 let hand;
+let players = [];
 let enemies = [];
 let code;
 let gameStart = false;
@@ -72,8 +73,16 @@ function setHand(pile) {
     }
 }
 
+function spawnPlayers(playerInfos) {
+    let xPos = 50;
+    playerInfos.forEach(function (playerInfo) {
+        players.push(new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, xPos, 120, playerInfo));
+        xPos += 60;
+    });
+}
+
 function spawnEnemy(enemyInfo) {
-    enemies.push(new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 31, 65, enemyInfo));
+    enemies.push(new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 50, 35, enemyInfo));
 }
 
 function setCurrentPlayer(currentPlayerName) {
@@ -93,6 +102,9 @@ function cancelSelection() {
 
     hand.forEach(function (card) {
         card.cancelSelection();
+    });
+    players.forEach(function (player) {
+        player.cancelSelection();
     });
     enemies.forEach(function (enemy) {
         enemy.cancelSelection();
@@ -163,6 +175,9 @@ function onMessageReceived(message) {
             break;
         case 'PlayerStartsTurn':
             setCurrentPlayer(messageBody.name);
+            break;
+        case 'PlayerInfo':
+            spawnPlayers(messageBody.players);
             break;
         case 'Hand':
             setHand(messageBody.pile);
