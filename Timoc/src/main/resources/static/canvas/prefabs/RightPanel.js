@@ -3,13 +3,58 @@ let attack, heal, mana, aoe, draw, revive, taunt;
 let effects;
 
 let selectedCards = [];
+let targetingModeEnum = Object.freeze({none:0, player:1, enemy:2, allPlayers:3, allEnemies:4});
+let targetingMode = 0;
+let hasSelectedAOE = false;
 
 function addSelectedCard(card) {
     selectedCards.push(card);
+    if (card.aoe > 0 && !hasSelectedAOE) {
+        hasSelectedAOE = true;
+        if (targetingMode === targetingModeEnum.player) {
+            selectAllPlayers();
+            targetingMode = targetingModeEnum.allPlayers;
+        }
+        else if (targetingMode === targetingModeEnum.enemy) {
+            selectAllEnemies();
+            targetingMode = targetingModeEnum.allEnemies;
+        }
+    }
+    setEffects();
 }
 
 function removeSelectedCard(card) {
     selectedCards = selectedCards.filter( c => c.indecks !== card.indecks );
+    if (hasSelectedAOE) {
+        hasSelectedAOE = false;
+        for (let i = 0; i < selectedCards.length && !hasSelectedAOE; i++) {
+            if (selectedCards[i].aoe > 0) {
+                hasSelectedAOE = true;
+            }
+        }
+        if (!hasSelectedAOE) {
+            if (targetingMode === targetingModeEnum.allPlayers) {
+                clearAllPlayerSelection();
+                targetingMode = targetingModeEnum.player;
+                if (selectedCards.length > 0 && typeof(selectedPlayer) !== 'undefined') {
+                    selectedPlayer.isSelected = true;
+                    selectedPlayer.graphics.visible = true;
+                }
+            }
+            else if (targetingMode === targetingModeEnum.allEnemies) {
+                clearAllEnemySelection();
+                targetingMode = targetingModeEnum.enemy;
+                if (selectedCards.length > 0 && typeof(selectedEnemy) !== 'undefined') {
+                    selectedEnemy.isSelected = true;
+                    selectedEnemy.graphics.visible = true;
+                }
+            }
+        }
+    }
+    if (selectedCards.length === 0) {
+        cancelSelection();
+    }
+    setEffects();
 }
 
 function clearEffects() {
@@ -23,18 +68,25 @@ function clearEffects() {
 function setEffects() {
     clearEffects();
     selectedCards.forEach(function (card) {
-        if (typeof card.attack !== 'undefined') attack.amount.setText(+attack.amount.text + +card.attack);
-        if (typeof card.heal !== 'undefined') heal.amount.setText(+heal.amount.text + +card.heal);
-        if (typeof card.mana !== 'undefined') mana.amount.setText(+mana.amount.text + +card.mana);
-        if (typeof card.aoe !== 'undefined') aoe.amount.setText(+aoe.amount.text + +card.aoe);
-        if (typeof card.draw !== 'undefined') draw.amount.setText(+draw.amount.text + +card.draw);
-        if (typeof card.revive !== 'undefined') revive.amount.setText(+revive.amount.text + +card.revive);
-        if (typeof card.taunt !== 'undefined') taunt.amount.setText(+taunt.amount.text + +card.taunt);
+        if (typeof card.attack !== 'undefined' && targetingMode !== targetingModeEnum.player && targetingMode !== targetingModeEnum.allPlayers)
+            attack.amount.setText(+attack.amount.text + +card.attack);
+        if (typeof card.heal !== 'undefined' && targetingMode !== targetingModeEnum.enemy && targetingMode !== targetingModeEnum.allEnemies)
+            heal.amount.setText(+heal.amount.text + +card.heal);
+        if (typeof card.mana !== 'undefined' && targetingMode !== targetingModeEnum.enemy && targetingMode !== targetingModeEnum.allEnemies)
+            mana.amount.setText(+mana.amount.text + +card.mana);
+        if (typeof card.aoe !== 'undefined')
+            aoe.amount.setText(+aoe.amount.text + +card.aoe);
+        if (typeof card.draw !== 'undefined')
+            draw.amount.setText(+draw.amount.text + +card.draw);
+        if (typeof card.revive !== 'undefined' && targetingMode !== targetingModeEnum.enemy && targetingMode !== targetingModeEnum.allEnemies)
+            revive.amount.setText(+revive.amount.text + +card.revive);
+        if (typeof card.taunt !== 'undefined')
+            taunt.amount.setText(+taunt.amount.text + +card.taunt);
     });
 
     if (parseInt(aoe.amount.text) > 0) {
         effects.forEach(function (effect) {
-            effect.amount.setText(Math.ceil(+effect.amount.text / 2));
+            effect.amount.setText(Math.round(+effect.amount.text / 2));
         });
         aoe.amount.setText('50%');
     }

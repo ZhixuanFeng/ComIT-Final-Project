@@ -5,19 +5,48 @@ let selectedEnemy;
 function enemyClicked() {
     this.isSelected = !this.isSelected;
     if (this.isSelected) {
-        selectedEnemy = this.info;
-        this.graphics.visible = true;
+        if (hasSelectedAOE) {
+            selectedEnemy = this;
+            selectAllEnemies();
+            targetingMode = targetingModeEnum.allEnemies;
+        }
+        else {
+            selectedEnemy = this;
+            this.graphics.visible = true;
+            targetingMode = targetingModeEnum.enemy;
+        }
+        clearAllPlayerSelection();
+        selectedPlayer = undefined;
     }
     else {
-        selectedEnemy = undefined;
-        this.graphics.visible = false;
+        if (hasSelectedAOE) {
+            clearAllEnemySelection();
+        }
+        else {
+            selectedEnemy = undefined;
+            this.graphics.visible = false;
+        }
+        targetingMode = targetingModeEnum.none;
     }
+    setEffects();
 }
 
 function cancelEnemySelection() {
-    selectedEnemy = undefined;
     this.isSelected = false;
     this.graphics.visible = false;
+}
+
+function selectAllEnemies() {
+    enemies.forEach(function (enemy) {
+        enemy.isSelected = true;
+        enemy.graphics.visible = true;
+    });
+}
+
+function clearAllEnemySelection() {
+    enemies.forEach(function (enemy) {
+        enemy.cancelSelection();
+    });
 }
 /* --- start generated code --- */
 

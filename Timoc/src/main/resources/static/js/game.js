@@ -100,15 +100,12 @@ function playCard() {
 function cancelSelection() {
     if (!isMyTurn) return;
 
-    hand.forEach(function (card) {
-        card.cancelSelection();
-    });
-    players.forEach(function (player) {
-        player.cancelSelection();
-    });
-    enemies.forEach(function (enemy) {
-        enemy.cancelSelection();
-    });
+    clearAllCardSelection();
+    clearAllPlayerSelection();
+    clearAllEnemySelection();
+    selectedPlayer = undefined;
+    selectedEnemy = undefined;
+    targetingMode = targetingModeEnum.none;
     selectedCards = [];
     clearEffects();
 }

@@ -5,19 +5,48 @@ let selectedPlayer;
 function playerClicked() {
     this.isSelected = !this.isSelected;
     if (this.isSelected) {
-        selectedPlayer = this.info;
-        this.graphics.visible = true;
+        if (hasSelectedAOE) {
+            selectedPlayer = this;
+            selectAllPlayers();
+            targetingMode = targetingModeEnum.allPlayers;
+        }
+        else {
+            selectedPlayer = this;
+            this.graphics.visible = true;
+            targetingMode = targetingModeEnum.player;
+        }
+        clearAllEnemySelection();
+        selectedEnemy = undefined;
     }
     else {
-        selectedPlayer = undefined;
-        this.graphics.visible = false;
+        if (hasSelectedAOE) {
+            clearAllPlayerSelection();
+        }
+        else {
+            selectedPlayer = undefined;
+            this.graphics.visible = false;
+        }
+        targetingMode = targetingModeEnum.none;
     }
+    setEffects();
 }
 
 function cancelPlayerSelection() {
-    selectedPlayer = undefined;
     this.isSelected = false;
     this.graphics.visible = false;
+}
+
+function selectAllPlayers() {
+    players.forEach(function (player) {
+        player.isSelected = true;
+        player.graphics.visible = true;
+    });
+}
+
+function clearAllPlayerSelection() {
+    players.forEach(function (player) {
+        player.cancelSelection();
+    });
 }
 /* --- start generated code --- */
 
