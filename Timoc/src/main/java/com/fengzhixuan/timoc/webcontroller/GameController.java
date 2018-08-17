@@ -2,6 +2,7 @@ package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.game.Game;
 import com.fengzhixuan.timoc.game.Player;
+import com.fengzhixuan.timoc.webcontroller.messagetemplate.PlayCardMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GameErrorMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GameMessage;
 import com.fengzhixuan.timoc.websocket.message.game.MessageType;
@@ -81,5 +82,22 @@ public class GameController
         if (!game.isPlayerInThisGame(username)) { return; }
 
         game.finishPlayerTurn();
+    }
+
+    @MessageMapping("/game.playCard/{code}")
+    @SendTo("/topic/game/{code}")
+    public void playCard(@DestinationVariable String code, Principal principal, PlayCardMessage message)
+    {
+        // check if message is valid, ignore if invalid
+        if (principal == null) { return; }
+        String username = principal.getName();
+        Game game = Game.getGameByCode(code);
+        if (game == null) { return; }
+        Player player = Player.findPlayerByName(username);
+        if (player == null) { return; }
+        if (!game.isPlayerInThisGame(username)) { return; }
+        if (!message.isValid(game, player)) { return; }
+
+        game.playerPlaysCard(player, message);
     }
 }

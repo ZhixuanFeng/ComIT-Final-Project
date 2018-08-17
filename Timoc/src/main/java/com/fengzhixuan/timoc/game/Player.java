@@ -106,7 +106,7 @@ public class Player
         Collections.shuffle(drawPile);
     }
 
-    // get cards in hand
+    // get cards in hand, sorted
     @JsonIgnore
     public Card[] getHand()
     {
@@ -115,23 +115,24 @@ public class Player
         {
             hand[i] = getCardByIndecks(handPile.get(i));
         }
-        return hand;
+        return Hand.sortCards(hand);
     }
 
-    // returns indeckses of the cards in hand pile
+    // returns only the indeckses of the cards in hand pile, sorted
     @JsonIgnore
     public int[] getHandIndeckses()
     {
-        int[] hand = new int[handPile.size()];
-        for (int i = 0; i < hand.length; i++)
+        Card[] hand = getHand();
+        int[] indecks = new int[hand.length];
+        for (int i = 0; i < indecks.length; i++)
         {
-            hand[i] = handPile.get(i);
+            indecks[i] = hand[i].getIndecks();
         }
-        return hand;
+        return indecks;
     }
 
     // get a card from the player's deck
-    private Card getCardByIndecks(int indecks)
+    public Card getCardByIndecks(int indecks)
     {
         // if player has a non-starter card with indecks in the deck
         if (deck.containsKey(indecks))

@@ -93,7 +93,41 @@ function setCurrentPlayer(currentPlayerName) {
 }
 
 function playCard() {
-    if (!isMyTurn) return;
+    if (!isMyTurn || selectedCards.length === 0) return;
+
+    let playingCards = [];
+    selectedCards.forEach(function (card) {
+        playingCards.push(card.indecks);
+    });
+    switch (targetingMode) {
+        case targetingModeEnum.none:
+            // TODO: remind user to pick target
+            return;
+            break;
+        case targetingModeEnum.player:
+            sendMessage('/app/game.playCard/' + code, JSON.stringify({
+                cards: playingCards,
+                mode: targetingMode,
+                target: selectedPlayer.info.name
+            }));
+            break;
+        case targetingModeEnum.enemy:
+            sendMessage('/app/game.playCard/' + code, JSON.stringify({
+                cards: playingCards,
+                mode: targetingMode,
+                target: selectedEnemy.info.id
+            }));
+            break;
+        case targetingModeEnum.allPlayers:
+            sendMessage('/app/game.playCard/' + code, JSON.stringify({cards: playingCards, mode: targetingMode}));
+            break;
+        case targetingModeEnum.allEnemies:
+            sendMessage('/app/game.playCard/' + code, JSON.stringify({cards: playingCards, mode: targetingMode}));
+            break;
+        default:
+            return;
+    }
+
     cancelSelection();
 }
 
@@ -111,7 +145,9 @@ function cancelSelection() {
 }
 
 function discardCard() {
-    if (!isMyTurn) return;
+    if (!isMyTurn || selectedCards.length === 0) return;
+
+
     cancelSelection();
 }
 

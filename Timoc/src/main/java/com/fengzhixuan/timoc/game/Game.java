@@ -1,5 +1,7 @@
 package com.fengzhixuan.timoc.game;
 
+import com.fengzhixuan.timoc.game.enums.PokerHand;
+import com.fengzhixuan.timoc.webcontroller.messagetemplate.PlayCardMessage;
 import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
@@ -113,6 +115,18 @@ public class Game
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
     }
 
+    public void playerPlaysCard(Player player, PlayCardMessage message)
+    {
+        int[] indecks = message.getCards();
+        Card[] cards = new Card[indecks.length];
+        for (int i = 0; i < cards.length; i++)
+        {
+            cards[i] = player.getCardByIndecks(indecks[i]);
+        }
+
+        PokerHand pokerHand = Hand.identifyHand(cards);
+    }
+
     public void finishPlayerTurn()
     {
         currentPlayer++;
@@ -159,6 +173,8 @@ public class Game
     }
 
 
+
+
     public static Game getGameByCode(int code)
     {
         return games.getOrDefault(code, null);
@@ -177,6 +193,18 @@ public class Game
     public boolean isPlayerInThisGame(String name)
     {
         return players.containsKey(name);
+    }
+
+    public boolean isEnemyTargetable(int id)
+    {
+        for (Enemy enemy : enemies)
+        {
+            if (enemy.getId() == id)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setPlayerOnlineStatus(String name, boolean status)
