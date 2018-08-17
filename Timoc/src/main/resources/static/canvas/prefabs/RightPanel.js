@@ -52,7 +52,11 @@ function removeSelectedCard(card) {
         }
     }
     if (selectedCards.length === 0) {
-        cancelSelection();
+        clearAllPlayerSelection();
+        clearAllEnemySelection();
+        selectedPlayer = undefined;
+        selectedEnemy = undefined;
+        targetingMode = targetingModeEnum.none;
     }
     setEffects();
 }
