@@ -96,8 +96,14 @@ public class GameController
         Player player = Player.findPlayerByName(username);
         if (player == null) { return; }
         if (!game.isPlayerInThisGame(username)) { return; }
-        if (!message.isValid(game, player)) { return; }
 
+        if (!message.isValid(game, player))
+        {
+            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + code, new GameMessage(MessageType.PlayCardFailed));
+            return;
+        }
+
+        messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + code, new GameMessage(MessageType.PlayCardSuccessful));
         game.playerPlaysCard(player, message);
     }
 }

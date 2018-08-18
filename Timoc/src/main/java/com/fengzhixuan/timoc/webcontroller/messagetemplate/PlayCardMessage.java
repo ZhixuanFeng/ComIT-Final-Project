@@ -4,6 +4,8 @@ import com.fengzhixuan.timoc.game.Game;
 import com.fengzhixuan.timoc.game.Player;
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
 
+import java.util.List;
+
 public class PlayCardMessage
 {
     private int[] cards;
@@ -37,6 +39,27 @@ public class PlayCardMessage
             {
                 return false;
             }
+        }
+
+        // check if the player has cards with these indeckses in hand
+        for (int card : cards)
+        {
+            List<Integer> hand = player.getHandPile();
+            if (hand.indexOf(card) < 0)
+            {
+                return false;
+            }
+        }
+
+        // check if the player has enough mana to play these cards
+        int totalManaCost = 0;
+        for (int indecks : cards)
+        {
+            totalManaCost += indecks - ((int)(indecks / 13)) * 13 + 1;
+        }
+        if (totalManaCost > player.getMana())
+        {
+            return false;
         }
 
         // check if mode is in range

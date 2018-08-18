@@ -28,6 +28,7 @@ public class Enemy
     private int maxHp;
 
     private int drawNum;  // how many cards the enemy draws at the start of a round
+    private boolean dead;
 
     public Enemy(String code, String name, int id, SimpMessageSendingOperations messagingTemplate)
     {
@@ -58,7 +59,7 @@ public class Enemy
         // draw
         drawCards(drawNum);
 
-        messagingTemplate.convertAndSend("/topic/game/" + code, new GameEnemyCardMessage(MessageType.EnemyDrawCard, this, getHand()));
+        messagingTemplate.convertAndSend("/topic/game/" + code, new GameEnemyCardMessage(MessageType.EnemyDrawCard, id, getHand()));
     }
 
     // draw certain number of cards, meaning move cards from draw pile to hand pile, if draw pile is empty, shuffle discard pile to draw pile
@@ -94,6 +95,24 @@ public class Enemy
         return hand;
     }
 
+    // return actual damage taken
+    public int takeDamage(int amount, Player source)
+    {
+        int damageTaken;
+        if (hp < amount)
+        {
+            damageTaken = hp;
+            hp = 0;
+            dead = true;
+        }
+        else
+        {
+            damageTaken = amount;
+            hp -= amount;
+        }
+        return damageTaken;
+    }
+
 
     public String getName()
     {
@@ -113,5 +132,10 @@ public class Enemy
     public int getMaxHp()
     {
         return maxHp;
+    }
+
+    public boolean isDead()
+    {
+        return dead;
     }
 }

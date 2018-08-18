@@ -32,6 +32,7 @@ public class Player
     private int maxMana;  // maximum mana
     private int hate;  // current hate of the player, enemies only target player with the highest hate
     private int drawNum;  // how many cards the player draws at the start of a round
+    private boolean isDown;  // is player dead?
 
     // statistic attributes
     private int damageDealt;  // records the total damage the player has dealt to enemies
@@ -86,16 +87,35 @@ public class Player
     }
 
     // draw certain number of cards, meaning move cards from draw pile to hand pile, if draw pile is empty, shuffle discard pile to draw pile
-    public void drawCards(int count)
+    // return the array of cards drawn
+    public Card[] drawCards(int count)
     {
+        // hand can not exceed five cards
+        if (handPile.size() + count > 5)
+        {
+            count = 5 - handPile.size();
+        }
+
+        Card[] cardsDrawn = new Card[count];
         for (int i = 0; i < count; i++)
         {
             if (drawPile.size() == 0)
             {
                 shuffleDiscardPileIntoDrawPile();
             }
-            handPile.add(drawPile.remove(drawPile.size()-1));
+            int indecks = drawPile.remove(drawPile.size()-1);
+            handPile.add(indecks);
+            cardsDrawn[i] = getCardByIndecks(indecks);
         }
+        return cardsDrawn;
+    }
+
+    // move a single card from hand pile to discard pile
+    public void discardCard(int indecks)
+    {
+        int i = 0;
+        while (handPile.get(i) != indecks && i < handPile.size()) i++;
+        discardPile.add(handPile.remove(i));
     }
 
     // put discard pile into draw pile, then shuffle draw pile
@@ -146,14 +166,83 @@ public class Player
         }
     }
 
+    // return actual amount healed
+    public int heal(int amount)
+    {
+        if (isDown) return 0;
+
+        int healedAmount = 0;
+        if (hp + amount > maxHp)
+        {
+            healedAmount = maxHp - hp;
+            hp = maxHp;
+        }
+        else
+        {
+            hp += amount;
+            healedAmount = amount;
+        }
+        return healedAmount;
+    }
+
+    // return actual amount restored
+    public int restoreMana(int amount)
+    {
+        if (isDown) return 0;
+
+        int restoredAmount = 0;
+        if (mana + amount > maxMana)
+        {
+            restoredAmount = maxMana - mana;
+            mana = maxMana;
+        }
+        else
+        {
+            mana += amount;
+            restoredAmount = amount;
+        }
+        return restoredAmount;
+    }
+
+    public void consumeMana(int amount)
+    {
+        // no need to check if mana is enough because it's checked as the command comes in
+        mana -= amount;
+    }
+
+    public void increaseHate(int amount, String source)
+    {
+        switch (source)
+        {
+            case "taunt":
+                hate += amount;
+                break;
+            case "attack":
+                hate += amount;
+                break;
+            case "heal":
+                hate += amount;
+                break;
+        }
+    }
+
+    // return actual amount healed on revive
+    public int revive(int amount)
+    {
+        if (!isDown) return 0;
+
+        isDown = false;
+        return heal(amount);
+    }
+
     public static Player findPlayerByName(String name)
     {
-        return players.containsKey(name) ? players.get(name) : null;
+        return players.getOrDefault(name, null);
     }
 
     public static void removePlayer(String name)
     {
-        if (players.containsKey(name)) players.remove(name);
+        players.remove(name);
     }
 
     public String getName()
@@ -234,15 +323,25 @@ public class Player
         this.drawNum = drawNum;
     }
 
+    public boolean isDown()
+    {
+        return isDown;
+    }
+
+    public void setDown(boolean down)
+    {
+        isDown = down;
+    }
+
     @JsonIgnore
     public int getDamageDealt()
     {
         return damageDealt;
     }
 
-    public void setDamageDealt(int damageDealt)
+    public void recordDamageDealt(int damageDealt)
     {
-        this.damageDealt = damageDealt;
+        this.damageDealt += damageDealt;
     }
 
     @JsonIgnore
@@ -251,9 +350,9 @@ public class Player
         return damageBlocked;
     }
 
-    public void setDamageBlocked(int damageBlocked)
+    public void recordDamageBlocked(int damageBlocked)
     {
-        this.damageBlocked = damageBlocked;
+        this.damageBlocked += damageBlocked;
     }
 
     @JsonIgnore
@@ -262,9 +361,9 @@ public class Player
         return damageTaken;
     }
 
-    public void setDamageTaken(int damageTaken)
+    public void recordDamageTaken(int damageTaken)
     {
-        this.damageTaken = damageTaken;
+        this.damageTaken += damageTaken;
     }
 
     @JsonIgnore
@@ -273,9 +372,9 @@ public class Player
         return damageHealed;
     }
 
-    public void setDamageHealed(int damageHealed)
+    public void recordDamageHealed(int damageHealed)
     {
-        this.damageHealed = damageHealed;
+        this.damageHealed += damageHealed;
     }
 
     @JsonIgnore
@@ -284,9 +383,9 @@ public class Player
         return manaRestored;
     }
 
-    public void setManaRestored(int manaRestored)
+    public void recordManaRestored(int manaRestored)
     {
-        this.manaRestored = manaRestored;
+        this.manaRestored += manaRestored;
     }
 
     public static Card[] getStarters()
@@ -300,5 +399,11 @@ public class Player
         {
             Player.starters = starters;
         }
+    }
+
+    @JsonIgnore
+    public List<Integer> getHandPile()
+    {
+        return handPile;
     }
 }
