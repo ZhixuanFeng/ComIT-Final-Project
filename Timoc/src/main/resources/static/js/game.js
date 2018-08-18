@@ -92,6 +92,22 @@ function setCurrentPlayer(currentPlayerName) {
     }
 }
 
+function updatePlayer(playerInfo) {
+    for (let i = 0; i < players.length; i++) {
+        if (players[i].info.name === playerInfo.name) {
+            players[i].updatePlayerInfo(playerInfo);
+        }
+    }
+}
+
+function updateEnemy(enemyInfo) {
+    for (let i = 0; i < enemies.length; i++) {
+        if (enemies[i].info.id === enemyInfo.id) {
+            enemies[i].updateEnemyInfo(enemyInfo);
+        }
+    }
+}
+
 function playCard() {
     if (!isMyTurn || selectedCards.length === 0) return;
 
@@ -217,6 +233,14 @@ function onMessageReceived(message) {
             break;
         case 'NewEnemy':
             spawnEnemy(messageBody.enemy);
+            break;
+        case 'PlayCardSuccessful':
+            break;
+        case 'PlayerUpdate':
+            updatePlayer(messageBody.player);
+            break;
+        case 'EnemyUpdate':
+            updateEnemy(messageBody.enemy);
             break;
         default:
             break;
