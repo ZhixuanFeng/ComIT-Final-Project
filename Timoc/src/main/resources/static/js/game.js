@@ -78,9 +78,6 @@ function clearHand() {
 
 function setHand(cards) {
     clearHand();
-    // for (let i = 0; i < cards.length; i++) {
-    //     hand.push(new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, i, deck[cards[i]]));
-    // }
     drawCardBuffer.push.apply(drawCardBuffer, cards);
     addNewDrawnCardsToUI();
 }
@@ -239,8 +236,12 @@ function cancelSelection() {
 function discardCard() {
     if (!isMyTurn || selectedCards.length === 0 || isAnimating) return;
 
+    let discardingCards = [];
+    selectedCards.forEach(function (card) {
+        discardingCards.push(card.info.indecks);
+    });
 
-    cancelSelection();
+    sendMessage('/app/game.discardCard/' + code, JSON.stringify({cards: discardingCards}));
 }
 
 function endTurn() {
@@ -311,6 +312,9 @@ function onMessageReceived(message) {
             spawnEnemy(messageBody.enemy);
             break;
         case 'PlayCardSuccessful':
+            animateCardUse();
+            break;
+        case 'DiscardCardSuccessful':
             animateCardUse();
             break;
         case 'PlayerDrawCard':

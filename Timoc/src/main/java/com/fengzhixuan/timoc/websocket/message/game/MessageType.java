@@ -23,5 +23,7 @@ public enum MessageType
     PlayerRevive,  // when a player revives
     PlayerDrawCard,  // when player draw card(not at the start of the round)
     PlayCardSuccessful,  // send when a play card command is accepted
-    PlayCardFailed  // send when a play card command failed
+    PlayCardFailed,  // send when a play card command failed
+    DiscardCardSuccessful,  // send when a discard card command is accepted
+    DiscardCardFailed  // send when a discard card command failed
 }

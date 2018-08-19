@@ -32,6 +32,7 @@ public class Player
     private int maxMana;  // maximum mana
     private int hate;  // current hate of the player, enemies only target player with the highest hate
     private int drawNum;  // how many cards the player draws at the start of a round
+    private int replaceAllowance;  // how many more cards can be replaced in this turn
     private boolean isDown;  // is player dead?
 
     // statistic attributes
@@ -77,6 +78,8 @@ public class Player
 
         // draw
         drawCards(drawNum);
+
+        replaceAllowance = 2;
 
         messagingTemplate.convertAndSendToUser(name, "/topic/game/" + code, new GameCardPileMessage(getHandIndeckses()));
     }
@@ -321,6 +324,17 @@ public class Player
     public void setDrawNum(int drawNum)
     {
         this.drawNum = drawNum;
+    }
+
+    @JsonIgnore
+    public int getReplaceAllowance()
+    {
+        return replaceAllowance;
+    }
+
+    public void setReplaceAllowance(int replaceAllowance)
+    {
+        this.replaceAllowance = replaceAllowance;
     }
 
     public boolean isDown()

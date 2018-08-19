@@ -2,6 +2,7 @@ package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.game.Game;
 import com.fengzhixuan.timoc.game.Player;
+import com.fengzhixuan.timoc.webcontroller.messagetemplate.DiscardCardMessage;
 import com.fengzhixuan.timoc.webcontroller.messagetemplate.PlayCardMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GameErrorMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GameMessage;
@@ -105,5 +106,28 @@ public class GameController
 
         messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + code, new GameMessage(MessageType.PlayCardSuccessful));
         game.playerPlaysCard(player, message);
+    }
+
+    @MessageMapping("/game.discardCard/{code}")
+    @SendTo("/topic/game/{code}")
+    public void discardCard(@DestinationVariable String code, Principal principal, DiscardCardMessage message)
+    {
+        // check if message is valid, ignore if invalid
+        if (principal == null) { return; }
+        String username = principal.getName();
+        Game game = Game.getGameByCode(code);
+        if (game == null) { return; }
+        Player player = Player.findPlayerByName(username);
+        if (player == null) { return; }
+        if (!game.isPlayerInThisGame(username)) { return; }
+
+        if (!message.isValid(game, player))
+        {
+            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + code, new GameMessage(MessageType.DiscardCardFailed));
+            return;
+        }
+
+        messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + code, new GameMessage(MessageType.DiscardCardSuccessful));
+        game.playerDiscardsCard(player, message);
     }
 }

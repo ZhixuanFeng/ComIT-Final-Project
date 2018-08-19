@@ -2,11 +2,11 @@ package com.fengzhixuan.timoc.game;
 
 import com.fengzhixuan.timoc.game.enums.PokerHand;
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
+import com.fengzhixuan.timoc.webcontroller.messagetemplate.DiscardCardMessage;
 import com.fengzhixuan.timoc.webcontroller.messagetemplate.PlayCardMessage;
 import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +131,6 @@ public class Game
 
         PokerHand pokerHand = Hand.identifyHand(cards);  // TODO: apply poker hand effect
         TargetingMode targetingMode = TargetingMode.values()[message.getMode()];
-        Player cardPlayer = getCurrentPlayer();
 
         // consume mana
         int manaCost = 0;
@@ -139,7 +138,7 @@ public class Game
         {
             manaCost += card.getRank();
         }
-        cardPlayer.consumeMana(manaCost);
+        player.consumeMana(manaCost);
 
         int attack = 0, heal = 0, mana = 0, draw = 0, revive = 0, taunt = 0;
         switch (targetingMode)
@@ -165,8 +164,8 @@ public class Game
                 manaRestored += targetPlayer.restoreMana(mana);
 
                 // record effect
-                cardPlayer.recordDamageHealed(healed);
-                cardPlayer.recordManaRestored(manaRestored);
+                player.recordDamageHealed(healed);
+                player.recordManaRestored(manaRestored);
 
                 // update front end
                 messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
@@ -185,10 +184,10 @@ public class Game
 
                 // apply effect
                 int damageDealt = 0;
-                damageDealt += targetEnemy.takeDamage(attack, cardPlayer);
+                damageDealt += targetEnemy.takeDamage(attack, player);
 
                 // record effect
-                cardPlayer.recordDamageDealt(damageDealt);
+                player.recordDamageDealt(damageDealt);
 
                 // update front end
                 messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
@@ -224,8 +223,8 @@ public class Game
                 }
 
                 // record effects
-                cardPlayer.recordDamageHealed(healed);
-                cardPlayer.recordManaRestored(manaRestored);
+                player.recordDamageHealed(healed);
+                player.recordManaRestored(manaRestored);
                 break;
             case allEnemies:
                 // get card effect summary
@@ -245,14 +244,14 @@ public class Game
                 for (Map.Entry<Integer, Enemy> enemyEntry : enemies.entrySet())
                 {
                     targetEnemy = enemyEntry.getValue();
-                    damageDealt += targetEnemy.takeDamage(attack, cardPlayer);
+                    damageDealt += targetEnemy.takeDamage(attack, player);
 
                     // update front end
                     messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
                 }
 
                 // record effects
-                cardPlayer.recordDamageDealt(damageDealt);
+                player.recordDamageDealt(damageDealt);
                 break;
         }
 
@@ -263,7 +262,7 @@ public class Game
         }
         if (taunt > 0)
         {
-            cardPlayer.increaseHate(taunt, "taunt");
+            player.increaseHate(taunt, "taunt");
         }
 
         // draw effect
@@ -273,22 +272,75 @@ public class Game
         }
         if (draw > 0)
         {
-            int[] cardsDrawn = cardPlayer.drawCards(draw);
-            messagingTemplate.convertAndSendToUser(cardPlayer.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
+            int[] cardsDrawn = player.drawCards(draw);
+            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
         }
 
         // generates hate
         if (attack > 0)
         {
-            cardPlayer.increaseHate(2, "attack");
+            player.increaseHate(2, "attack");
         }
         else if (heal > 0 || mana > 0 || revive > 0)
         {
-            cardPlayer.increaseHate(1, "heal");
+            player.increaseHate(1, "heal");
         }
 
         // update the current player
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(cardPlayer));
+        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
+    }
+
+    public void playerDiscardsCard(Player player, DiscardCardMessage message)
+    {
+        int[] indecks = message.getCards();
+        Card[] cards = new Card[indecks.length];
+        for (int i = 0; i < cards.length; i++)
+        {
+            // get cards
+            cards[i] = player.getCardByIndecks(indecks[i]);
+
+            // discard cards from hand
+            player.discardCard(indecks[i]);
+        }
+
+        // if discarding more than replaceAllowance, replace the cards with lowest rank and restore mana based on the cards with highest rank
+        if (cards.length > player.getReplaceAllowance())
+        {
+            cards = Hand.sortCards(cards);
+
+            // find how much mana can be generated
+            // cards with index<replaceAllowance are the cards with lowest ranks and to be replaced
+            int manaGeneration = 0;
+            for (int i = player.getReplaceAllowance(); i < cards.length; i++)
+            {
+                manaGeneration += cards[i].getRank();
+            }
+
+            // restore mana and record amount restored
+            int manaRestored = player.restoreMana(manaGeneration);
+            player.recordManaRestored(manaRestored);
+
+            // update front end
+            if (manaRestored > 0)
+            {
+                messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
+            }
+
+            // replace with new cards
+            if (player.getReplaceAllowance() > 0)
+            {
+                int[] cardsDrawn = player.drawCards(player.getReplaceAllowance());
+                messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
+                player.setReplaceAllowance(0);
+            }
+        }
+        else
+        {
+            // replace with new cards
+            int[] cardsDrawn = player.drawCards(cards.length);
+            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
+            player.setReplaceAllowance(player.getReplaceAllowance() - cards.length);
+        }
     }
 
     public void finishPlayerTurn()
