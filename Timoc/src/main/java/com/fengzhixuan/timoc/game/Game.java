@@ -273,7 +273,7 @@ public class Game
         }
         if (draw > 0)
         {
-            Card[] cardsDrawn = cardPlayer.drawCards(draw);
+            int[] cardsDrawn = cardPlayer.drawCards(draw);
             messagingTemplate.convertAndSendToUser(cardPlayer.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
         }
 

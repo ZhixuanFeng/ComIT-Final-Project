@@ -9,7 +9,7 @@ let hasSelectedAOE = false;
 
 function addSelectedCard(card) {
     selectedCards.push(card);
-    if (card.aoe > 0 && !hasSelectedAOE) {
+    if (card.info.aoe > 0 && !hasSelectedAOE) {
         hasSelectedAOE = true;
         if (targetingMode === targetingModeEnum.player) {
             selectAllPlayers();
@@ -24,11 +24,11 @@ function addSelectedCard(card) {
 }
 
 function removeSelectedCard(card) {
-    selectedCards = selectedCards.filter( c => c.indecks !== card.indecks );
+    selectedCards = selectedCards.filter( c => c.info.indecks !== card.info.indecks );
     if (hasSelectedAOE) {
         hasSelectedAOE = false;
         for (let i = 0; i < selectedCards.length && !hasSelectedAOE; i++) {
-            if (selectedCards[i].aoe > 0) {
+            if (selectedCards[i].info.aoe > 0) {
                 hasSelectedAOE = true;
             }
         }
@@ -72,6 +72,7 @@ function clearEffects() {
 function setEffects() {
     clearEffects();
     selectedCards.forEach(function (card) {
+        card = card.info;
         if (typeof card.attack !== 'undefined' && targetingMode !== targetingModeEnum.player && targetingMode !== targetingModeEnum.allPlayers)
             attack.amount.setText(+attack.amount.text + +card.attack);
         if (typeof card.heal !== 'undefined' && targetingMode !== targetingModeEnum.enemy && targetingMode !== targetingModeEnum.allEnemies)

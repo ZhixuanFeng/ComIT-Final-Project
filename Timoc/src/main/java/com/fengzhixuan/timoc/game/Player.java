@@ -88,7 +88,7 @@ public class Player
 
     // draw certain number of cards, meaning move cards from draw pile to hand pile, if draw pile is empty, shuffle discard pile to draw pile
     // return the array of cards drawn
-    public Card[] drawCards(int count)
+    public int[] drawCards(int count)
     {
         // hand can not exceed five cards
         if (handPile.size() + count > 5)
@@ -96,7 +96,7 @@ public class Player
             count = 5 - handPile.size();
         }
 
-        Card[] cardsDrawn = new Card[count];
+        int[] cardsDrawn = new int[count];
         for (int i = 0; i < count; i++)
         {
             if (drawPile.size() == 0)
@@ -105,7 +105,7 @@ public class Player
             }
             int indecks = drawPile.remove(drawPile.size()-1);
             handPile.add(indecks);
-            cardsDrawn[i] = getCardByIndecks(indecks);
+            cardsDrawn[i] = indecks;
         }
         return cardsDrawn;
     }

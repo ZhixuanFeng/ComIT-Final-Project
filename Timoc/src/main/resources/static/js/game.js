@@ -7,7 +7,7 @@
 let game = new Phaser.Game(/*window.innerWidth, window.innerHeight*/800, 600, Phaser.AUTO, 'game', this);
 let myInfo;
 let deck = new Array(52);
-let hand;
+let hand = [];
 let players = [];
 let enemies = [];
 let code;
@@ -15,6 +15,8 @@ let gameStart = false;
 let isMyTurn = false;
 let gamePhase;
 let currentPlayer;
+let isAnimating = false;
+let drawCardBuffer = [];
 
 function init() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -66,10 +68,86 @@ function update() {
 
 }
 
-function setHand(pile) {
+function clearHand() {
+    hand.forEach(function (card) {
+        card.kill();
+        card.destroy();
+    });
     hand = [];
-    for (let i = 0; i < pile.length; i++) {
-        hand.push(new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, 50 + i * 50, 200, deck[pile[i]]));
+}
+
+function setHand(cards) {
+    clearHand();
+    // for (let i = 0; i < cards.length; i++) {
+    //     hand.push(new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, i, deck[cards[i]]));
+    // }
+    drawCardBuffer.push.apply(drawCardBuffer, cards);
+    addNewDrawnCardsToUI();
+}
+
+function animateCardUse() {
+    let tween;
+    selectedCards.forEach(function (card) {
+        // card.destroy(true, false);
+        card.graphics.visible = false;
+        isAnimating = true;
+        tween = game.add.tween(card).to( { y: card.y-50 }, 500, Phaser.Easing.Exponential.Out, true);
+    });
+    if (tween) tween.onComplete.add(removeUsedCards);
+}
+
+function removeUsedCards() {
+    isAnimating = false;
+    for (let i = 0; i < hand.length; i++) {
+        if (hand[i].isSelected) {
+            hand[i] = undefined;
+        }
+    }
+    selectedCards.forEach(function (card) {
+        card.kill();
+        card.destroy(true, false);
+    });
+    cancelSelection();
+    moveCardsToLeft();
+}
+
+function moveCardsToLeft(numOfHoles) {
+    let newHand = [];
+    let count = 0;
+    let tween;
+    hand.forEach(function (card) {
+        if (card) {
+            newHand[count] = card;
+            isAnimating = true;
+            tween = game.add.tween(card).to( { x: cardXPositions[count]*card.scale.x }, 500, Phaser.Easing.Exponential.Out, true);
+            card.posIndex = count;
+            card.repositionBorder();
+            count++;
+        }
+    });
+    if (tween) tween.onComplete.add(onFinishMovingLeft);
+    hand = newHand;
+
+    function onFinishMovingLeft() {
+        isAnimating = false;
+        addNewDrawnCardsToUI();
+    }
+}
+
+function addNewDrawnCardsToUI() {
+    let tween;
+    for (let i = 0; i < drawCardBuffer.length; i++) {
+        let card = new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, hand.length, deck[drawCardBuffer[i]]);
+        hand.push(card);
+        card.y -= 50;
+        isAnimating = true;
+        tween = game.add.tween(card).to( { y: card.y+50 }, 500, Phaser.Easing.Exponential.Out, true);
+    }
+    if (tween) tween.onComplete.add(onComplete);
+    drawCardBuffer = [];
+
+    function onComplete() {
+        isAnimating = false;
     }
 }
 
@@ -109,11 +187,11 @@ function updateEnemy(enemyInfo) {
 }
 
 function playCard() {
-    if (!isMyTurn || selectedCards.length === 0) return;
+    if (!isMyTurn || selectedCards.length === 0 || isAnimating) return;
 
     let playingCards = [];
     selectedCards.forEach(function (card) {
-        playingCards.push(card.indecks);
+        playingCards.push(card.info.indecks);
     });
     switch (targetingMode) {
         case targetingModeEnum.none:
@@ -143,8 +221,6 @@ function playCard() {
         default:
             return;
     }
-
-    cancelSelection();
 }
 
 function cancelSelection() {
@@ -161,7 +237,7 @@ function cancelSelection() {
 }
 
 function discardCard() {
-    if (!isMyTurn || selectedCards.length === 0) return;
+    if (!isMyTurn || selectedCards.length === 0 || isAnimating) return;
 
 
     cancelSelection();
@@ -235,6 +311,11 @@ function onMessageReceived(message) {
             spawnEnemy(messageBody.enemy);
             break;
         case 'PlayCardSuccessful':
+            animateCardUse();
+            break;
+        case 'PlayerDrawCard':
+            drawCardBuffer.push.apply(drawCardBuffer, messageBody.cards);
+            if (!isAnimating) addNewDrawnCardsToUI();
             break;
         case 'PlayerUpdate':
             updatePlayer(messageBody.player);

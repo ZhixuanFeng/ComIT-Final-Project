@@ -1,19 +1,17 @@
 package com.fengzhixuan.timoc.websocket.message.game;
 
-import com.fengzhixuan.timoc.game.Card;
-
 // used when player draws cards during their turn, not at round start
 public class GamePlayerDrawCardMessage extends GameMessage
 {
-    Card[] cards;
+    int[] cards;
 
-    public GamePlayerDrawCardMessage(Card[] cards)
+    public GamePlayerDrawCardMessage(int[] cards)
     {
         super(MessageType.PlayerDrawCard);
         this.cards = cards;
     }
 
-    public Card[] getCards()
+    public int[] getCards()
     {
         return cards;
     }
