@@ -8,6 +8,7 @@ import com.fengzhixuan.timoc.webcontroller.messagetemplate.PlayCardMessage;
 import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,7 +108,7 @@ public class Game
     {
         if (roundNum == 1)
         {
-            Enemy newEnemy = new Goblin(codeString, enemyCount, messagingTemplate);
+            Enemy newEnemy = new Goblin(this, codeString, enemyCount, messagingTemplate);
             enemies.put(newEnemy.getId(), newEnemy);
             enemyCount++;
             messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.NewEnemy, newEnemy));
@@ -379,24 +380,51 @@ public class Game
     private void startDefendPhase()
     {
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.DefendPhase));
+
+        List<GameMessage> messages = new ArrayList<>();
         for (Map.Entry<Integer, Enemy> enemyEntry : enemies.entrySet())
         {
-            // enemy action
+            if (!enemyEntry.getValue().isDead())
+            {
+                messages.addAll(enemyEntry.getValue().onTurnStart());
+            }
         }
         // combine all enemy actions into a single message and send
+        messagingTemplate.convertAndSend("/topic/game/" + codeString, messages);
 
         roundEndPhase();
     }
 
     private void roundEndPhase()
     {
-        Player player = players.get("haha");
-        player.setHp(player.getHp() - 10);
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
+        for (Map.Entry<String, Player> playerEntry : players.entrySet())
+        {
+            // make sure front end is in sync
+            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(playerEntry.getValue()));
+        }
+
         roundStartPhase();
     }
 
-
+    public Player findPlayerWithMostHate()
+    {
+        Player result = null;
+        for (Map.Entry<String, Player> playerEntry : players.entrySet())
+        {
+            if (result == null)
+            {
+                result = playerEntry.getValue();
+            }
+            else
+            {
+                if (playerEntry.getValue().getHate() > result.getHate() && !playerEntry.getValue().isDown())
+                {
+                    result = playerEntry.getValue();
+                }
+            }
+        }
+        return result;
+    }
 
 
     public static Game getGameByCode(int code)
@@ -407,6 +435,16 @@ public class Game
     public static Game getGameByCode(String code)
     {
         return getGameByCode(GameCodeGenerator.stringToInt(code));
+    }
+
+    public Map<String, Player> getPlayers()
+    {
+        return players;
+    }
+
+    public Map<Integer, Enemy> getEnemies()
+    {
+        return enemies;
     }
 
     public static boolean gameCodeExist(int code)

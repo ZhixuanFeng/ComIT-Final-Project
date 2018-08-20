@@ -3,16 +3,21 @@ package com.fengzhixuan.timoc.game.enemies;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.game.Card;
 import com.fengzhixuan.timoc.game.Enemy;
+import com.fengzhixuan.timoc.game.Game;
+import com.fengzhixuan.timoc.game.Player;
+import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class Goblin extends Enemy
 {
-    public Goblin(String code, int id, SimpMessageSendingOperations messagingTemplate)
+    public Goblin(Game game, String code, int id, SimpMessageSendingOperations messagingTemplate)
     {
-        super(code, "goblin", id, messagingTemplate);
+        super(game, code, "goblin", id, messagingTemplate);
     }
 
     @Override
@@ -36,6 +41,12 @@ public class Goblin extends Enemy
         discardPile = new ArrayList<>();
         for (int i = 0; i < 52; i++) drawPile.add(i);  // generate numbers which represent cards in a deck
         Collections.shuffle(drawPile);  // shuffle
+    }
+
+    @Override
+    public List<GameMessage> onTurnStart()
+    {
+        return super.onTurnStart();
     }
 
     // get cards in hand

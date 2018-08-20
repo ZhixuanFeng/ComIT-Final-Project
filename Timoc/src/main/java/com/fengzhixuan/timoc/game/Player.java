@@ -133,6 +133,30 @@ public class Player
         }
     }
 
+    public void takeDamage(int amount)
+    {
+        if (hp + block < amount)
+        {
+            block = 0;
+            hp = 0;
+            isDown = true;
+            recordDamageTaken(hp+block);
+        }
+        else
+        {
+            if (block > amount)
+            {
+                block -= amount;
+            }
+            else
+            {
+                hp -= (amount - block);
+                block = 0;
+            }
+            recordDamageTaken(amount);
+        }
+    }
+
     // put discard pile into draw pile, then shuffle draw pile
     private void shuffleDiscardPileIntoDrawPile()
     {

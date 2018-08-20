@@ -1,7 +1,6 @@
 package com.fengzhixuan.timoc.websocket.message.game;
 
 import com.fengzhixuan.timoc.game.Card;
-import com.fengzhixuan.timoc.game.Enemy;
 
 public class GameEnemyCardMessage extends GameMessage
 {

@@ -1,19 +1,20 @@
 package com.fengzhixuan.timoc.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fengzhixuan.timoc.websocket.message.game.GameEnemyCardMessage;
-import com.fengzhixuan.timoc.websocket.message.game.MessageType;
+import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Enemy
 {
     // value passed from GameController to Game to this, used for sending messages to players
     protected SimpMessageSendingOperations messagingTemplate;
 
+    protected Game game;
     protected String code;
     protected String name;
     protected int id;
@@ -30,10 +31,11 @@ public class Enemy
     protected int drawNum;  // how many cards the enemy draws at the start of a round
     protected boolean dead;
 
-    public Enemy(String code, String name, int id, SimpMessageSendingOperations messagingTemplate)
+    public Enemy(Game game, String code, String name, int id, SimpMessageSendingOperations messagingTemplate)
     {
         this.messagingTemplate = messagingTemplate;
 
+        this.game = game;
         this.code = code;
         this.name = name;
         this.id = id;
@@ -75,6 +77,52 @@ public class Enemy
         drawCards(drawNum);
 
         messagingTemplate.convertAndSend("/topic/game/" + code, new GameEnemyCardMessage(MessageType.EnemyDrawCard, id, getHand()));
+    }
+
+    public List<GameMessage> onTurnStart()
+    {
+        if (dead) return null;
+
+        List<GameMessage> messages = new ArrayList<>();
+        Player mostHatePlayer = game.findPlayerWithMostHate();
+        for (Card card : getHand())
+        {
+            if (card.getAttack() > 0)
+            {
+                messages.add(new GameEnemyPlayCardMessage(id, card, mostHatePlayer.getName()));
+                if (card.getAoe() > 0)
+                {
+                    for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
+                    {
+                        playerEntry.getValue().takeDamage(card.getAttack());
+                    }
+                    messages.add(new GameIntMessage(MessageType.AllPlayerTakeDamage, card.getAttack()));
+                }
+                else
+                {
+                    mostHatePlayer.takeDamage(card.getAttack());
+                    messages.add(new GameIntMessage(MessageType.PlayerTakesDamage, card.getAttack()));
+                }
+            }
+            else if (card.getHeal() > 0)
+            {
+                messages.add(new GameEnemyPlayCardMessage(id, card, "" + id));
+                if (card.getAoe() > 0)
+                {
+                    for (Map.Entry<Integer, Enemy> enemyEntry : game.getEnemies().entrySet())
+                    {
+                        enemyEntry.getValue().heal(card.getHeal());
+                    }
+                    messages.add(new GameIntMessage(MessageType.AllEnemyHeal, card.getHeal()));
+                }
+                else
+                {
+                    heal(card.getHeal());
+                    messages.add(new GameIntMessage(MessageType.Enemyheal, card.getHeal()));
+                }
+            }
+        }
+        return messages;
     }
 
     // draw certain number of cards, meaning move cards from draw pile to hand pile, if draw pile is empty, shuffle discard pile to draw pile
@@ -126,6 +174,20 @@ public class Enemy
             hp -= amount;
         }
         return damageTaken;
+    }
+
+    public void heal(int amount)
+    {
+        if (dead) return;
+
+        if (hp + amount > maxHp)
+        {
+            hp = maxHp;
+        }
+        else
+        {
+            hp += amount;
+        }
     }
 
 
