@@ -31,6 +31,7 @@ public class Player
     private int mana;  // current mana of the player
     private int maxMana;  // maximum mana
     private int hate;  // current hate of the player, enemies only target player with the highest hate
+    private int block;  // how much block the player currently has
     private int drawNum;  // how many cards the player draws at the start of a round
     private int replaceAllowance;  // how many more cards can be replaced in this turn
     private boolean isDown;  // is player dead?
@@ -79,6 +80,7 @@ public class Player
         // draw
         drawCards(drawNum);
 
+        updateBlock();
         replaceAllowance = 2;
 
         messagingTemplate.convertAndSendToUser(name, "/topic/game/" + code, new GameCardPileMessage(getHandIndeckses()));
@@ -119,6 +121,16 @@ public class Player
         int i = 0;
         while (handPile.get(i) != indecks && i < handPile.size()) i++;
         discardPile.add(handPile.remove(i));
+    }
+
+    // update the amount of block the player currently has
+    public void updateBlock()
+    {
+        block = 0;
+        for (Card card : getHand())
+        {
+            block += card.getBlock();
+        }
     }
 
     // put discard pile into draw pile, then shuffle draw pile
@@ -313,6 +325,11 @@ public class Player
     public void setHate(int hate)
     {
         this.hate = hate;
+    }
+
+    public int getBlock()
+    {
+        return block;
     }
 
     @JsonIgnore

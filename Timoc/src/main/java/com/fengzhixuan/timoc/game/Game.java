@@ -298,6 +298,8 @@ public class Game
             player.increaseHate(1, "heal");
         }
 
+        player.updateBlock();
+
         // update the current player
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
     }
@@ -314,6 +316,8 @@ public class Game
             // discard cards from hand
             player.discardCard(indecks[i]);
         }
+
+        player.updateBlock();
 
         // if discarding more than replaceAllowance, replace the cards with lowest rank and restore mana based on the cards with highest rank
         if (cards.length > player.getReplaceAllowance())

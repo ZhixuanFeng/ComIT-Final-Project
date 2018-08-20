@@ -110,7 +110,7 @@ function removeUsedCards() {
     moveCardsToLeft();
 }
 
-function moveCardsToLeft(numOfHoles) {
+function moveCardsToLeft() {
     let newHand = [];
     let count = 0;
     let tween;
@@ -126,6 +126,7 @@ function moveCardsToLeft(numOfHoles) {
     });
     if (tween) tween.onComplete.add(onFinishMovingLeft);
     hand = newHand;
+    if (hand.length === 0) onFinishMovingLeft();
 
     function onFinishMovingLeft() {
         isAnimating = false;
