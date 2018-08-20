@@ -6,6 +6,7 @@
 
 let game = new Phaser.Game(/*window.innerWidth, window.innerHeight*/800, 600, Phaser.AUTO, 'game', this);
 let myInfo;
+let myPlayer;
 let deck = new Array(52);
 let hand = [];
 let players = [];
@@ -14,7 +15,7 @@ let code;
 let gameStart = false;
 let isMyTurn = false;
 let gamePhase;
-let currentPlayer;
+let currentPlayerName;
 let isAnimating = false;
 let drawCardBuffer = [];
 
@@ -95,6 +96,7 @@ function animateCardUse() {
 
 function removeUsedCards() {
     isAnimating = false;
+    myPlayer.updateBlock();
     for (let i = 0; i < hand.length; i++) {
         if (hand[i].isSelected) {
             hand[i] = undefined;
@@ -127,6 +129,7 @@ function moveCardsToLeft(numOfHoles) {
 
     function onFinishMovingLeft() {
         isAnimating = false;
+        myPlayer.updateBlock();
         addNewDrawnCardsToUI();
     }
 }
@@ -145,14 +148,19 @@ function addNewDrawnCardsToUI() {
 
     function onComplete() {
         isAnimating = false;
+        myPlayer.updateBlock();
     }
 }
 
 function spawnPlayers(playerInfos) {
     let xPos = 50;
     playerInfos.forEach(function (playerInfo) {
-        players.push(new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, xPos, 120, playerInfo));
+        let newPlayer = new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, xPos, 120, playerInfo);
+        players.push(newPlayer);
         xPos += 60;
+        if (playerInfo.name === myInfo.name) {
+            myPlayer = newPlayer;
+        }
     });
 }
 
@@ -160,9 +168,9 @@ function spawnEnemy(enemyInfo) {
     enemies.push(new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 50, 35, enemyInfo));
 }
 
-function setCurrentPlayer(currentPlayerName) {
-    currentPlayer = currentPlayerName;
-    if (currentPlayerName === myInfo.name) {
+function setCurrentPlayer(name) {
+    currentPlayerName = name;
+    if (name === myInfo.name) {
         isMyTurn = true;
     }
 }
