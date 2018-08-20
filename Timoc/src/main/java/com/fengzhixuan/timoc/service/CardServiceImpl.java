@@ -123,10 +123,10 @@ public class CardServiceImpl implements CardService
                     card.setBlock(cardValue);
                     break;
                 case Heart:
-                    card.setHeal(cardValue);
+                    card.setHeal(cardValue/2);
                     break;
                 case Club:
-                    card.setAttack(Math.round(cardValue / 2));
+                    card.setAttack(Math.round(cardValue / 2f));
                     card.setBlock(cardValue - card.getAttack());
                     break;
                 case Diamond:
@@ -154,13 +154,13 @@ public class CardServiceImpl implements CardService
                     {
                         int revive = random.nextInt(cardValue) + 1;
                         card.setRevive(revive * 2);
-                        card.setHeal(cardValue - revive);
+                        card.setHeal((cardValue - revive)/2);
                     }
                     else
                     {
                         int mana = random.nextInt(cardValue) + 1;
                         card.setMana(mana);
-                        card.setHeal(cardValue - card.getMana());
+                        card.setHeal((cardValue - card.getMana())/2);
                     }
                     break;
                 case Club:
@@ -217,7 +217,7 @@ public class CardServiceImpl implements CardService
                         break;
                     case 2: // heal
                         if (card.getHeal() == 0) effectCount++;
-                        card.setHeal(card.getHeal() + value);
+                        card.setHeal(card.getHeal() + value/2);
                         remainingValue -= value;
                         break;
                     case 3: // taunt
@@ -327,29 +327,29 @@ public class CardServiceImpl implements CardService
             case 26:
                 return new Card(indecks, 0, 0, 1, 0, 0, 0, 0, 0);
             case 27:
-                return new Card(indecks, 0, 0, 2, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 1, 0, 0, 0, 0, 0);
             case 28:
-                return new Card(indecks, 0, 0, 3, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 2, 0, 0, 0, 0, 0);
             case 29:
-                return new Card(indecks, 0, 0, 4, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 2, 0, 0, 0, 0, 0);
             case 30:
-                return new Card(indecks, 0, 0, 5, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 3, 0, 0, 0, 0, 0);
             case 31:
-                return new Card(indecks, 0, 0, 6, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 3, 0, 0, 0, 0, 0);
             case 32:
-                return new Card(indecks, 0, 0, 7, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 4, 0, 0, 0, 0, 0);
             case 33:
-                return new Card(indecks, 0, 0, 8, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 4, 0, 0, 0, 0, 0);
             case 34:
-                return new Card(indecks, 0, 0, 9, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 5, 0, 0, 0, 0, 0);
             case 35:
-                return new Card(indecks, 0, 0, 10, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 5, 0, 0, 0, 0, 0);
             case 36:
-                return new Card(indecks, 0, 0, 11, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 6, 0, 0, 0, 0, 0);
             case 37:
                 return new Card(indecks, 0, 0, 0, 0, 0, 0, 24, 0);
             case 38:
-                return new Card(indecks, 0, 0, 13, 0, 0, 0, 0, 0);
+                return new Card(indecks, 0, 0, 6, 0, 0, 0, 0, 0);
             case 39:
                 return new Card(indecks, 0, 1, 0, 0, 0, 0, 0, 0);
             case 40:
