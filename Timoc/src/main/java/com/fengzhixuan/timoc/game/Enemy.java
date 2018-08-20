@@ -1,7 +1,6 @@
 package com.fengzhixuan.timoc.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fengzhixuan.timoc.websocket.message.game.GameCardPileMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GameEnemyCardMessage;
 import com.fengzhixuan.timoc.websocket.message.game.MessageType;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -13,41 +12,57 @@ import java.util.List;
 public class Enemy
 {
     // value passed from GameController to Game to this, used for sending messages to players
-    private SimpMessageSendingOperations messagingTemplate;
+    protected SimpMessageSendingOperations messagingTemplate;
 
-    private String code;
-    private String name;
-    private int id;
+    protected String code;
+    protected String name;
+    protected int id;
 
-    private Card[] deck;
-    private List<Integer> drawPile;  // indecks of the cards in the draw pile
-    private List<Integer> handPile;  // indecks of the cards in the hand pile
-    private List<Integer> discardPile;  // indecks of the cards in the discard pile
+    protected static Card[] deck;
+    protected List<Integer> drawPile;  // indecks of the cards in the draw pile
+    protected List<Integer> handPile;  // indecks of the cards in the hand pile
+    protected List<Integer> discardPile;  // indecks of the cards in the discard pile
 
-    private int hp;
-    private int maxHp;
+    protected int hp;
+    protected int maxHp;
+    protected int str;
 
-    private int drawNum;  // how many cards the enemy draws at the start of a round
-    private boolean dead;
+    protected int drawNum;  // how many cards the enemy draws at the start of a round
+    protected boolean dead;
 
     public Enemy(String code, String name, int id, SimpMessageSendingOperations messagingTemplate)
     {
         this.messagingTemplate = messagingTemplate;
 
+        this.code = code;
+        this.name = name;
+        this.id = id;
+
+        initStats();
+        initDeck();
+        initCardPiles();
+    }
+
+    protected void initStats()
+    {
+        maxHp = 30;
+        hp = maxHp;
+        str = 0;
+        drawNum = 1;
+    }
+
+    protected void initDeck()
+    {
         deck = Player.getStarters();
+    }
+
+    protected void initCardPiles()
+    {
         drawPile = new ArrayList<>();
         handPile = new ArrayList<>();
         discardPile = new ArrayList<>();
         for (int i = 0; i < deck.length; i++) drawPile.add(i);  // generate numbers which represent cards in a deck
         Collections.shuffle(drawPile);  // shuffle
-
-        this.code = code;
-        this.name = name;
-        this.id = id;
-        maxHp = 30;
-        hp = maxHp;
-
-        drawNum = 1;
     }
 
     public void onRoundStart()
@@ -132,6 +147,11 @@ public class Enemy
     public int getMaxHp()
     {
         return maxHp;
+    }
+
+    public int getStr()
+    {
+        return str;
     }
 
     public boolean isDead()

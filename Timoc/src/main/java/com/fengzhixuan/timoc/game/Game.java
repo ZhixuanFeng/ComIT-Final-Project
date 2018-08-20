@@ -1,5 +1,6 @@
 package com.fengzhixuan.timoc.game;
 
+import com.fengzhixuan.timoc.game.enemies.Goblin;
 import com.fengzhixuan.timoc.game.enums.PokerHand;
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
 import com.fengzhixuan.timoc.webcontroller.messagetemplate.DiscardCardMessage;
@@ -100,6 +101,17 @@ public class Game
         }
 
         startAttackPhase();
+    }
+
+    private void spawnEnemy()
+    {
+        if (roundNum == 1)
+        {
+            Enemy newEnemy = new Goblin(codeString, enemyCount, messagingTemplate);
+            enemies.put(newEnemy.getId(), newEnemy);
+            enemyCount++;
+            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.NewEnemy, newEnemy));
+        }
     }
 
     // players' turns
@@ -378,17 +390,6 @@ public class Game
         player.setHp(player.getHp() - 10);
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
         roundStartPhase();
-    }
-
-    private void spawnEnemy()
-    {
-        if (roundNum == 1)
-        {
-            Enemy newEnemy = new Enemy(codeString, "goblin", enemyCount, messagingTemplate);
-            enemies.put(newEnemy.getId(), newEnemy);
-            enemyCount++;
-            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.NewEnemy, newEnemy));
-        }
     }
 
 

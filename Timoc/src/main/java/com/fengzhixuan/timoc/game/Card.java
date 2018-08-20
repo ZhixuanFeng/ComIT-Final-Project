@@ -101,4 +101,14 @@ public class Card
     {
         return taunt;
     }
+
+    public static int indecksToSuit(int indecks)
+    {
+        return indecks / 13;
+    }
+
+    public static int indecksToRank(int indecks)
+    {
+        return indecks - (indecks/13) * 13 + 1;
+    }
 }
