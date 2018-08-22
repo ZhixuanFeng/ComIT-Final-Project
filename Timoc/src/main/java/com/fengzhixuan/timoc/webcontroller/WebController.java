@@ -1,6 +1,8 @@
 package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.data.entity.*;
+import com.fengzhixuan.timoc.game.Game;
+import com.fengzhixuan.timoc.game.GameCodeGenerator;
 import com.fengzhixuan.timoc.service.CardCollectionService;
 import com.fengzhixuan.timoc.service.CardDeckService;
 import com.fengzhixuan.timoc.service.CardService;
@@ -102,6 +104,26 @@ public class WebController
     {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("game");
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/display", method = RequestMethod.GET)
+    public ModelAndView watchGame(@RequestParam(value = "code", required = false) String code)
+    {
+        ModelAndView modelAndView = new ModelAndView();
+        if (code == null)
+        {
+            modelAndView.setViewName("display_entercode");
+        }
+        else if (GameCodeGenerator.isCodeValid(code) && Game.gameCodeExist(code))
+        {
+            modelAndView.setViewName("display");
+        }
+        else
+        {
+            modelAndView.setViewName("display_entercode");
+            modelAndView.addObject("errorMessage", "Invalid code");
+        }
         return modelAndView;
     }
 }

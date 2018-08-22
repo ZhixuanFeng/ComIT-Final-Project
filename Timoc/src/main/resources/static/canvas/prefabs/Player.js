@@ -106,7 +106,7 @@ function Player(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyTyp
 
     this.info = playerInfo;
 
-    this.sprite = this.game.add.button(x, y, 'entity', playerClicked, this, null, 'player', null, null, this);
+    this.sprite = this.game.add.button(x, y, 'entity', playerClicked, this, null, 'knight', null, null, this);
 
     let _nameText = this.game.add.text(0, 0, playerInfo.name, {"font":"bold 20px Arial", "boundsAlignH":"center"}, this);
     _nameText.setTextBounds(x*2, (y - this.sprite.height / 2)*2, this.sprite.width*2, 10);

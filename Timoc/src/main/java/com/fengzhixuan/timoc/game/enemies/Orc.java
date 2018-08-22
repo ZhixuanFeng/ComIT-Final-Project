@@ -4,20 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.game.Card;
 import com.fengzhixuan.timoc.game.Enemy;
 import com.fengzhixuan.timoc.game.Game;
-import com.fengzhixuan.timoc.game.Player;
 import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-public class Goblin extends Enemy
+public class Orc extends Enemy
 {
-    public Goblin(Game game, String code, int id, SimpMessageSendingOperations messagingTemplate)
+    public Orc(Game game, String code, int id, SimpMessageSendingOperations messagingTemplate)
     {
-        super(game, code, "goblin", id, messagingTemplate);
+        super(game, code, "orc", id, messagingTemplate);
     }
 
     @Override
@@ -29,7 +27,7 @@ public class Goblin extends Enemy
         drawNum = 1;
     }
 
-    // goblin is a simple enemy, it's not necessary to save a deck in memory for it
+    // orc is a simple enemy, it's not necessary to save a deck in memory for it
     @Override
     protected void initDeck() { }
 

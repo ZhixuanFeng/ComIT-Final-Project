@@ -1,6 +1,6 @@
 package com.fengzhixuan.timoc.game;
 
-import com.fengzhixuan.timoc.game.enemies.Goblin;
+import com.fengzhixuan.timoc.game.enemies.Orc;
 import com.fengzhixuan.timoc.game.enums.PokerHand;
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
 import com.fengzhixuan.timoc.webcontroller.messagetemplate.DiscardCardMessage;
@@ -108,7 +108,7 @@ public class Game
     {
         if (roundNum == 1)
         {
-            Enemy newEnemy = new Goblin(this, codeString, enemyCount, messagingTemplate);
+            Enemy newEnemy = new Orc(this, codeString, enemyCount, messagingTemplate);
             enemies.put(newEnemy.getId(), newEnemy);
             enemyCount++;
             messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.NewEnemy, newEnemy));
@@ -451,6 +451,8 @@ public class Game
     {
         return games.containsKey(code);
     }
+
+    public static boolean gameCodeExist(String code) { return games.containsKey(GameCodeGenerator.stringToInt(code)); }
 
     public boolean isPlayerInThisGame(String name)
     {

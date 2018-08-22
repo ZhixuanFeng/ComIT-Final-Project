@@ -58,7 +58,6 @@ function preload() {
 }
 
 function create() {
-    console.log('create state');
     connect(code);
 
     game.stage.backgroundColor = '#F5DEB3';
