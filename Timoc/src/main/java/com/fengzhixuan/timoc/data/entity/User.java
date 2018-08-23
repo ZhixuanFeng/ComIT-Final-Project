@@ -22,7 +22,7 @@ public class User
     private long id;
 
     @Column(name="username", nullable=false, length=20)
-    @Length(min = 4, max = 20, message = "*Your username must be within 4 to 20 characters")
+    @Length(min = 4, max = 12, message = "*Your username must be within 4 to 12 characters")
     @NotEmpty(message = "*Please provide a username")
     private String username;
 

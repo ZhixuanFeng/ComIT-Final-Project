@@ -4,8 +4,8 @@
       "trimmed": true,
       "rotated": false,
       "frame": {
-        "x": 36,
-        "y": 19,
+        "x": 2,
+        "y": 12,
         "w": 20,
         "h": 26
       },
@@ -24,8 +24,8 @@
       "trimmed": true,
       "rotated": false,
       "frame": {
-        "x": 58,
-        "y": 25,
+        "x": 36,
+        "y": 51,
         "w": 15,
         "h": 20
       },
@@ -44,8 +44,8 @@
       "trimmed": true,
       "rotated": false,
       "frame": {
-        "x": 73,
-        "y": 7,
+        "x": 42,
+        "y": 15,
         "w": 11,
         "h": 16
       },
@@ -64,8 +64,8 @@
       "trimmed": true,
       "rotated": false,
       "frame": {
-        "x": 58,
-        "y": 7,
+        "x": 41,
+        "y": 33,
         "w": 13,
         "h": 16
       },
@@ -80,12 +80,32 @@
         "h": 16
       }
     },
+    "shadow": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 16,
+        "h": 8
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 8
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 8
+      }
+    },
     "timocodium": {
       "trimmed": true,
       "rotated": false,
       "frame": {
         "x": 2,
-        "y": 14,
+        "y": 40,
         "w": 32,
         "h": 31
       },
@@ -104,8 +124,8 @@
       "trimmed": true,
       "rotated": false,
       "frame": {
-        "x": 36,
-        "y": 2,
+        "x": 24,
+        "y": 5,
         "w": 16,
         "h": 15
       },
@@ -124,8 +144,8 @@
       "trimmed": true,
       "rotated": false,
       "frame": {
-        "x": 75,
-        "y": 29,
+        "x": 24,
+        "y": 22,
         "w": 15,
         "h": 16
       },

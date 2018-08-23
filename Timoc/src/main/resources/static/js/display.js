@@ -4,28 +4,42 @@
  * Phaser setup
  */
 
-let game = new Phaser.Game(/*window.innerWidth, window.innerHeight*/800, 600, Phaser.AUTO, 'game', this);
+let game = new Phaser.Game(/*window.innerWidth, window.innerHeight*/640, 480, Phaser.AUTO, 'game', this, false, false);
 let code;
+let background;
 function init() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     game.scale.pageAlignHorizontally = true;
     game.scale.pageAlignVertically = true;
-    //
-    // const token = $("meta[name='_csrf']").attr("content");
-    // const header = $("meta[name='_csrf_header']").attr("content");
-    // $(document).ajaxSend(function (e, xhr, options) {
-    //     xhr.setRequestHeader(header, token);
-    // });
 }
 
 function preload() {
-    this.load.pack('game', 'assets/Pack.json');
+    this.load.pack('display', 'assets/Display.json');
 
     code = getUrlParameter('code');
 }
 
 function create() {
     connect(code);
+
+    let background_group = this.add.group();
+    background = new Background(this.game, 0, 0, undefined, undefined);
+    background_group.add(background);
+
+    new Player(this.game, undefined, 'player', false, false, Phaser.Physics.ARCADE, 0);
+    new Player(this.game, undefined, 'player', false, false, Phaser.Physics.ARCADE, 1);
+    new Player(this.game, undefined, 'player', false, false, Phaser.Physics.ARCADE, 2);
+    new Player(this.game, undefined, 'player', false, false, Phaser.Physics.ARCADE, 3);
+
+    new Enemy(this.game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 0);
+    new Enemy(this.game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 1);
+    new Enemy(this.game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 2);
+    new Enemy(this.game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 3);
+
+    new PlayerStats(this.game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, 0);
+    new PlayerStats(this.game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, 1);
+    new PlayerStats(this.game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, 2);
+    new PlayerStats(this.game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, 3);
 }
 
 function update() {

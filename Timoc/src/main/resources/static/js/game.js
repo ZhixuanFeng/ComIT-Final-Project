@@ -32,7 +32,7 @@ function init() {
 }
 
 function preload() {
-    this.load.pack('game', 'assets/Pack.json');
+    this.load.pack('game', 'assets/Game.json');
 
     $.post('userInfo/myInfo', function (result) {
         myInfo = result;

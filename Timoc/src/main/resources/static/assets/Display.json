@@ -1,0 +1,52 @@
+{
+  "display": [
+    {
+      "type": "atlas",
+      "key": "entity",
+      "textureURL": "assets/atlas/entity.png",
+      "atlasURL": "assets/atlas/entity.json",
+      "format": "TEXTURE_ATLAS_JSON_HASH"
+    },
+    {
+      "type": "script",
+      "key": "Background",
+      "url": "canvas/Background.js"
+    },
+    {
+      "type": "atlas",
+      "key": "map",
+      "textureURL": "assets/atlas/map.png",
+      "atlasURL": "assets/atlas/map.json",
+      "format": "TEXTURE_ATLAS_JSON_HASH"
+    },
+    {
+      "type": "script",
+      "key": "Player",
+      "url": "canvas/displayprefabs/Player.js"
+    },
+    {
+      "type": "script",
+      "key": "Enemy",
+      "url": "canvas/displayprefabs/Enemy.js"
+    },
+    {
+      "type": "atlas",
+      "key": "displayui",
+      "textureURL": "assets/atlas/displayui.png",
+      "atlasURL": "assets/atlas/displayui.json",
+      "format": "TEXTURE_ATLAS_JSON_HASH"
+    },
+    {
+      "type": "script",
+      "key": "PlayerStats",
+      "url": "canvas/displayprefabs/PlayerStats.js"
+    }
+  ],
+  "meta": {
+    "generated": "1535055504878",
+    "app": "Phaser Editor",
+    "url": "http://phasereditor.boniatillo.com",
+    "version": "1.0",
+    "copyright": "Arian Fornaris (c) 2015,2016"
+  }
+}

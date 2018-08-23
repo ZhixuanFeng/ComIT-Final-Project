@@ -1,0 +1,269 @@
+{
+  "frames": {
+    "0": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 2,
+        "y": 2,
+        "w": 3,
+        "h": 5
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 3,
+        "h": 5
+      }
+    },
+    "1": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 7,
+        "y": 2,
+        "w": 1,
+        "h": 5
+      },
+      "spriteSourceSize": {
+        "x": 2,
+        "y": 0,
+        "w": 1,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 3,
+        "h": 5
+      }
+    },
+    "2": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 10,
+        "y": 10,
+        "w": 3,
+        "h": 5
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 3,
+        "h": 5
+      }
+    },
+    "3": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 39,
+        "y": 18,
+        "w": 3,
+        "h": 5
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 3,
+        "h": 5
+      }
+    },
+    "4": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 15,
+        "y": 10,
+        "w": 3,
+        "h": 5
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 3,
+        "h": 5
+      }
+    },
+    "5": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 20,
+        "y": 10,
+        "w": 3,
+        "h": 5
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 3,
+        "h": 5
+      }
+    },
+    "6": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 25,
+        "y": 10,
+        "w": 3,
+        "h": 5
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 3,
+        "h": 5
+      }
+    },
+    "7": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 30,
+        "y": 10,
+        "w": 3,
+        "h": 5
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 3,
+        "h": 5
+      }
+    },
+    "8": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 35,
+        "y": 10,
+        "w": 3,
+        "h": 5
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 3,
+        "h": 5
+      }
+    },
+    "9": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 10,
+        "y": 3,
+        "w": 3,
+        "h": 5
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 3,
+        "h": 5
+      },
+      "sourceSize": {
+        "w": 3,
+        "h": 5
+      }
+    },
+    "bar": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 2,
+        "y": 17,
+        "w": 27,
+        "h": 6
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 27,
+        "h": 6
+      },
+      "sourceSize": {
+        "w": 27,
+        "h": 6
+      }
+    },
+    "blockmini": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 31,
+        "y": 17,
+        "w": 6,
+        "h": 6
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 6
+      },
+      "sourceSize": {
+        "w": 6,
+        "h": 6
+      }
+    },
+    "hatemini": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 2,
+        "y": 9,
+        "w": 6,
+        "h": 6
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 6
+      },
+      "sourceSize": {
+        "w": 6,
+        "h": 6
+      }
+    }
+  },
+  "meta": {
+    "app": "Phaser Editor",
+    "version": "1",
+    "image": "displayui.png"
+  }
+}
