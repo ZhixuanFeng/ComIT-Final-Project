@@ -23,9 +23,12 @@ function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType
 
 	this.info = enemyInfo;
 
-    let shadow = this.game.add.sprite(0.0, 11.0, 'entity', 'shadow', this);
+    let shadow = this.game.add.sprite(8.0, 15.0, 'entity', 'shadow', this);
     shadow.scale.setTo(1, 1);
-    this.sprite = this.game.add.sprite(0.0, 0.0, 'entity', enemyInfo.name.toLowerCase(), this);
+    shadow.anchor.setTo(0.5);
+    this.sprite = this.game.add.sprite(8.0, 8.0, 'entity', enemyInfo.name.toLowerCase(), this);
+    this.sprite.anchor.setTo(0.5);
+    if (this.sprite.width > 16) shadow.scale.setTo(1.5, 1.0);
 
     this.scale.setTo(2, 2);
 
@@ -33,7 +36,7 @@ function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType
 }
 
 /** @type Phaser.Group */
-var Enemy_proto = Object.create(Phaser.Group.prototype);
+let Enemy_proto = Object.create(Phaser.Group.prototype);
 Enemy.prototype = Enemy_proto;
 Enemy.prototype.constructor = Enemy;
 

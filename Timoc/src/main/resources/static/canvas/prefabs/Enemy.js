@@ -1,6 +1,7 @@
 
 // -- user code here --
 let selectedEnemy;
+let enemyPositions = [{x:50, y:35}, {x:110, y:35}, {x:170, y:35}, {x:230, y:35}, {x:290, y:35}];
 
 function enemyClicked() {
     this.isSelected = !this.isSelected;
@@ -74,13 +75,15 @@ function setEnemyHp(hp, maxHp) {
  * @param {boolean} aEnableBody If true all Sprites created with {@link #create} or {@link #createMulitple} will have a physics body created on them. Change the body type with {@link #physicsBodyType}.
  * @param {number} aPhysicsBodyType The physics body type to use when physics bodies are automatically added. See {@link #physicsBodyType} for values.
  */
-function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, x, y, enemyInfo) {
+function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, posIndex, enemyInfo) {
 	
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
 
 	this.info = enemyInfo;
 
-    this.sprite = this.game.add.button(x, y, 'entity', enemyClicked, this, null, enemyInfo.name, null, null, this);
+	let x = enemyPositions[posIndex].x;
+	let y = enemyPositions[posIndex].y;
+    this.sprite = this.game.add.button(x, y, 'entity', enemyClicked, this, null, enemyInfo.name.toLowerCase(), null, null, this);
 
     let _stats = this.game.add.group(this);
 

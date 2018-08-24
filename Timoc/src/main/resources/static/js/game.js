@@ -165,7 +165,7 @@ function spawnPlayers(playerInfos) {
 }
 
 function spawnEnemy(enemyInfo) {
-    enemies.push(new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 50, 35, enemyInfo));
+    enemies.push(new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, enemies.length, enemyInfo));
 }
 
 function setCurrentPlayer(name) {

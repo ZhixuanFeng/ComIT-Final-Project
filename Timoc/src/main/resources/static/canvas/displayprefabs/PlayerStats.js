@@ -47,7 +47,7 @@ function updateBlock(block) {
     if (block > 99) block = 99;
     if (block < 10) {
         this.blockDigit2.visible = false;
-        this.hateDigit1.loadTexture('displayui', block);
+        this.blockDigit1.loadTexture('displayui', block);
     }
     else {
         this.blockDigit2.visible = true;

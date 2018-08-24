@@ -110,7 +110,7 @@ public class Game
 
     private void spawnEnemy()
     {
-        if (roundNum == 1)
+        if (roundNum < 5)
         {
             Enemy newEnemy = new Orc(this, codeString, enemyCount, messagingTemplate);
             enemies.put(newEnemy.getId(), newEnemy);
