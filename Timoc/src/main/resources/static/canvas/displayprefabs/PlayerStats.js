@@ -12,6 +12,7 @@ function updateHp(hp) {
         this.hpDigit2.loadTexture('displayui', hp % 10);
         this.hpDigit3.visible = false;
     }
+    this.game.add.tween(this.widthHp).to( { width: hp / 2 }, 200, Phaser.Easing.Linear.None, true);
 }
 
 function updateMana(mana) {
@@ -26,6 +27,7 @@ function updateMana(mana) {
         this.manaDigit2.loadTexture('displayui', mana % 10);
         this.manaDigit3.visible = false;
     }
+    this.game.add.tween(this.widthMana).to( { width: mana / 2 }, 200, Phaser.Easing.Linear.None, true);
 }
 
 function updateHate(hate) {
@@ -38,6 +40,11 @@ function updateBlock(block) {
     if (block > 99) block = 99;
     this.blockDigit1.loadTexture('displayui', Math.floor(block / 10));
     this.blockDigit2.loadTexture('displayui', block % 10);
+}
+
+function update() {
+    this.hpBarFill.updateCrop();
+    this.manaBarFill.updateCrop();
 }
 // -- user code here --
 
@@ -59,11 +66,15 @@ function updateBlock(block) {
 function PlayerStats(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, posNum) {
 	
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
+
+	let x = statsPositions[posNum].x;
+	let y = statsPositions[posNum].y;
+
     this.game.add.sprite(0.0, 10.0, 'entity', 'wizard', this);
 
-    this.game.add.sprite(20.0, 15.0, 'displayui', 'bar', this);
+    this.manaBar = this.game.add.sprite(20.0, 15.0, 'displayui', 'bar', this);
 
-    this.game.add.sprite(20.0, 8.0, 'displayui', 'bar', this);
+    this.hpBar = this.game.add.sprite(20.0, 8.0, 'displayui', 'bar', this);
 
     this.game.add.sprite(20.0, 22.0, 'displayui', 'hatemini', this);
 
@@ -102,8 +113,30 @@ function PlayerStats(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBo
     this.hpDigit1 = this.game.add.sprite(48.0, 9.0, 'displayui', '0', this);
     this.hpDigit1.tint = 0xdbc0b4;
 
+    let bmd = this.game.add.bitmapData(50, 8);
+    bmd.ctx.beginPath();
+    bmd.ctx.rect(0, 0, 50, 8);
+    bmd.ctx.fillStyle = '#447733';
+    bmd.ctx.fill();
+    this.widthHp = new Phaser.Rectangle(0, 0, 0, bmd.height);
+    this.totalHp = bmd.width;
+    this.hpBarFill = this.game.add.sprite((x + this.hpBar.x+1)*2, (y + this.hpBar.y+1)*2, bmd);
+    this.hpBarFill.cropEnabled = true;
+    this.hpBarFill.crop(this.widthHp);
+
+    bmd = this.game.add.bitmapData(50, 8);
+    bmd.ctx.beginPath();
+    bmd.ctx.rect(0, 0, 50, 8);
+    bmd.ctx.fillStyle = '#2b6380';
+    bmd.ctx.fill();
+    this.widthMana = new Phaser.Rectangle(0, 0, 0, bmd.height);
+    this.totalMana = bmd.width;
+    this.manaBarFill = this.game.add.sprite((x + this.manaBar.x+1)*2, (y + this.manaBar.y+1)*2, bmd);
+    this.manaBarFill.cropEnabled = true;
+    this.manaBarFill.crop(this.widthMana);
+
     this.scale.setTo(2, 2);
-    this.position.setTo(statsPositions[posNum].x * this.scale.x, statsPositions[posNum].y * this.scale.y);
+    this.position.setTo(x * this.scale.x, y * this.scale.y);
 
     this.updateHp(100);
     this.updateMana(100);
@@ -116,6 +149,7 @@ PlayerStats.prototype.constructor = PlayerStats;
 
 /* --- end generated code --- */
 // -- user code here --
+PlayerStats.prototype.update = update;
 PlayerStats.prototype.updateHp = updateHp;
 PlayerStats.prototype.updateMana = updateMana;
 PlayerStats.prototype.updateHate = updateHate;
