@@ -1,5 +1,25 @@
 {
   "frames": {
+    "berserker": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 24,
+        "y": 5,
+        "w": 16,
+        "h": 15
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 16,
+        "h": 15
+      },
+      "sourceSize": {
+        "w": 16,
+        "h": 16
+      }
+    },
     "highorc": {
       "trimmed": true,
       "rotated": false,
@@ -118,26 +138,6 @@
       "sourceSize": {
         "w": 32,
         "h": 32
-      }
-    },
-    "viking": {
-      "trimmed": true,
-      "rotated": false,
-      "frame": {
-        "x": 24,
-        "y": 5,
-        "w": 16,
-        "h": 15
-      },
-      "spriteSourceSize": {
-        "x": 0,
-        "y": 0,
-        "w": 16,
-        "h": 15
-      },
-      "sourceSize": {
-        "w": 16,
-        "h": 16
       }
     },
     "wizard": {

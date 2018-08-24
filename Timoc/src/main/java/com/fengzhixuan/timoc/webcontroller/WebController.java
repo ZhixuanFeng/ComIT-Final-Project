@@ -115,7 +115,7 @@ public class WebController
         {
             modelAndView.setViewName("display_entercode");
         }
-        else if (GameCodeGenerator.isCodeValid(code) && Game.gameCodeExist(code))
+        else if (GameCodeGenerator.isCodeValid(code.toUpperCase()) && Game.gameCodeExist(code.toUpperCase()))
         {
             modelAndView.setViewName("display");
         }

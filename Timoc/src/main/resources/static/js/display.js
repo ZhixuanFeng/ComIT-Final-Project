@@ -7,6 +7,12 @@
 let game = new Phaser.Game(/*window.innerWidth, window.innerHeight*/640, 480, Phaser.AUTO, 'game', this, false, false);
 let code;
 let background;
+let gameInfo;
+let playerInfo = [];
+let playerSprites = [];
+let playerStats = [];
+let enemyInfo = [];
+let enemySprites = [];
 function init() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     game.scale.pageAlignHorizontally = true;
@@ -25,27 +31,27 @@ function create() {
     let background_group = this.add.group();
     background = new Background(this.game, 0, 0, undefined, undefined);
     background_group.add(background);
-
-    new Player(this.game, undefined, 'player', false, false, Phaser.Physics.ARCADE, 0);
-    new Player(this.game, undefined, 'player', false, false, Phaser.Physics.ARCADE, 1);
-    new Player(this.game, undefined, 'player', false, false, Phaser.Physics.ARCADE, 2);
-    new Player(this.game, undefined, 'player', false, false, Phaser.Physics.ARCADE, 3);
-
-    new Enemy(this.game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 0);
-    new Enemy(this.game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 1);
-    new Enemy(this.game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 2);
-    new Enemy(this.game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, 3);
-
-    new PlayerStats(this.game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, 0);
-    new PlayerStats(this.game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, 1);
-    new PlayerStats(this.game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, 2);
-    new PlayerStats(this.game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, 3);
 }
 
 function update() {
 
 }
 
+
+function spawnPlayers(players) {
+    playerInfo = players;
+    for (let i = 0; i < players.length; i++) {
+        playerSprites[i] = new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, i, players[i]);
+        playerStats[i] = new PlayerStats(game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, i, players[i]);
+    }
+}
+
+function spawnEnemies(enemies) {
+    enemyInfo = enemies;
+    for (let i = 0; i < enemies.length; i++) {
+        enemySprites[i] = new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, i, enemies[i]);
+    }
+}
 
 /*
  * Websocket connectivity
@@ -58,7 +64,7 @@ function connect(code) {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
         stompClient.subscribe('/topic/display/' + code, onMessageReceived);
-        // stompClient.send('/app/display.enter/' + code, {}, code);
+        stompClient.send('/app/display.enter/' + code, {}, code);
     }, onError);
 }
 
@@ -77,8 +83,25 @@ function onError(error) {
 
 function onMessageReceived(message) {
     let messageBody = JSON.parse(message.body);
-    switch (messageBody.type) {
+    if (messageBody.constructor === Array) {
+        messageBody.forEach(processMessage);
+    }
+    else {
+        processMessage(messageBody);
+    }
+}
 
+function processMessage(message) {
+    switch (message.type) {
+        case 'GameInfo':
+            gameInfo = message.game;
+            break;
+        case 'PlayerInfo':
+            spawnPlayers(message.players);
+            break;
+        case 'EnemyInfo':
+            spawnEnemies(message.enemies);
+            break;
     }
 }
 
@@ -96,7 +119,7 @@ function getUrlParameter(sParam) {
         sParameterName = sURLVariables[i].split('=');
 
         if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
+            return sParameterName[1] === undefined ? true : sParameterName[1].toUpperCase();
         }
     }
 }

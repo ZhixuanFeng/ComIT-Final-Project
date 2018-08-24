@@ -1,4 +1,4 @@
-let playerPositions = [{x:64, y:80}, {x:64, y:112}, {x:64, y:144}, {x:64, y:176}];
+let playerPositions = [{x:64, y:86}, {x:64, y:118}, {x:64, y:150}, {x:64, y:182}];
 
 // -- user code here --
 
@@ -17,13 +17,19 @@ let playerPositions = [{x:64, y:80}, {x:64, y:112}, {x:64, y:144}, {x:64, y:176}
  * @param {boolean} aEnableBody If true all Sprites created with {@link #create} or {@link #createMulitple} will have a physics body created on them. Change the body type with {@link #physicsBodyType}.
  * @param {number} aPhysicsBodyType The physics body type to use when physics bodies are automatically added. See {@link #physicsBodyType} for values.
  */
-function Player(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, posNum) {
+function Player(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, posNum, playerInfo) {
 
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
-    this.game.add.sprite(0.0, 26.0, 'entity', 'shadow', this);
-	this.sprite = this.game.add.sprite(0.0, 11.0, 'entity', 'knight', this);
 
-	let _nametext = this.game.add.text(this.sprite.width/2, 0.0, 'name', {"font":"20px Arial", "fill":"#FFFFFF"}, this);
+    this.info = playerInfo;
+
+    this.playerClass = playerInfo.playerClass.toLowerCase();
+    let spriteYPos = 10.0;
+    if (this.playerClass === 'knight') spriteYPos = 6.0;
+	this.game.add.sprite(0.0, 21.0, 'entity', 'shadow', this);
+	this.sprite = this.game.add.sprite(0.0, spriteYPos, 'entity', this.playerClass, this);
+
+	let _nametext = this.game.add.text(this.sprite.width/2, 0.0, playerInfo.name, {"font":"20px Arial", "fill":"#FFFFFF"}, this);
 	_nametext.anchor.setTo(0.5, 0.0);
 	_nametext.scale.setTo(0.3, 0.3);
 

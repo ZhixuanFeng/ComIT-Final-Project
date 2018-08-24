@@ -5,12 +5,12 @@ function updateHp(hp) {
         this.hpDigit1.loadTexture('displayui', 1);
         this.hpDigit2.loadTexture('displayui', 0);
         this.hpDigit3.loadTexture('displayui', 0);
-        this.hpDigit3.visible = true;
+        this.hpDigit1.visible = true;
     }
     else {
-        this.hpDigit1.loadTexture('displayui', Math.floor(hp / 10));
-        this.hpDigit2.loadTexture('displayui', hp % 10);
-        this.hpDigit3.visible = false;
+        this.hpDigit2.loadTexture('displayui', Math.floor(hp / 10));
+        this.hpDigit3.loadTexture('displayui', hp % 10);
+        this.hpDigit1.visible = false;
     }
     this.game.add.tween(this.widthHp).to( { width: hp / 2 }, 200, Phaser.Easing.Linear.None, true);
 }
@@ -20,26 +20,40 @@ function updateMana(mana) {
         this.manaDigit1.loadTexture('displayui', 1);
         this.manaDigit2.loadTexture('displayui', 0);
         this.manaDigit3.loadTexture('displayui', 0);
-        this.manaDigit3.visible = true;
+        this.manaDigit1.visible = true;
     }
     else {
-        this.manaDigit1.loadTexture('displayui', Math.floor(mana / 10));
-        this.manaDigit2.loadTexture('displayui', mana % 10);
-        this.manaDigit3.visible = false;
+        this.manaDigit2.loadTexture('displayui', Math.floor(mana / 10));
+        this.manaDigit3.loadTexture('displayui', mana % 10);
+        this.manaDigit1.visible = false;
     }
     this.game.add.tween(this.widthMana).to( { width: mana / 2 }, 200, Phaser.Easing.Linear.None, true);
 }
 
 function updateHate(hate) {
     if (hate > 99) hate = 99;
-    this.hateDigit1.loadTexture('displayui', Math.floor(hate / 10));
-    this.hateDigit2.loadTexture('displayui', hate % 10);
+    if (hate < 10) {
+        this.hateDigit2.visible = false;
+        this.hateDigit1.loadTexture('displayui', hate);
+    }
+    else {
+        this.hateDigit2.visible = true;
+        this.hateDigit1.loadTexture('displayui', Math.floor(hate / 10));
+        this.hateDigit2.loadTexture('displayui', hate % 10);
+    }
 }
 
 function updateBlock(block) {
     if (block > 99) block = 99;
-    this.blockDigit1.loadTexture('displayui', Math.floor(block / 10));
-    this.blockDigit2.loadTexture('displayui', block % 10);
+    if (block < 10) {
+        this.blockDigit2.visible = false;
+        this.hateDigit1.loadTexture('displayui', block);
+    }
+    else {
+        this.blockDigit2.visible = true;
+        this.blockDigit1.loadTexture('displayui', Math.floor(block / 10));
+        this.blockDigit2.loadTexture('displayui', block % 10);
+    }
 }
 
 function update() {
@@ -63,14 +77,18 @@ function update() {
  * @param {boolean} aEnableBody If true all Sprites created with {@link #create} or {@link #createMulitple} will have a physics body created on them. Change the body type with {@link #physicsBodyType}.
  * @param {number} aPhysicsBodyType The physics body type to use when physics bodies are automatically added. See {@link #physicsBodyType} for values.
  */
-function PlayerStats(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, posNum) {
+function PlayerStats(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, posNum, playerInfo) {
 	
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
 
+	this.info = playerInfo;
 	let x = statsPositions[posNum].x;
 	let y = statsPositions[posNum].y;
 
-    this.game.add.sprite(0.0, 10.0, 'entity', 'wizard', this);
+	let spriteYPos = 10.0;
+	let playerClass = playerInfo.playerClass.toLowerCase();
+	if (playerClass === 'knight') spriteYPos = 6.0;
+    this.game.add.sprite(0.0, spriteYPos, 'entity', playerClass, this);
 
     this.manaBar = this.game.add.sprite(20.0, 15.0, 'displayui', 'bar', this);
 
@@ -80,7 +98,7 @@ function PlayerStats(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBo
 
     this.game.add.sprite(36.0, 22.0, 'displayui', 'blockmini', this);
 
-    let _nametext = this.game.add.text(0.0, 0.0, 'name', {"font":"bold 20px Arial","fill":"#dbc0b4"}, this);
+    let _nametext = this.game.add.text(0.0, 0.0, playerInfo.name, {"font":"bold 20px Arial","fill":"#dbc0b4"}, this);
     _nametext.scale.setTo(0.3, 0.3);
 
     this.hateDigit2 = this.game.add.sprite(31.0, 23.0, 'displayui', '0', this);
@@ -138,8 +156,10 @@ function PlayerStats(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBo
     this.scale.setTo(2, 2);
     this.position.setTo(x * this.scale.x, y * this.scale.y);
 
-    this.updateHp(100);
-    this.updateMana(100);
+    this.updateHp(playerInfo.hp);
+    this.updateMana(playerInfo.mana);
+    this.updateHate(playerInfo.hate);
+    this.updateBlock(playerInfo.block);
 }
 
 /** @type Phaser.Group */

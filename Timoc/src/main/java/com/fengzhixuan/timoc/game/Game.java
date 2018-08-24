@@ -1,7 +1,9 @@
 package com.fengzhixuan.timoc.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.game.enemies.Orc;
 import com.fengzhixuan.timoc.game.enums.PokerHand;
+import com.fengzhixuan.timoc.game.enums.RoundPhase;
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
 import com.fengzhixuan.timoc.webcontroller.messagetemplate.DiscardCardMessage;
 import com.fengzhixuan.timoc.webcontroller.messagetemplate.PlayCardMessage;
@@ -24,6 +26,7 @@ public class Game
     private String codeString;
     private Map<String, Player> players = new HashMap<>(); // username is key
     private Map<Player, Boolean> playerOnlineStatuses = new HashMap<>(); // true means online/connected
+    private RoundPhase phase;
     private String[] playerOrder;  // stores all players' names, represents the order of players(who's player1, who plays first) in attack phase
     private int currentPlayer;  // current index to playerOrder array, represents whose turn it is now
     private Map<Integer, Enemy> enemies = new HashMap<>();
@@ -83,6 +86,7 @@ public class Game
 
     private void roundStartPhase()
     {
+        phase = RoundPhase.RoundStart;
         roundNum++;
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.RoundStart));
 
@@ -118,6 +122,7 @@ public class Game
     // players' turns
     private void startAttackPhase()
     {
+        phase = RoundPhase.Attack;
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.AttackPhase));
         currentPlayer = 0;
         startPlayerTurn();
@@ -379,6 +384,7 @@ public class Game
     // enemies' turns
     private void startDefendPhase()
     {
+        phase = RoundPhase.Defend;
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.DefendPhase));
 
         List<GameMessage> messages = new ArrayList<>();
@@ -397,6 +403,7 @@ public class Game
 
     private void roundEndPhase()
     {
+        phase = RoundPhase.RoundEnd;
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             // make sure front end is in sync
@@ -426,22 +433,25 @@ public class Game
         return result;
     }
 
-
+    @JsonIgnore
     public static Game getGameByCode(int code)
     {
         return games.getOrDefault(code, null);
     }
 
+    @JsonIgnore
     public static Game getGameByCode(String code)
     {
         return getGameByCode(GameCodeGenerator.stringToInt(code));
     }
 
+    @JsonIgnore
     public Map<String, Player> getPlayers()
     {
         return players;
     }
 
+    @JsonIgnore
     public Map<Integer, Enemy> getEnemies()
     {
         return enemies;
@@ -486,6 +496,12 @@ public class Game
         return gameStarted;
     }
 
+    public RoundPhase getPhase()
+    {
+        return phase;
+    }
+
+    @JsonIgnore
     public Player getCurrentPlayer()
     {
         return players.get(playerOrder[currentPlayer]);

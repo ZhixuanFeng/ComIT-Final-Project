@@ -1,6 +1,7 @@
 package com.fengzhixuan.timoc.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fengzhixuan.timoc.game.enums.PlayerClass;
 import com.fengzhixuan.timoc.websocket.message.game.GameCardPileMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GamePlayerMessage;
 import com.fengzhixuan.timoc.websocket.message.game.MessageType;
@@ -22,6 +23,7 @@ public class Player
 
     private String name;
     private String code;  // current room/game code
+    private PlayerClass playerClass;  // class of the player
     private Map<Integer, Card> deck;  // information of player's deck, key is card indecks, value is the card
     private List<Integer> drawPile;  // indecks of the cards in the draw pile
     private List<Integer> handPile;  // indecks of the cards in the hand pile
@@ -293,6 +295,11 @@ public class Player
     public String getCode()
     {
         return code;
+    }
+
+    public PlayerClass getPlayerClass()
+    {
+        return PlayerClass.Knight;
     }
 
     @JsonIgnore

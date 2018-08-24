@@ -9,6 +9,7 @@ public enum MessageType
     RoundStart,  // signals the start of a round
     AttackPhase,  // start of attack phase
     DefendPhase,  // start of defend phase
+    GameInfo,  // send information about the game, used when a player enters/re-enters a game
     PlayerInfo,  // send all player information, used when a player enters/re-enters a game
     EnemyInfo,  // send all enemy information, used when a player enters/re-enters a game
     Hand,  // message containing cards in hand

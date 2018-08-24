@@ -17,12 +17,15 @@ let enemyPositions = [{x:240, y:96}, {x:240, y:128}, {x:240, y:160}, {x:240, y:1
  * @param {boolean} aEnableBody If true all Sprites created with {@link #create} or {@link #createMulitple} will have a physics body created on them. Change the body type with {@link #physicsBodyType}.
  * @param {number} aPhysicsBodyType The physics body type to use when physics bodies are automatically added. See {@link #physicsBodyType} for values.
  */
-function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, posNum) {
+function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType, posNum, enemyInfo) {
 
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
+
+	this.info = enemyInfo;
+
     let shadow = this.game.add.sprite(0.0, 11.0, 'entity', 'shadow', this);
     shadow.scale.setTo(1, 1);
-    this.sprite = this.game.add.sprite(0.0, 0.0, 'entity', 'orc', this);
+    this.sprite = this.game.add.sprite(0.0, 0.0, 'entity', enemyInfo.name.toLowerCase(), this);
 
     this.scale.setTo(2, 2);
 

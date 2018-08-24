@@ -12,7 +12,7 @@
 <body>
 <form th:action="@{/display}" method="get">
     <span th:utext="${errorMessage}"></span> <br/>
-    <input type="text" id="code" name="code"  placeholder="Enter game code"/> <br/>
+    <input type="text" id="code" name="code" style="text-transform: uppercase" placeholder="Enter game code"/> <br/>
     <button type="Submit" th:text="Watch"></button>
 </form>
 
