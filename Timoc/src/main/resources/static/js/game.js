@@ -156,11 +156,11 @@ function addNewDrawnCardsToUI() {
 }
 
 function spawnPlayers(playerInfos) {
-    players = playerInfos;
     let xPos = 50;
     playerInfos.forEach(function (playerInfo) {
         let newPlayer = new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, xPos, 120, playerInfo);
         playerMap[playerInfo.name] = {playerInfo: playerInfo, player: newPlayer};
+        players.push(newPlayer);
         xPos += 60;
         if (playerInfo.name === myInfo.name) {
             myPlayer = newPlayer;

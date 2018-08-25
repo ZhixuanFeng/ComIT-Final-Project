@@ -78,7 +78,7 @@ public class Game
             playerEntry.getValue().onGameStart(messagingTemplate);
         }
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.GameStart));
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerInfoMessage(players.values().toArray(new Player[0])));
+        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
 
         // start first round
         roundStartPhase();
@@ -250,8 +250,13 @@ public class Game
                     if (healed > 0 || manaRestored > 0)
                     {
                         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
-                        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
                     }
+                }
+
+                // update front end
+                if (healed > 0 || manaRestored > 0)
+                {
+                    messagingTemplate.convertAndSend("/topic/display/" + codeString, new GamePlayerInfoMessage(MessageType.PlayerUpdateAll, players.values().toArray(new Player[0])));
                 }
 
                 // record effects
@@ -282,8 +287,13 @@ public class Game
                     if (attack > 0)
                     {
                         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
-                        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
                     }
+                }
+
+                // update front end
+                if (attack > 0)
+                {
+                    messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameEnemyInfoMessage(MessageType.EnemyUpdateAll, enemies.values().toArray(new Enemy[0])));
                 }
 
                 // record effects

@@ -18,9 +18,11 @@ public enum MessageType
     EnemyDrawCard,  // enemy draws card(s)
     EnemyPlayCard,  // enemy plays card(s)
     EnemyUpdate,  // update enemy information, such as hp
+    EnemyUpdateAll,
     PlayerStartsTurn,  // start of a player's turn
     PlayerEndsTurn,  // a player finishes their turn
     PlayerUpdate,  // update player information, such as hp, mana
+    PlayerUpdateAll,
     PlayerRevive,  // when a player revives
     PlayerDrawCard,  // when player draw card(not at the start of the round)
     PlayCardSuccessful,  // send when a play card command is accepted

@@ -95,8 +95,8 @@ public class Enemy
                     for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
                     {
                         playerEntry.getValue().takeDamage(card.getAttack());
-                        messages.add(new GameUpdatePlayerMessage(playerEntry.getValue()));
                     }
+                    messages.add(new GamePlayerInfoMessage(MessageType.PlayerUpdateAll, game.getPlayers().values().toArray(new Player[0])));
                 }
                 else
                 {
@@ -114,6 +114,7 @@ public class Enemy
                         enemyEntry.getValue().heal(card.getHeal());
                         messages.add(new GameEnemyMessage(MessageType.EnemyUpdate, enemyEntry.getValue()));
                     }
+                    messages.add(new GameEnemyInfoMessage(MessageType.EnemyUpdateAll, game.getEnemies().values().toArray(new Enemy[0])));
                 }
                 else
                 {

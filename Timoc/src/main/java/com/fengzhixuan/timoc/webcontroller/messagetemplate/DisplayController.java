@@ -23,9 +23,9 @@ public class DisplayController
         // game information
         messages[0] = new GameInfoMessage(game);
         // player information
-        messages[1] = new GamePlayerInfoMessage(game.getPlayers().values().toArray(new Player[0]));
+        messages[1] = new GamePlayerInfoMessage(MessageType.PlayerInfo, game.getPlayers().values().toArray(new Player[0]));
         // enemy information
-        messages[2] = new GameEnemyInfoMessage(game.getEnemies().values().toArray(new Enemy[0]));
+        messages[2] = new GameEnemyInfoMessage(MessageType.EnemyInfo, game.getEnemies().values().toArray(new Enemy[0]));
         return messages;
     }
 }

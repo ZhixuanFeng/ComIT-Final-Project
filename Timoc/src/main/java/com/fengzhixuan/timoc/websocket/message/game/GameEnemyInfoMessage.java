@@ -7,9 +7,9 @@ public class GameEnemyInfoMessage extends GameMessage
 {
     private Enemy[] enemies;
 
-    public GameEnemyInfoMessage(Enemy[] enemies)
+    public GameEnemyInfoMessage(MessageType type, Enemy[] enemies)
     {
-        super(MessageType.EnemyInfo);
+        super(type);
         this.enemies = enemies;
     }
 

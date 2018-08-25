@@ -107,6 +107,21 @@ function processMessage(message) {
             playerMap[name].playerStat.updateStats(message.player);
             break;
         case 'EnemyUpdate':
+            let id = message.enemy.id;
+            enemyMap[id].enemyInfo = message.enemy;
+            break;
+        case 'PlayerUpdateAll':
+            message.players.forEach(function (player) {
+                let name = player.name;
+                playerMap[name].playerInfo = player;
+                playerMap[name].playerStat.updateStats(player);
+            });
+            break;
+        case 'EnemyUpdateAll':
+            message.enemies.forEach(function (enemy) {
+                let id = enemy.id;
+                enemyMap[id].enemyInfo = enemy;
+            });
             break;
     }
 }
