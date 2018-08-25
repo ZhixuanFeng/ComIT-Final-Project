@@ -27,16 +27,4 @@ public enum MessageType
     PlayCardFailed,  // send when a play card command failed
     DiscardCardSuccessful,  // send when a discard card command is accepted
     DiscardCardFailed,  // send when a discard card command failed
-
-    // the following message types are sent to display
-    PlayerTakesDamage,
-    PlayerHeals,
-    PlayerRestoreMana,
-    EnemyTakesDamage,
-    Enemyheal,
-    AllPlayerTakeDamage,
-    AllPlayerHeal,
-    AllPlayerRestoreMana,
-    AllEnemyTakeDamage,
-    AllEnemyHeal
 }

@@ -137,7 +137,7 @@ public class Player
 
     public void takeDamage(int amount)
     {
-        if (hp + block < amount)
+        if (hp + block <= amount)
         {
             block = 0;
             hp = 0;

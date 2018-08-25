@@ -8,15 +8,14 @@ let game = new Phaser.Game(/*window.innerWidth, window.innerHeight*/640, 480, Ph
 let code;
 let background;
 let gameInfo;
-let playerInfo = [];
-let playerSprites = [];
-let playerStats = [];
-let enemyInfo = [];
-let enemySprites = [];
+let playerMap = {};
+let enemyMap = {};
+
 function init() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     game.scale.pageAlignHorizontally = true;
     game.scale.pageAlignVertically = true;
+    game.stage.disableVisibilityChange = true;
 }
 
 function preload() {
@@ -39,17 +38,17 @@ function update() {
 
 
 function spawnPlayers(players) {
-    playerInfo = players;
     for (let i = 0; i < players.length; i++) {
-        playerSprites[i] = new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, i, players[i]);
-        playerStats[i] = new PlayerStats(game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, i, players[i]);
+        let playerSprite = new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, i, players[i]);
+        let playerStat = new PlayerStats(game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, i, players[i]);
+        playerMap[players[i].name] = {playerInfo: players[i], playerSprite: playerSprite, playerStat: playerStat};
     }
 }
 
 function spawnEnemies(enemies) {
-    enemyInfo = enemies;
     for (let i = 0; i < enemies.length; i++) {
-        enemySprites[i] = new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, i, enemies[i]);
+        let enemySprite = new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, i, enemies[i]);
+        enemyMap[enemies[i].name] = {enemyInfo: enemies[i], enemySprite: enemySprite};
     }
 }
 
@@ -101,6 +100,13 @@ function processMessage(message) {
             break;
         case 'EnemyInfo':
             spawnEnemies(message.enemies);
+            break;
+        case 'PlayerUpdate':
+            let name = message.player.name;
+            playerMap[name].playerInfo = message.player;
+            playerMap[name].playerStat.updateStats(message.player);
+            break;
+        case 'EnemyUpdate':
             break;
     }
 }

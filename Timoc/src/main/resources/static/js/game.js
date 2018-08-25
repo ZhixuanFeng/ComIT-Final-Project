@@ -9,6 +9,8 @@ let myInfo;
 let myPlayer;
 let deck = new Array(52);
 let hand = [];
+let playerMap = {};
+let enemyMap = {};
 let players = [];
 let enemies = [];
 let code;
@@ -23,6 +25,7 @@ function init() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     game.scale.pageAlignHorizontally = true;
     game.scale.pageAlignVertically = true;
+    game.stage.disableVisibilityChange = true;
 
     const token = $("meta[name='_csrf']").attr("content");
     const header = $("meta[name='_csrf_header']").attr("content");
@@ -153,10 +156,11 @@ function addNewDrawnCardsToUI() {
 }
 
 function spawnPlayers(playerInfos) {
+    players = playerInfos;
     let xPos = 50;
     playerInfos.forEach(function (playerInfo) {
         let newPlayer = new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, xPos, 120, playerInfo);
-        players.push(newPlayer);
+        playerMap[playerInfo.name] = {playerInfo: playerInfo, player: newPlayer};
         xPos += 60;
         if (playerInfo.name === myInfo.name) {
             myPlayer = newPlayer;
@@ -165,7 +169,9 @@ function spawnPlayers(playerInfos) {
 }
 
 function spawnEnemy(enemyInfo) {
-    enemies.push(new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, enemies.length, enemyInfo));
+    let newEnemy = new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, enemies.length, enemyInfo);
+    enemies.push(newEnemy);
+    enemyMap[enemyInfo.id] = {enemyInfo: enemyInfo, enemy: newEnemy};
 }
 
 function setCurrentPlayer(name) {
@@ -176,19 +182,11 @@ function setCurrentPlayer(name) {
 }
 
 function updatePlayer(playerInfo) {
-    for (let i = 0; i < players.length; i++) {
-        if (players[i].info.name === playerInfo.name) {
-            players[i].updatePlayerInfo(playerInfo);
-        }
-    }
+    playerMap[playerInfo.name].player.updatePlayerInfo(playerInfo);
 }
 
 function updateEnemy(enemyInfo) {
-    for (let i = 0; i < enemies.length; i++) {
-        if (enemies[i].info.id === enemyInfo.id) {
-            enemies[i].updateEnemyInfo(enemyInfo);
-        }
-    }
+    enemyMap[enemyInfo.id].enemy.updateEnemyInfo(enemyInfo);
 }
 
 function playCard() {

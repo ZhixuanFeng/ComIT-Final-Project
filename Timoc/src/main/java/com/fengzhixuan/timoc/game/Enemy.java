@@ -95,13 +95,13 @@ public class Enemy
                     for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
                     {
                         playerEntry.getValue().takeDamage(card.getAttack());
+                        messages.add(new GameUpdatePlayerMessage(playerEntry.getValue()));
                     }
-                    messages.add(new GameIntMessage(MessageType.AllPlayerTakeDamage, card.getAttack()));
                 }
                 else
                 {
                     mostHatePlayer.takeDamage(card.getAttack());
-                    messages.add(new GameIntMessage(MessageType.PlayerTakesDamage, card.getAttack()));
+                    messages.add(new GameUpdatePlayerMessage(mostHatePlayer));
                 }
             }
             else if (card.getHeal() > 0)
@@ -112,13 +112,13 @@ public class Enemy
                     for (Map.Entry<Integer, Enemy> enemyEntry : game.getEnemies().entrySet())
                     {
                         enemyEntry.getValue().heal(card.getHeal());
+                        messages.add(new GameEnemyMessage(MessageType.EnemyUpdate, enemyEntry.getValue()));
                     }
-                    messages.add(new GameIntMessage(MessageType.AllEnemyHeal, card.getHeal()));
                 }
                 else
                 {
                     heal(card.getHeal());
-                    messages.add(new GameIntMessage(MessageType.Enemyheal, card.getHeal()));
+                    messages.add(new GameEnemyMessage(MessageType.EnemyUpdate, this));
                 }
             }
         }
@@ -162,7 +162,7 @@ public class Enemy
     public int takeDamage(int amount, Player source)
     {
         int damageTaken;
-        if (hp < amount)
+        if (hp <= amount)
         {
             damageTaken = hp;
             hp = 0;
