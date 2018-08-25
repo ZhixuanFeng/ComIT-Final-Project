@@ -1,5 +1,29 @@
 let enemyPositions = [{x:240, y:96}, {x:240, y:128}, {x:240, y:160}, {x:240, y:192}];
 
+function updateEnemyHp(hp) {
+    if (hp >= 100) {
+        this.hpDigit1.loadTexture('displayui', Math.floor(hp / 100));
+        this.hpDigit2.loadTexture('displayui', Math.floor(hp / 10));
+        this.hpDigit3.loadTexture('displayui', hp % 10);
+        this.hpDigit3.visible = true;
+    }
+    else {
+        this.hpDigit1.loadTexture('displayui', Math.floor(hp / 10));
+        this.hpDigit2.loadTexture('displayui', hp % 10);
+        this.hpDigit3.visible = false;
+    }
+    this.game.add.tween(this.widthHp).to( { width: hp / this.info.maxHp * 50 }, 200, Phaser.Easing.Linear.None, true);
+}
+
+function updateEnemy(enemyInfo) {
+    this.info = enemyInfo;
+    this.updateHp(enemyInfo.hp);
+}
+
+function update() {
+    this.hpBarFill.updateCrop();
+}
+
 // -- user code here --
 
 /* --- start generated code --- */
@@ -22,6 +46,8 @@ function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
 
 	this.info = enemyInfo;
+    let x = enemyPositions[posNum].x;
+    let y = enemyPositions[posNum].y;
 
     let shadow = this.game.add.sprite(8.0, 15.0, 'entity', 'shadow', this);
     shadow.scale.setTo(1, 1);
@@ -30,9 +56,34 @@ function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType
     this.sprite.anchor.setTo(0.5);
     if (this.sprite.width > 16) shadow.scale.setTo(1.5, 1.0);
 
+    this.hpBar = this.game.add.sprite(8.0, shadow.y+4, 'displayui', 'bar', this);
+    this.hpBar.anchor.setTo(0.5, 0.0);
+
+    this.hpDigit3 = this.game.add.sprite(this.hpBar.x + this.hpBar.width/2 + 11, this.hpBar.y, 'displayui', '0', this);
+    this.hpDigit3.tint = 0xdbc0b4;
+
+    this.hpDigit2 = this.game.add.sprite(this.hpBar.x + this.hpBar.width/2 + 7, this.hpBar.y, 'displayui', '0', this);
+    this.hpDigit2.tint = 0xdbc0b4;
+
+    this.hpDigit1 = this.game.add.sprite(this.hpBar.x + this.hpBar.width/2 + 3, this.hpBar.y, 'displayui', '0', this);
+    this.hpDigit1.tint = 0xdbc0b4;
+
+    let bmd = this.game.add.bitmapData(50, 8);
+    bmd.ctx.beginPath();
+    bmd.ctx.rect(0, 0, 50, 8);
+    bmd.ctx.fillStyle = '#447733';
+    bmd.ctx.fill();
+    this.widthHp = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
+    this.totalHp = bmd.width;
+    this.hpBarFill = this.game.add.sprite((x + this.hpBar.x+1 - this.hpBar.width/2)*2, (y + this.hpBar.y+1)*2, bmd);
+    this.hpBarFill.cropEnabled = true;
+    this.hpBarFill.crop(this.widthHp);
+
     this.scale.setTo(2, 2);
 
-    this.position.setTo(enemyPositions[posNum].x * this.scale.x, enemyPositions[posNum].y * this.scale.y);
+    this.position.setTo(x * this.scale.x, y * this.scale.y);
+
+    this.updateHp(enemyInfo.hp);
 }
 
 /** @type Phaser.Group */
@@ -42,3 +93,6 @@ Enemy.prototype.constructor = Enemy;
 
 /* --- end generated code --- */
 // -- user code here --
+Enemy.prototype.update = update;
+Enemy.prototype.updateHp = updateEnemyHp;
+Enemy.prototype.updateEnemy = updateEnemy;

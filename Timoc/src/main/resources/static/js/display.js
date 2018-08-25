@@ -48,7 +48,7 @@ function spawnPlayers(players) {
 function spawnEnemies(enemies) {
     for (let i = 0; i < enemies.length; i++) {
         let enemySprite = new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, i, enemies[i]);
-        enemyMap[enemies[i].name] = {enemyInfo: enemies[i], enemySprite: enemySprite};
+        enemyMap[enemies[i].id] = {enemyInfo: enemies[i], enemySprite: enemySprite};
     }
 }
 
@@ -109,6 +109,7 @@ function processMessage(message) {
         case 'EnemyUpdate':
             let id = message.enemy.id;
             enemyMap[id].enemyInfo = message.enemy;
+            enemyMap[id].enemySprite.updateEnemy(message.enemy);
             break;
         case 'PlayerUpdateAll':
             message.players.forEach(function (player) {
@@ -121,6 +122,7 @@ function processMessage(message) {
             message.enemies.forEach(function (enemy) {
                 let id = enemy.id;
                 enemyMap[id].enemyInfo = enemy;
+                enemyMap[id].enemySprite.updateEnemy(enemy);
             });
             break;
     }
