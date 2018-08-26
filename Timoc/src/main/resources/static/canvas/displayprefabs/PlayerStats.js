@@ -13,6 +13,7 @@ function updateHp(hp) {
         this.hpDigit1.visible = false;
     }
     this.game.add.tween(this.widthHp).to( { width: hp / 2 }, 200, Phaser.Easing.Linear.None, true);
+    this.info.hp = hp;
 }
 
 function updateMana(mana) {
@@ -28,6 +29,7 @@ function updateMana(mana) {
         this.manaDigit1.visible = false;
     }
     this.game.add.tween(this.widthMana).to( { width: mana / 2 }, 200, Phaser.Easing.Linear.None, true);
+    this.info.mana = mana;
 }
 
 function updateHate(hate) {
@@ -41,6 +43,7 @@ function updateHate(hate) {
         this.hateDigit1.loadTexture('displayui', Math.floor(hate / 10));
         this.hateDigit2.loadTexture('displayui', hate % 10);
     }
+    this.info.hate = hate;
 }
 
 function updateBlock(block) {
@@ -54,14 +57,15 @@ function updateBlock(block) {
         this.blockDigit1.loadTexture('displayui', Math.floor(block / 10));
         this.blockDigit2.loadTexture('displayui', block % 10);
     }
+    this.info.block = block;
 }
 
 function updateStats(playerInfo) {
-    this.info = playerInfo;
     this.updateHp(playerInfo.hp);
     this.updateMana(playerInfo.mana);
     this.updateHate(playerInfo.hate);
     this.updateBlock(playerInfo.block);
+    this.info = playerInfo;
 }
 
 function update() {

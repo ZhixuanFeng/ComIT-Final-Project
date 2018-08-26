@@ -13,11 +13,12 @@ function updateEnemyHp(hp) {
         this.hpDigit3.visible = false;
     }
     this.game.add.tween(this.widthHp).to( { width: hp / this.info.maxHp * 50 }, 200, Phaser.Easing.Linear.None, true);
+    this.info.hp = hp;
 }
 
 function updateEnemy(enemyInfo) {
-    this.info = enemyInfo;
     this.updateHp(enemyInfo.hp);
+    this.info = enemyInfo;
 }
 
 function update() {

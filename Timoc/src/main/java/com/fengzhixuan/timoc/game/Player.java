@@ -3,6 +3,7 @@ package com.fengzhixuan.timoc.game;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.game.enums.PlayerClass;
 import com.fengzhixuan.timoc.websocket.message.game.GameCardPileMessage;
+import com.fengzhixuan.timoc.websocket.message.game.GamePlayerIntMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GamePlayerMessage;
 import com.fengzhixuan.timoc.websocket.message.game.MessageType;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -125,40 +126,6 @@ public class Player
         discardPile.add(handPile.remove(i));
     }
 
-    // update the amount of block the player currently has
-    public void updateBlock()
-    {
-        block = 0;
-        for (Card card : getHand())
-        {
-            block += card.getBlock();
-        }
-    }
-
-    public void takeDamage(int amount)
-    {
-        if (hp + block <= amount)
-        {
-            block = 0;
-            hp = 0;
-            isDown = true;
-            recordDamageTaken(hp+block);
-        }
-        else
-        {
-            if (block > amount)
-            {
-                block -= amount;
-            }
-            else
-            {
-                hp -= (amount - block);
-                block = 0;
-            }
-            recordDamageTaken(amount);
-        }
-    }
-
     // put discard pile into draw pile, then shuffle draw pile
     private void shuffleDiscardPileIntoDrawPile()
     {
@@ -207,6 +174,53 @@ public class Player
         }
     }
 
+    // update the amount of block the player currently has
+    public void updateBlock()
+    {
+        block = 0;
+        for (Card card : getHand())
+        {
+            block += card.getBlock();
+        }
+    }
+
+    public void takeDamage(int amount)
+    {
+        int reducedBlock = 0;
+        int reducedHp = 0;
+        if (hp + block <= amount)
+        {
+            reducedBlock = block;
+            reducedHp = hp;
+            block = 0;
+            hp = 0;
+            isDown = true;
+            recordDamageTaken(hp+block);
+        }
+        else
+        {
+            if (block > amount)
+            {
+                reducedBlock = amount;
+                block -= amount;
+            }
+            else
+            {
+                reducedBlock = block;
+                reducedHp = amount - block;
+                hp -= reducedHp;
+                block = 0;
+            }
+            recordDamageTaken(amount);
+        }
+
+        // update front end display
+        if (reducedBlock > 0)
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerBlockChange, name, -reducedBlock));
+        if (reducedHp > 0)
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHpChange, name, -reducedHp));
+    }
+
     // return actual amount healed
     public int heal(int amount)
     {
@@ -223,6 +237,11 @@ public class Player
             hp += amount;
             healedAmount = amount;
         }
+
+        // update front end display
+        if (healedAmount > 0)
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHpChange, name, healedAmount));
+
         return healedAmount;
     }
 
@@ -242,6 +261,11 @@ public class Player
             mana += amount;
             restoredAmount = amount;
         }
+
+        // update front end display
+        if (restoredAmount > 0)
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerManaChange, name, restoredAmount));
+
         return restoredAmount;
     }
 
@@ -249,6 +273,7 @@ public class Player
     {
         // no need to check if mana is enough because it's checked as the command comes in
         mana -= amount;
+        messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerManaChange, name, -amount));
     }
 
     public void increaseHate(int amount, String source)
@@ -265,6 +290,10 @@ public class Player
                 hate += amount;
                 break;
         }
+
+        // update front end display
+        if (amount > 0)
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHateChange, name, amount));
     }
 
     // return actual amount healed on revive

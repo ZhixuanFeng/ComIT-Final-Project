@@ -190,8 +190,8 @@ public class Game
                 if (healed > 0 || manaRestored > 0)
                 {
                     messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
-                    messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
                 }
+
                 break;
             case enemy:
                 Enemy targetEnemy = enemies.get(Integer.parseInt(message.getTarget()));
@@ -216,7 +216,6 @@ public class Game
                 if (attack > 0)
                 {
                     messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
-                    messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
                 }
                 break;
             case allPlayers:
@@ -253,12 +252,6 @@ public class Game
                     }
                 }
 
-                // update front end
-                if (healed > 0 || manaRestored > 0)
-                {
-                    messagingTemplate.convertAndSend("/topic/display/" + codeString, new GamePlayerInfoMessage(MessageType.PlayerUpdateAll, players.values().toArray(new Player[0])));
-                }
-
                 // record effects
                 player.recordDamageHealed(healed);
                 player.recordManaRestored(manaRestored);
@@ -288,12 +281,6 @@ public class Game
                     {
                         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
                     }
-                }
-
-                // update front end
-                if (attack > 0)
-                {
-                    messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameEnemyInfoMessage(MessageType.EnemyUpdateAll, enemies.values().toArray(new Enemy[0])));
                 }
 
                 // record effects
@@ -337,7 +324,6 @@ public class Game
 
         // update the current player
         messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
-        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameUpdatePlayerMessage(player));
     }
 
     public void playerDiscardsCard(Player player, DiscardCardMessage message)
@@ -376,7 +362,6 @@ public class Game
             if (manaRestored > 0)
             {
                 messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
-                messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameUpdatePlayerMessage(player));
             }
 
             // replace with new cards
@@ -430,7 +415,6 @@ public class Game
         }
         // combine all enemy actions into a single message and send
         messagingTemplate.convertAndSend("/topic/game/" + codeString, messages);
-        messagingTemplate.convertAndSend("/topic/display/" + codeString, messages);
 
         roundEndPhase();
     }

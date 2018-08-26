@@ -17,16 +17,22 @@ public enum MessageType
     RemoveEnemy,  // when a enemy dies, send at the end of a round
     EnemyDrawCard,  // enemy draws card(s)
     EnemyPlayCard,  // enemy plays card(s)
-    EnemyUpdate,  // update enemy information, such as hp
-    EnemyUpdateAll,
+    EnemyUpdate,  // update enemy information
+    EnemyUpdateAll,  // update all enemy information
     PlayerStartsTurn,  // start of a player's turn
     PlayerEndsTurn,  // a player finishes their turn
-    PlayerUpdate,  // update player information, such as hp, mana
-    PlayerUpdateAll,
+    PlayerUpdate,  // update player information
+    PlayerUpdateAll,  // update all player information
     PlayerRevive,  // when a player revives
     PlayerDrawCard,  // when player draw card(not at the start of the round)
     PlayCardSuccessful,  // send when a play card command is accepted
     PlayCardFailed,  // send when a play card command failed
     DiscardCardSuccessful,  // send when a discard card command is accepted
     DiscardCardFailed,  // send when a discard card command failed
+
+    PlayerHpChange,
+    PlayerManaChange,
+    PlayerBlockChange,
+    PlayerHateChange,
+    EnemyHpChange
 }

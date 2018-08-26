@@ -95,8 +95,8 @@ public class Enemy
                     for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
                     {
                         playerEntry.getValue().takeDamage(card.getAttack());
+                        messages.add(new GameUpdatePlayerMessage(playerEntry.getValue()));
                     }
-                    messages.add(new GamePlayerInfoMessage(MessageType.PlayerUpdateAll, game.getPlayers().values().toArray(new Player[0])));
                 }
                 else
                 {
@@ -114,7 +114,6 @@ public class Enemy
                         enemyEntry.getValue().heal(card.getHeal());
                         messages.add(new GameEnemyMessage(MessageType.EnemyUpdate, enemyEntry.getValue()));
                     }
-                    messages.add(new GameEnemyInfoMessage(MessageType.EnemyUpdateAll, game.getEnemies().values().toArray(new Enemy[0])));
                 }
                 else
                 {
@@ -174,6 +173,10 @@ public class Enemy
             damageTaken = amount;
             hp -= amount;
         }
+
+        // update front end display
+        if (damageTaken > 0)
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GameEnemyIntMessage(MessageType.EnemyHpChange, id, -damageTaken));
         return damageTaken;
     }
 
@@ -181,14 +184,21 @@ public class Enemy
     {
         if (dead) return;
 
+        int amountHealed = 0;
         if (hp + amount > maxHp)
         {
+            amountHealed = maxHp - hp;
             hp = maxHp;
         }
         else
         {
+            amountHealed = amount;
             hp += amount;
         }
+
+        // update front end display
+        if (amountHealed > 0)
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GameEnemyIntMessage(MessageType.EnemyHpChange, id, amountHealed));
     }
 
 

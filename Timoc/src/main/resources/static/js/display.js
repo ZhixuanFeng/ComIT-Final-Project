@@ -125,6 +125,26 @@ function processMessage(message) {
                 enemyMap[id].enemySprite.updateEnemy(enemy);
             });
             break;
+        case 'PlayerHpChange':
+            playerMap[message.name].playerInfo.hp += message.value;
+            playerMap[message.name].playerStat.updateHp(playerMap[message.name].playerInfo.hp);
+            break;
+        case 'PlayerManaChange':
+            playerMap[message.name].playerInfo.mana += message.value;
+            playerMap[message.name].playerStat.updateMana(playerMap[message.name].playerInfo.mana);
+            break;
+        case 'PlayerBlockChange':
+            playerMap[message.name].playerInfo.block += message.value;
+            playerMap[message.name].playerStat.updateBlock(playerMap[message.name].playerInfo.block);
+            break;
+        case 'PlayerHateChange':
+            playerMap[message.name].playerInfo.hate += message.value;
+            playerMap[message.name].playerStat.updateHate(playerMap[message.name].playerInfo.hate);
+            break;
+        case 'EnemyHpChange':
+            enemyMap[message.id].enemyInfo.hp += message.value;
+            enemyMap[message.id].enemySprite.updateHp(enemyMap[message.id].enemyInfo.hp);
+            break;
     }
 }
 
