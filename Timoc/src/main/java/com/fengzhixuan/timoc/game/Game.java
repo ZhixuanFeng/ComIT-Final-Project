@@ -10,10 +10,7 @@ import com.fengzhixuan.timoc.webcontroller.messagetemplate.PlayCardMessage;
 import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Game
 {
@@ -33,6 +30,8 @@ public class Game
     private int enemyCount;  // increments each time an enemy is spawn, then is given to the spawned enemy as id
     private boolean gameStarted;  // whether the game has started
     private int roundNum;  // current round number
+    private Random random;  // random number generator
+    private long seed;  // seed of the random
 
     private Game(int code, Map<String, Player> players)
     {
@@ -53,6 +52,9 @@ public class Game
         enemyCount = 0;
         gameStarted = false;
         roundNum = 0;
+
+        seed = System.currentTimeMillis();
+        random = new Random(seed);
     }
 
     // use this method which calls the constructor to create a game object
@@ -446,6 +448,10 @@ public class Game
                 {
                     result = playerEntry.getValue();
                 }
+                else if (playerEntry.getValue().getHate() == result.getHate() && !playerEntry.getValue().isDown())
+                {
+                    result = random.nextInt() < 0 ? playerEntry.getValue() : result;
+                }
             }
         }
         return result;
@@ -523,6 +529,12 @@ public class Game
     public Player getCurrentPlayer()
     {
         return players.get(playerOrder[currentPlayer]);
+    }
+
+    @JsonIgnore
+    public long getSeed()
+    {
+        return seed;
     }
 
     public String toString()
