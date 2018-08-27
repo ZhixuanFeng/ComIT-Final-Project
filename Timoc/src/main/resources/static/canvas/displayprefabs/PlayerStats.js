@@ -48,6 +48,7 @@ function updateHate(hate) {
 
 function updateBlock(block) {
     if (block > 99) block = 99;
+    if (block < 0) block = 0;
     if (block < 10) {
         this.blockDigit2.visible = false;
         this.blockDigit1.loadTexture('displayui', block);
@@ -57,6 +58,7 @@ function updateBlock(block) {
         this.blockDigit1.loadTexture('displayui', Math.floor(block / 10));
         this.blockDigit2.loadTexture('displayui', block % 10);
     }
+    console.log(block);
     this.info.block = block;
 }
 

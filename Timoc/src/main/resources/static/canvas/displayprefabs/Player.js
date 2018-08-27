@@ -1,5 +1,62 @@
 let playerPositions = [{x:64, y:86}, {x:64, y:118}, {x:64, y:150}, {x:64, y:182}];
 
+function showPlayerHpChangeNumber(hpChange) {
+    let hpChangeNumber;
+    if (hpChange !== 0) {
+        hpChangeNumber = game.add.group();
+        let xPos = 0;
+        let absChange = Math.abs(hpChange);
+        if (absChange >= 100) {
+            hpChangeNumber.create(xPos, 0, 'displayui', Math.floor(absChange / 100));
+            xPos += 4;
+        }
+        if (absChange >= 10) {
+            hpChangeNumber.create(xPos, 0, 'displayui', Math.floor(absChange / 10));
+            xPos += 4;
+        }
+        hpChangeNumber.create(xPos, 0, 'displayui', Math.floor(absChange % 10));
+    }
+    if (hpChange > 0) {
+        hpChangeNumber.children.forEach(function (number) {
+            number.tint = 0x00ff00;
+        });
+    }
+    else {
+        hpChangeNumber.children.forEach(function (number) {
+            number.tint = 0xff0000;
+        });
+    }
+    hpChangeNumber.scale.setTo(2.0);
+    hpChangeNumber.position.setTo(this.x+this.sprite.x+this.sprite.width, this.y+this.sprite.y+this.sprite.height);
+    hpChangeNumber.visible = false;
+    this.effectNumbers.push(hpChangeNumber);
+    this.animateEffectNumbers();
+}
+
+function animatePlayerEffectNumber() {
+    if (this.effectNumbers.length > 0 && !this.isAnimatingNumber) {
+        let player = this;
+        let number = this.effectNumbers.shift();
+        number.visible = true;
+        let destinationY = number.y - 32;
+        let destinationX = number.x - 48;
+        let tween = this.game.add.tween(number).to( { y: destinationY }, 500, Phaser.Easing.Exponential.Out, true);
+        let tween2 = this.game.add.tween(number).to( { x: destinationX }, 1500, Phaser.Easing.Linear.None, true);
+
+        this.isAnimatingNumber = true;
+        tween.onComplete.add(function () {
+            let tween3 = player.game.add.tween(number).to( { y: destinationY+32 }, 1000, Phaser.Easing.Bounce.Out, true);
+            tween3.onComplete.add(function() {
+                number.kill();
+                number.destroy(true, false);
+            });
+            player.isAnimatingNumber = false;
+            player.animateEffectNumbers();
+        });
+        tween2.onComplete.add(function () {
+        });
+    }
+}
 // -- user code here --
 
 /* --- start generated code --- */
@@ -21,7 +78,7 @@ function Player(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyTyp
 
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
 
-    this.info = playerInfo;
+    // this.info = playerInfo;
 
     this.playerClass = playerInfo.playerClass.toLowerCase();
     let spriteYPos = 10.0;
@@ -37,6 +94,7 @@ function Player(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyTyp
 
     this.position.setTo(playerPositions[posNum].x * this.scale.x, playerPositions[posNum].y * this.scale.y);
 
+    this.effectNumbers = [];
 }
 
 /** @type Phaser.Group */
@@ -46,3 +104,5 @@ Player.prototype.constructor = Player;
 
 /* --- end generated code --- */
 // -- user code here --
+Player.prototype.showHpChangeNumber = showPlayerHpChangeNumber;
+Player.prototype.animateEffectNumbers = animatePlayerEffectNumber;

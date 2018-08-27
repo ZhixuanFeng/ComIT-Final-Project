@@ -128,6 +128,7 @@ function processMessage(message) {
         case 'PlayerHpChange':
             playerMap[message.name].playerInfo.hp += message.value;
             playerMap[message.name].playerStat.updateHp(playerMap[message.name].playerInfo.hp);
+            playerMap[message.name].playerSprite.showHpChangeNumber(message.value);
             break;
         case 'PlayerManaChange':
             playerMap[message.name].playerInfo.mana += message.value;
@@ -144,6 +145,7 @@ function processMessage(message) {
         case 'EnemyHpChange':
             enemyMap[message.id].enemyInfo.hp += message.value;
             enemyMap[message.id].enemySprite.updateHp(enemyMap[message.id].enemyInfo.hp);
+            enemyMap[message.id].enemySprite.showHpChangeNumber(message.value);
             break;
     }
 }

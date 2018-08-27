@@ -88,7 +88,6 @@ function setHand(cards) {
 function animateCardUse() {
     let tween;
     selectedCards.forEach(function (card) {
-        // card.destroy(true, false);
         card.graphics.visible = false;
         isAnimating = true;
         tween = game.add.tween(card).to( { y: card.y-50 }, 500, Phaser.Easing.Exponential.Out, true);

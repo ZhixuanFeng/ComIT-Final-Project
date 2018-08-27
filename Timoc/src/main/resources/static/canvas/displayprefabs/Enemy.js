@@ -16,9 +16,67 @@ function updateEnemyHp(hp) {
     this.info.hp = hp;
 }
 
+function showEnemyHpChangeNumber(hpChange) {
+    let hpChangeNumber;
+    if (hpChange !== 0) {
+        hpChangeNumber = game.add.group();
+        let xPos = 0;
+        let absChange = Math.abs(hpChange);
+        if (absChange >= 100) {
+            hpChangeNumber.create(xPos, 0, 'displayui', Math.floor(absChange / 100));
+            xPos += 4;
+        }
+        if (absChange >= 10) {
+            hpChangeNumber.create(xPos, 0, 'displayui', Math.floor(absChange / 10));
+            xPos += 4;
+        }
+        hpChangeNumber.create(xPos, 0, 'displayui', Math.floor(absChange % 10));
+    }
+    if (hpChange > 0) {
+        hpChangeNumber.children.forEach(function (number) {
+            number.tint = 0x00ff00;
+        });
+    }
+    else {
+        hpChangeNumber.children.forEach(function (number) {
+            number.tint = 0xff0000;
+        });
+    }
+    hpChangeNumber.scale.setTo(2.0);
+    hpChangeNumber.position.setTo(this.x+this.sprite.x, this.y+this.sprite.y);
+    hpChangeNumber.visible = false;
+    this.effectNumbers.push(hpChangeNumber);
+    this.animateEffectNumbers();
+}
+
+function animateEnemyEffectNumber() {
+    if (this.effectNumbers.length > 0 && !this.isAnimatingNumber) {
+        let enemy = this;
+        let number = this.effectNumbers.shift();
+        number.visible = true;
+        let destinationY = number.y - 32;
+        let destinationX = number.x + 48;
+        let tween = this.game.add.tween(number).to( { y: destinationY }, 500, Phaser.Easing.Exponential.Out, true);
+        let tween2 = this.game.add.tween(number).to( { x: destinationX }, 1500, Phaser.Easing.Linear.None, true);
+
+        this.isAnimatingNumber = true;
+        tween.onComplete.add(function () {
+            let tween3 = enemy.game.add.tween(number).to( { y: destinationY+32 }, 1000, Phaser.Easing.Bounce.Out, true);
+            tween3.onComplete.add(function() {
+                    number.kill();
+                    number.destroy(true, false);
+            });
+            enemy.isAnimatingNumber = false;
+            enemy.animateEffectNumbers();
+        });
+        tween2.onComplete.add(function () {
+        });
+    }
+}
+
 function updateEnemy(enemyInfo) {
-    this.updateHp(enemyInfo.hp);
     this.info = enemyInfo;
+    this.updateHp(enemyInfo.hp);
 }
 
 function update() {
@@ -85,6 +143,7 @@ function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType
     this.position.setTo(x * this.scale.x, y * this.scale.y);
 
     this.updateHp(enemyInfo.hp);
+    this.effectNumbers = [];
 }
 
 /** @type Phaser.Group */
@@ -97,3 +156,5 @@ Enemy.prototype.constructor = Enemy;
 Enemy.prototype.update = update;
 Enemy.prototype.updateHp = updateEnemyHp;
 Enemy.prototype.updateEnemy = updateEnemy;
+Enemy.prototype.showHpChangeNumber = showEnemyHpChangeNumber;
+Enemy.prototype.animateEffectNumbers = animateEnemyEffectNumber;
