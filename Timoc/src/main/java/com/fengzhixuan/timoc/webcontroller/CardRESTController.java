@@ -27,6 +27,7 @@ public class CardRESTController
     @Autowired
     private CardDeckService cardDeckService;
 
+    // get a user's whole collection of cards
     @RequestMapping(value="/rest/cards", method=RequestMethod.GET)
     private List<Card> getCards()
     {
@@ -37,6 +38,7 @@ public class CardRESTController
         return cardCollectionService.getCards(user.getId());
     }
 
+    // get a user's deck of cards
     @RequestMapping(value="/deck/cards", method=RequestMethod.POST)
     private List<Card> getDeck()
     {

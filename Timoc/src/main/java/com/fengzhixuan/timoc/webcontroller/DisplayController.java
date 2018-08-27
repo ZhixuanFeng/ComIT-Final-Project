@@ -1,4 +1,4 @@
-package com.fengzhixuan.timoc.webcontroller.messagetemplate;
+package com.fengzhixuan.timoc.webcontroller;
 
 import com.fengzhixuan.timoc.game.Enemy;
 import com.fengzhixuan.timoc.game.Game;
