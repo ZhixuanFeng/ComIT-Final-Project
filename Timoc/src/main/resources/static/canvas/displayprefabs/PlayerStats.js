@@ -58,7 +58,6 @@ function updateBlock(block) {
         this.blockDigit1.loadTexture('displayui', Math.floor(block / 10));
         this.blockDigit2.loadTexture('displayui', block % 10);
     }
-    console.log(block);
     this.info.block = block;
 }
 

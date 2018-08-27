@@ -20,11 +20,13 @@ function showPlayerHpChangeNumber(hpChange) {
         hpChangeNumber.children.forEach(function (number) {
             number.tint = 0x00ff00;
         });
+        hpChangeNumber['effectType'] = 'heal';
     }
     else {
         hpChangeNumber.children.forEach(function (number) {
             number.tint = 0xff0000;
         });
+        hpChangeNumber['effectType'] = 'damage';
     }
     hpChangeNumber.scale.setTo(2.0);
     hpChangeNumber.position.setTo(this.x+this.sprite.x+this.sprite.width, this.y+this.sprite.y+this.sprite.height);
@@ -38,23 +40,41 @@ function animatePlayerEffectNumber() {
         let player = this;
         let number = this.effectNumbers.shift();
         number.visible = true;
-        let destinationY = number.y - 32;
-        let destinationX = number.x - 48;
-        let tween = this.game.add.tween(number).to( { y: destinationY }, 500, Phaser.Easing.Exponential.Out, true);
-        let tween2 = this.game.add.tween(number).to( { x: destinationX }, 1500, Phaser.Easing.Linear.None, true);
 
-        this.isAnimatingNumber = true;
-        tween.onComplete.add(function () {
-            let tween3 = player.game.add.tween(number).to( { y: destinationY+32 }, 1000, Phaser.Easing.Bounce.Out, true);
-            tween3.onComplete.add(function() {
-                number.kill();
-                number.destroy(true, false);
-            });
+        let destinationY, destinationX, tween, tween2, tween3;
+        switch (number['effectType']) {
+            case 'damage':
+                destinationY = number.y - 32;
+                destinationX = number.x - 48;
+                tween = this.game.add.tween(number).to( { y: destinationY }, 500, Phaser.Easing.Exponential.Out, true);
+                tween2 = this.game.add.tween(number).to( { x: destinationX }, 1500, Phaser.Easing.Linear.None, true);
+
+                this.isAnimatingNumber = true;
+                tween.onComplete.add(function () {
+                    tween3 = player.game.add.tween(number).to( { y: destinationY+32 }, 1000, Phaser.Easing.Bounce.Out, true);
+                    tween3.onComplete.add(removeNumber);
+                    startNextAnimation()
+                });
+                break;
+
+            case 'heal':
+                destinationY = number.y - 32;
+                tween = this.game.add.tween(number).to( { y: destinationY }, 1000, Phaser.Easing.Linear.None, true);
+                this.isAnimatingNumber = true;
+                game.time.events.add(500, startNextAnimation, player);
+                tween.onComplete.add(removeNumber);
+                break;
+        }
+
+        function removeNumber() {
+            number.kill();
+            number.destroy(true, false);
+        }
+
+        function startNextAnimation() {
             player.isAnimatingNumber = false;
             player.animateEffectNumbers();
-        });
-        tween2.onComplete.add(function () {
-        });
+        }
     }
 }
 // -- user code here --
