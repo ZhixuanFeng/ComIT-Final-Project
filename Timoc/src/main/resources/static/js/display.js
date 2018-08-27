@@ -19,7 +19,7 @@ function init() {
 }
 
 function preload() {
-    this.load.pack('display', 'assets/Display.json');
+    this.load.pack('display', '/assets/Display.json');
 
     code = getUrlParameter('code');
 }

@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     {
         http
                 .authorizeRequests()
-                    .antMatchers("/", "/home", "/registration", "/duplicated_login", "/display", "/favicon.ico").permitAll()
+                    .antMatchers("/", "/home", "/registration", "/duplicated_login", "/display/**", "/favicon.ico").permitAll()
                     .antMatchers("/admin/**").hasAuthority("ADMIN")
                     .anyRequest()
                     .authenticated()
@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     {
         web
                 .ignoring()
-                .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/fonts/**");
+                .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "/fonts/**", "/assets/**", "/canvas/**");
     }
 
     /*@Bean

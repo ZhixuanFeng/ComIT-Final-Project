@@ -43,14 +43,14 @@ public class StompSubscribeEventHandler implements ApplicationListener<SessionSu
     // return null if valid
     private String validateSubscription(Principal principal, String topicDestination)
     {
-        if (principal == null)
+        // split with "/", subs[0] should be "", subs[1] should be "topic"
+        String[] subs = topicDestination.split("\\/");
+
+        if (principal == null && !subs[2].equals("display"))
         {
             // unauthenticated user
             return "Unauthorized access";
         }
-
-        // split with "/", subs[0] should be "", subs[1] should be "topic"
-        String[] subs = topicDestination.split("\\/");
 
         // invalid path
         if (subs.length < 4)
