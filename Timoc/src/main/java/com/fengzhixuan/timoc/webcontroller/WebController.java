@@ -107,6 +107,14 @@ public class WebController
         return modelAndView;
     }
 
+    @RequestMapping(value = "/controller", method = RequestMethod.GET)
+    public ModelAndView enterController(@RequestParam("code") String code)
+    {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("controller");
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/display", method = RequestMethod.GET)
     public ModelAndView watchGame(@RequestParam(value = "code", required = false) String code)
     {

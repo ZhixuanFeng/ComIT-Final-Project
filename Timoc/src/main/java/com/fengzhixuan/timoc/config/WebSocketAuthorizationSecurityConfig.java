@@ -11,7 +11,7 @@ public class WebSocketAuthorizationSecurityConfig extends AbstractSecurityWebSoc
         messages.anyMessage().authenticated();
         messages.simpDestMatchers("/app/display").permitAll()
                 .simpSubscribeDestMatchers("/topic/display").permitAll()
-                .simpDestMatchers("/app/room", "/app/game").authenticated()//.hasRole("ADMIN")
-                .simpSubscribeDestMatchers("/topic/room", "/topic/game", "/user/").authenticated();
+                .simpDestMatchers("/app/room", "/app/game", "/app/controller").authenticated()//.hasRole("ADMIN")
+                .simpSubscribeDestMatchers("/topic/room", "/topic/game", "/topic/controller", "/user/").authenticated();
     }
 }

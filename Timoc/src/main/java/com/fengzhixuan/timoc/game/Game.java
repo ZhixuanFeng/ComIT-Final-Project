@@ -23,6 +23,7 @@ public class Game
     private String codeString;
     private Map<String, Player> players = new HashMap<>(); // username is key
     private Map<Player, Boolean> playerOnlineStatuses = new HashMap<>(); // true means online/connected
+    private boolean isDisplayConnected = false;  // is there a connected display?
     private RoundPhase phase;
     private String[] playerOrder;  // stores all players' names, represents the order of players(who's player1, who plays first) in attack phase
     private int currentPlayer;  // current index to playerOrder array, represents whose turn it is now
@@ -79,8 +80,17 @@ public class Game
         {
             playerEntry.getValue().onGameStart(messagingTemplate);
         }
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.GameStart));
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
+        messagingTemplate.convertAndSend("/topic/controller/" + codeString, new GameMessage(MessageType.GameStart));
+
+        // send game, player, enemy information to display
+        GameMessage[] messages = new GameMessage[3];
+        messages[0] = new GameInfoMessage(this);
+        messages[1] = new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0]));
+        messages[2] = new GameEnemyInfoMessage(MessageType.EnemyInfo, enemies.values().toArray(new Enemy[0]));
+        messagingTemplate.convertAndSend("/topic/display/" + codeString, messages);
+
+//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.GameStart));
+//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
 
         // start first round
         roundStartPhase();
@@ -90,7 +100,7 @@ public class Game
     {
         phase = RoundPhase.RoundStart;
         roundNum++;
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.RoundStart));
+//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.RoundStart));
 
         // deal with all players
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
@@ -117,7 +127,7 @@ public class Game
             Enemy newEnemy = new Orc(this, codeString, enemyCount, messagingTemplate);
             enemies.put(newEnemy.getId(), newEnemy);
             enemyCount++;
-            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.NewEnemy, newEnemy));
+//            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.NewEnemy, newEnemy));
         }
     }
 
@@ -125,7 +135,7 @@ public class Game
     private void startAttackPhase()
     {
         phase = RoundPhase.Attack;
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.AttackPhase));
+//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.AttackPhase));
         currentPlayer = 0;
         startPlayerTurn();
     }
@@ -133,7 +143,7 @@ public class Game
     private void startPlayerTurn()
     {
         Player player = getCurrentPlayer();
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
+//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
     }
 
     public void playerPlaysCard(Player player, PlayCardMessage message)
@@ -191,7 +201,7 @@ public class Game
                 // update front end
                 if (healed > 0 || manaRestored > 0)
                 {
-                    messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
+//                    messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
                 }
 
                 break;
@@ -217,7 +227,7 @@ public class Game
                 // update front end
                 if (attack > 0)
                 {
-                    messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
+//                    messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
                 }
                 break;
             case allPlayers:
@@ -250,7 +260,7 @@ public class Game
                     // update front end
                     if (healed > 0 || manaRestored > 0)
                     {
-                        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
+//                        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
                     }
                 }
 
@@ -281,7 +291,7 @@ public class Game
                     // update front end
                     if (attack > 0)
                     {
-                        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
+//                        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
                     }
                 }
 
@@ -308,7 +318,7 @@ public class Game
         if (draw > 0)
         {
             int[] cardsDrawn = player.drawCards(draw);
-            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
+//            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
             messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameIntMessage(MessageType.PlayerDrawCard, cardsDrawn.length));
         }
 
@@ -325,7 +335,7 @@ public class Game
         player.updateBlock();
 
         // update the current player
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
+//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
     }
 
     public void playerDiscardsCard(Player player, DiscardCardMessage message)
@@ -363,14 +373,14 @@ public class Game
             // update front end
             if (manaRestored > 0)
             {
-                messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
+//                messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
             }
 
             // replace with new cards
             if (player.getReplaceAllowance() > 0)
             {
                 int[] cardsDrawn = player.drawCards(player.getReplaceAllowance());
-                messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
+//                messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
                 messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameIntMessage(MessageType.PlayerDrawCard, cardsDrawn.length));
                 player.setReplaceAllowance(0);
             }
@@ -379,7 +389,7 @@ public class Game
         {
             // replace with new cards
             int[] cardsDrawn = player.drawCards(cards.length);
-            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
+//            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
             messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameIntMessage(MessageType.PlayerDrawCard, cardsDrawn.length));
             player.setReplaceAllowance(player.getReplaceAllowance() - cards.length);
         }
@@ -388,7 +398,7 @@ public class Game
     public void finishPlayerTurn()
     {
         currentPlayer++;
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.PlayerEndsTurn));
+//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.PlayerEndsTurn));
 
         // if all players have finished their turns
         if (currentPlayer == playerOrder.length)
@@ -405,7 +415,7 @@ public class Game
     private void startDefendPhase()
     {
         phase = RoundPhase.Defend;
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.DefendPhase));
+//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.DefendPhase));
 
         List<GameMessage> messages = new ArrayList<>();
         for (Map.Entry<Integer, Enemy> enemyEntry : enemies.entrySet())
@@ -416,7 +426,7 @@ public class Game
             }
         }
         // combine all enemy actions into a single message and send
-        messagingTemplate.convertAndSend("/topic/game/" + codeString, messages);
+//        messagingTemplate.convertAndSend("/topic/game/" + codeString, messages);
 
         roundEndPhase();
     }
@@ -427,7 +437,7 @@ public class Game
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             // make sure front end is in sync
-            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(playerEntry.getValue()));
+//            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(playerEntry.getValue()));
         }
 
         roundStartPhase();
@@ -513,6 +523,17 @@ public class Game
             }
         }
         return true;
+    }
+
+    @JsonIgnore
+    public boolean isDisplayConnected()
+    {
+        return isDisplayConnected;
+    }
+
+    public void setDisplayConnected()
+    {
+        isDisplayConnected = true;
     }
 
     public boolean isGameStarted()

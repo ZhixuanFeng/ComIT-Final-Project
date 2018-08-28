@@ -30,6 +30,8 @@ public enum MessageType
     DiscardCardSuccessful,  // send when a discard card command is accepted
     DiscardCardFailed,  // send when a discard card command failed
 
+    ButtonPress,
+
     PlayerHpChange,
     PlayerManaChange,
     PlayerBlockChange,

@@ -101,6 +101,11 @@ function processMessage(message) {
         case 'EnemyInfo':
             spawnEnemies(message.enemies);
             break;
+        case undefined:
+            if (message >= 0 && message <= 9) {
+
+            }
+            break;
         case 'PlayerUpdate':
             let name = message.player.name;
             playerMap[name].playerInfo = message.player;

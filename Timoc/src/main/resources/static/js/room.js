@@ -87,7 +87,7 @@ function onMessageReceived(message) {
     }
     else if (messageBody.type === 'Start') {
         disconnect();
-        window.location.replace('/game?code=' + roomCode);
+        window.location.replace('/controller?code=' + roomCode);
     }
 }
 
