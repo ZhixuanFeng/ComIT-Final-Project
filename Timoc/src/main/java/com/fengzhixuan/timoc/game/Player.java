@@ -332,9 +332,9 @@ public class Player
     }
 
     @JsonIgnore
-    public Map<Integer, Card> getDeck()
+    public Card[] getDeck()
     {
-        return deck;
+        return deck.values().toArray(new Card[0]);
     }
 
     public int getHp()

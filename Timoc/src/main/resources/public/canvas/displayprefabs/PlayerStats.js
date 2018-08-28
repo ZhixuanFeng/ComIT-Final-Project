@@ -1,4 +1,4 @@
-let statsPositions = [{x:16, y:8}, {x:88, y:8}, {x:160, y:8}, {x:232, y:8}];
+let statsPositions = [{x:12, y:32}, {x:12, y:64}, {x:12, y:96}, {x:12, y:128}];
 
 function updateHp(hp) {
     if (hp === 100) {
@@ -12,7 +12,7 @@ function updateHp(hp) {
         this.hpDigit3.loadTexture('displayui', hp % 10);
         this.hpDigit1.visible = false;
     }
-    this.game.add.tween(this.widthHp).to( { width: hp / 2 }, 200, Phaser.Easing.Linear.None, true);
+    this.game.add.tween(this.widthHp).to( { width: hp / this.info.maxHp * 50 }, 200, Phaser.Easing.Linear.None, true);
     this.info.hp = hp;
 }
 
@@ -28,7 +28,7 @@ function updateMana(mana) {
         this.manaDigit3.loadTexture('displayui', mana % 10);
         this.manaDigit1.visible = false;
     }
-    this.game.add.tween(this.widthMana).to( { width: mana / 2 }, 200, Phaser.Easing.Linear.None, true);
+    this.game.add.tween(this.widthMana).to( { width: mana / this.info.maxMana * 50 }, 200, Phaser.Easing.Linear.None, true);
     this.info.mana = mana;
 }
 
@@ -98,50 +98,42 @@ function PlayerStats(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBo
 	let x = statsPositions[posNum].x;
 	let y = statsPositions[posNum].y;
 
-	let spriteYPos = 10.0;
-	let playerClass = playerInfo.playerClass.toLowerCase();
-	if (playerClass === 'knight') spriteYPos = 6.0;
-    this.game.add.sprite(0.0, spriteYPos, 'entity', playerClass, this);
+    this.manaBar = this.game.add.sprite(4.0, 15.0, 'displayui', 'bar', this);
 
-    this.manaBar = this.game.add.sprite(20.0, 15.0, 'displayui', 'bar', this);
+    this.hpBar = this.game.add.sprite(4.0, 8.0, 'displayui', 'bar', this);
 
-    this.hpBar = this.game.add.sprite(20.0, 8.0, 'displayui', 'bar', this);
+    this.game.add.sprite(4.0, 22.0, 'displayui', 'hatemini', this);
 
-    this.game.add.sprite(20.0, 22.0, 'displayui', 'hatemini', this);
+    this.game.add.sprite(20.0, 22.0, 'displayui', 'blockmini', this);
 
-    this.game.add.sprite(36.0, 22.0, 'displayui', 'blockmini', this);
-
-    let _nametext = this.game.add.text(0.0, 0.0, playerInfo.name, {"font":"bold 20px Arial","fill":"#dbc0b4"}, this);
-    _nametext.scale.setTo(0.3, 0.3);
-
-    this.hateDigit2 = this.game.add.sprite(31.0, 23.0, 'displayui', '0', this);
+    this.hateDigit2 = this.game.add.sprite(15.0, 23.0, 'displayui', '0', this);
     this.hateDigit2.tint = 0xdbc0b4;
 
-    this.hateDigit1 = this.game.add.sprite(27.0, 23.0, 'displayui', '0', this);
+    this.hateDigit1 = this.game.add.sprite(11.0, 23.0, 'displayui', '0', this);
     this.hateDigit1.tint = 0xdbc0b4;
 
-    this.blockDigit2 = this.game.add.sprite(47.0, 23.0, 'displayui', '0', this);
+    this.blockDigit2 = this.game.add.sprite(31.0, 23.0, 'displayui', '0', this);
     this.blockDigit2.tint = 0xdbc0b4;
 
-    this.blockDigit1 = this.game.add.sprite(43.0, 23.0, 'displayui', '0', this);
+    this.blockDigit1 = this.game.add.sprite(27.0, 23.0, 'displayui', '0', this);
     this.blockDigit1.tint = 0xdbc0b4;
 
-    this.manaDigit3 = this.game.add.sprite(56.0, 16.0, 'displayui', '0', this);
+    this.manaDigit3 = this.game.add.sprite(40.0, 16.0, 'displayui', '0', this);
     this.manaDigit3.tint = 0xdbc0b4;
 
-    this.manaDigit2 = this.game.add.sprite(52.0, 16.0, 'displayui', '0', this);
+    this.manaDigit2 = this.game.add.sprite(36.0, 16.0, 'displayui', '0', this);
     this.manaDigit2.tint = 0xdbc0b4;
 
-    this.manaDigit1 = this.game.add.sprite(48.0, 16.0, 'displayui', '0', this);
+    this.manaDigit1 = this.game.add.sprite(32.0, 16.0, 'displayui', '0', this);
     this.manaDigit1.tint = 0xdbc0b4;
 
-    this.hpDigit3 = this.game.add.sprite(56.0, 9.0, 'displayui', '0', this);
+    this.hpDigit3 = this.game.add.sprite(40.0, 9.0, 'displayui', '0', this);
     this.hpDigit3.tint = 0xdbc0b4;
 
-    this.hpDigit2 = this.game.add.sprite(52.0, 9.0, 'displayui', '0', this);
+    this.hpDigit2 = this.game.add.sprite(36.0, 9.0, 'displayui', '0', this);
     this.hpDigit2.tint = 0xdbc0b4;
 
-    this.hpDigit1 = this.game.add.sprite(48.0, 9.0, 'displayui', '0', this);
+    this.hpDigit1 = this.game.add.sprite(32.0, 9.0, 'displayui', '0', this);
     this.hpDigit1.tint = 0xdbc0b4;
 
     let bmd = this.game.add.bitmapData(50, 8);

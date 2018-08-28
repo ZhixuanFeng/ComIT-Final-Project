@@ -1,4 +1,4 @@
-let playerPositions = [{x:64, y:86}, {x:64, y:118}, {x:64, y:150}, {x:64, y:182}];
+let playerPositions = [{x:64, y:32}, {x:64, y:64}, {x:64, y:96}, {x:64, y:128}];
 
 function showPlayerHpChangeNumber(hpChange) {
     let hpChangeNumber;

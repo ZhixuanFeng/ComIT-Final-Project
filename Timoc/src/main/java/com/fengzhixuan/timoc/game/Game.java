@@ -83,10 +83,14 @@ public class Game
         messagingTemplate.convertAndSend("/topic/controller/" + codeString, new GameMessage(MessageType.GameStart));
 
         // send game, player, enemy information to display
-        GameMessage[] messages = new GameMessage[3];
-        messages[0] = new GameInfoMessage(this);
-        messages[1] = new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0]));
-        messages[2] = new GameEnemyInfoMessage(MessageType.EnemyInfo, enemies.values().toArray(new Enemy[0]));
+        List<GameMessage> messages = new ArrayList<>();
+        messages.add(new GameInfoMessage(this));
+        messages.add(new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
+        messages.add(new GameEnemyInfoMessage(MessageType.EnemyInfo, enemies.values().toArray(new Enemy[0])));
+        for (Map.Entry<String, Player> playerEntry : players.entrySet())
+        {
+            messages.add(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getName(), playerEntry.getValue().getDeck()));
+        }
         messagingTemplate.convertAndSend("/topic/display/" + codeString, messages);
 
 //        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.GameStart));

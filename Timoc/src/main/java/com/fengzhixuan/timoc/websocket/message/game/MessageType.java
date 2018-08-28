@@ -12,6 +12,7 @@ public enum MessageType
     GameInfo,  // send information about the game, used when a player enters/re-enters a game
     PlayerInfo,  // send all player information, used when a player enters/re-enters a game
     EnemyInfo,  // send all enemy information, used when a player enters/re-enters a game
+    PlayerDeck,
     Hand,  // message containing cards in hand
     NewEnemy,  // when a enemy spawns
     RemoveEnemy,  // when a enemy dies, send at the end of a round
@@ -29,8 +30,6 @@ public enum MessageType
     PlayCardFailed,  // send when a play card command failed
     DiscardCardSuccessful,  // send when a discard card command is accepted
     DiscardCardFailed,  // send when a discard card command failed
-
-    ButtonPress,
 
     PlayerHpChange,
     PlayerManaChange,

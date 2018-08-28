@@ -8,6 +8,7 @@ let game = new Phaser.Game(128*scale, 64*scale, Phaser.AUTO, 'game', this, false
 let bgColors = ['#F5DEB3', '#1E90FF', '#FF7F50', '#32CD32', '#696969'];
 let buttonCode = {'up':1, 'down':2, 'left':3, 'right':4, 'play':5, 'cancel':6, 'replace':7, 'discard':8, 'next':0};
 let code;
+let isGameStarted = false;
 let instruction;
 let btnGroup;
 
@@ -116,9 +117,12 @@ function onMessageReceived(message) {
     let messageBody = JSON.parse(message.body);
     switch (messageBody.type) {
         case 'EnterSuccessful':
-            instruction.visible = true;
+            if (!isGameStarted) {
+                instruction.visible = true;
+            }
             break;
         case 'GameStart':
+            isGameStarted = true;
             instruction.visible = false;
             btnGroup.visible = true;
             break;

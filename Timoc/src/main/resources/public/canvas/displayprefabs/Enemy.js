@@ -1,4 +1,4 @@
-let enemyPositions = [{x:240, y:96}, {x:240, y:128}, {x:240, y:160}, {x:240, y:192}];
+let enemyPositions = [{x:240, y:42}, {x:240, y:74}, {x:240, y:106}, {x:240, y:138}];
 
 function updateEnemyHp(hp) {
     if (hp >= 100) {
@@ -124,6 +124,7 @@ function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType
 
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
 
+	this.posNum = posNum;
 	this.info = enemyInfo;
     let x = enemyPositions[posNum].x;
     let y = enemyPositions[posNum].y;

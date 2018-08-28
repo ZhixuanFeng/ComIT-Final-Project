@@ -15,7 +15,7 @@
  * @param {any} aFrame If this Sprite is using part of a sprite sheet or texture atlas you can specify the exact frame to use by giving a string or numeric index.
  */
 function Background(aGame, aX, aY, aKey, aFrame) {
-	Phaser.Sprite.call(this, aGame, aX, aY, aKey || 'map', aFrame == undefined || aFrame == null? 'battlebackground' : aFrame);
+	Phaser.Sprite.call(this, aGame, aX, aY, aKey || 'map', aFrame == undefined || aFrame == null? 'dungeonbackground' : aFrame);
     this.scale.setTo(2, 2);
 }
 

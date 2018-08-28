@@ -40,6 +40,7 @@ public class ControllerController
         if (game.isGameStarted())
         {
             // TODO: reconnect
+            return new GameMessage(MessageType.GameStart);
         }
         // if game is not started yet
         else

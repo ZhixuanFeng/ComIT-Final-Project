@@ -40,10 +40,22 @@
       "type": "script",
       "key": "PlayerStats",
       "url": "canvas/displayprefabs/PlayerStats.js"
+    },
+    {
+      "type": "script",
+      "key": "Card",
+      "url": "canvas/displayprefabs/Card.js"
+    },
+    {
+      "type": "atlas",
+      "key": "card",
+      "textureURL": "assets/atlas/card.png",
+      "atlasURL": "assets/atlas/card.json",
+      "format": "TEXTURE_ATLAS_JSON_HASH"
     }
   ],
   "meta": {
-    "generated": "1535055504878",
+    "generated": "1535473273990",
     "app": "Phaser Editor",
     "url": "http://phasereditor.boniatillo.com",
     "version": "1.0",

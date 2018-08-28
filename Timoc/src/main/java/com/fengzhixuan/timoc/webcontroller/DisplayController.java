@@ -11,6 +11,10 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 @Controller
 public class DisplayController
 {
@@ -19,7 +23,7 @@ public class DisplayController
 
     @MessageMapping("/display.enter/{code}")
     @SendTo("/topic/display/{code}")
-    public GameMessage[] startDisplay(@DestinationVariable String code)
+    public List<GameMessage> startDisplay(@DestinationVariable String code)
     {
         Game game = Game.getGameByCode(code);
         if (game == null) { return null; }
@@ -28,13 +32,15 @@ public class DisplayController
 
         if (game.isGameStarted())
         {
-            GameMessage[] messages = new GameMessage[3];
-            // game information
-            messages[0] = new GameInfoMessage(game);
-            // player information
-            messages[1] = new GamePlayerInfoMessage(MessageType.PlayerInfo, game.getPlayers().values().toArray(new Player[0]));
-            // enemy information
-            messages[2] = new GameEnemyInfoMessage(MessageType.EnemyInfo, game.getEnemies().values().toArray(new Enemy[0]));
+            // send game, player, enemy information to display
+            List<GameMessage> messages = new ArrayList<>();
+            messages.add(new GameInfoMessage(game));
+            messages.add(new GamePlayerInfoMessage(MessageType.PlayerInfo, game.getPlayers().values().toArray(new Player[0])));
+            messages.add(new GameEnemyInfoMessage(MessageType.EnemyInfo, game.getEnemies().values().toArray(new Enemy[0])));
+            for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
+            {
+                messages.add(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getName(), playerEntry.getValue().getDeck()));
+            }
             return messages;
         }
 
