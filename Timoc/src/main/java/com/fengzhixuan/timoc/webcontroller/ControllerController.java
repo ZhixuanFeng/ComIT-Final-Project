@@ -58,11 +58,12 @@ public class ControllerController
 
     @MessageMapping("/controller/{code}")
     @SendTo("/topic/display/{code}")
-    public int buttonPress(@DestinationVariable String code, int buttonCode)
+    public int[] buttonPress(@DestinationVariable String code, int buttonCode)
     {
         Game game = Game.getGameByCode(code);
-        if (game == null) { return -1; }
+        if (game == null) { return null; }
 
-        return buttonCode;
+        byte[] bytes = game.getDisplay().controllerInput(buttonCode);
+        return new int[]{bytes[0], bytes[1], bytes[2]};
     }
 }

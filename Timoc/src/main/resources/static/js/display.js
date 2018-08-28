@@ -220,7 +220,6 @@ function processMessage(message) {
                 deck[card.indecks] = card;
             });
             playerMap[message.name].deck = deck;
-            let card = new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, 0, deck[0]);
             break;
         case 'PlayerUpdateAll':
             message.players.forEach(function (player) {

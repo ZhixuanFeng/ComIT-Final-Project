@@ -23,6 +23,7 @@ public class Game
     private String codeString;
     private Map<String, Player> players = new HashMap<>(); // username is key
     private Map<Player, Boolean> playerOnlineStatuses = new HashMap<>(); // true means online/connected
+    private Display display;  // emulates the state of displays
     private boolean isDisplayConnected = false;  // is there a connected display?
     private RoundPhase phase;
     private String[] playerOrder;  // stores all players' names, represents the order of players(who's player1, who plays first) in attack phase
@@ -38,6 +39,7 @@ public class Game
     {
         this.code = code;
         codeString = GameCodeGenerator.intToString(code);
+        display = new Display();
         this.players = players;
 
         playerOrder = new String[players.size()];
@@ -527,6 +529,12 @@ public class Game
             }
         }
         return true;
+    }
+
+    @JsonIgnore
+    public Display getDisplay()
+    {
+        return display;
     }
 
     @JsonIgnore
