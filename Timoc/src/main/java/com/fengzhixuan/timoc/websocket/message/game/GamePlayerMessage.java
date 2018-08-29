@@ -11,7 +11,7 @@ public class GamePlayerMessage extends GameMessage
         this.id = id;
     }
 
-    public int getName()
+    public int getId()
     {
         return id;
     }

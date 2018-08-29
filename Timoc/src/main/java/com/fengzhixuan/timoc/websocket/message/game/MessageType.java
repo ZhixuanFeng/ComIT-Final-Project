@@ -35,4 +35,5 @@ public class MessageType
     public static final int PlayerBlockChange = 28;
     public static final int PlayerHateChange = 29;
     public static final int EnemyHpChange = 30;
+    public static final int DState = 31;
 }

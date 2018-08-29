@@ -46,11 +46,12 @@ public class Game
         int count = 0;
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
+            Player player = playerEntry.getValue();
             // fill in the status map, initialize to all false
-            playerOnlineStatuses.put(playerEntry.getValue(), false);
+            playerOnlineStatuses.put(player, false);
             // fill in the playerOrder array with all the names
-            playerOrder[count] = playerEntry.getValue().getName();
-            playerEntry.getValue().setId(count);
+            playerOrder[count] = player.getName();
+            player.setId(count);
             count++;
         }
         enemyCount = 0;
@@ -153,7 +154,9 @@ public class Game
     {
         Player player = getCurrentPlayer();
 //        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
-        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getId()));
+//        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getId()));
+        display.reset(player.getDrawNum(), playerOrder.length, enemies.size());
+        player.onTurnStart();  // sends PlayerStartsTurn message and PlayerDeck message
     }
 
     public void playerPlaysCard(Player player, PlayCardMessage message)
@@ -536,10 +539,15 @@ public class Game
         return true;
     }
 
-    @JsonIgnore
-    public Display getDisplay()
+    public int[] processControllerInput(int buttonCode)
     {
-        return display;
+        return display.controllerInput(buttonCode);
+    }
+
+    @JsonIgnore
+    public int[] getDisplayStates()
+    {
+        return display.toIntegers();
     }
 
     @JsonIgnore

@@ -2,10 +2,7 @@ package com.fengzhixuan.timoc.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.game.enums.PlayerClass;
-import com.fengzhixuan.timoc.websocket.message.game.GameCardPileMessage;
-import com.fengzhixuan.timoc.websocket.message.game.GamePlayerIntMessage;
-import com.fengzhixuan.timoc.websocket.message.game.GamePlayerMessage;
-import com.fengzhixuan.timoc.websocket.message.game.MessageType;
+import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import java.util.*;
@@ -87,12 +84,16 @@ public class Player
         updateBlock();
         replaceAllowance = 2;
 
-        messagingTemplate.convertAndSendToUser(name, "/topic/game/" + code, new GameCardPileMessage(getHandIndeckses()));
+//        messagingTemplate.convertAndSendToUser(name, "/topic/game/" + code, new GameCardPileMessage(getHandIndeckses()));
     }
 
     public void onTurnStart()
     {
-        messagingTemplate.convertAndSend("/topic/game" + code, new GamePlayerMessage(MessageType.PlayerStartsTurn, id));
+        GameMessage[] messages = new GameMessage[3];
+        messages[0] = new GamePlayerMessage(MessageType.PlayerStartsTurn, id);
+        messages[1] = new GameCardPileMessage(getHandIndeckses());
+        messages[2] = new DisplayStateMessage(Game.getGameByCode(code).getDisplayStates());
+        messagingTemplate.convertAndSend("/topic/display/" + code, messages);
     }
 
     // draw certain number of cards, meaning move cards from draw pile to hand pile, if draw pile is empty, shuffle discard pile to draw pile

@@ -12,6 +12,9 @@ let playerMap = {};
 let enemyMap = {};
 let emptyEnemyPosNum = [0, 1, 2, 3];
 let hand = [];
+let currentPlayerId;
+let isAnimating = false;
+let drawCardBuffer = [];
 
 function init() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -38,12 +41,26 @@ function update() {
 
 }
 
+function setDisplayState(states) {
+    for (let i = 0; i < 5; i++) {
+        let bit = Math.pow(2, 7-i);
+        // hand[i].border.visible = (states[0] & bit) === bit;
+        (states[0] & bit) === bit ? hand[i].select() : hand[i].deselect();
+    }
+
+    hand.forEach(function (card) {
+        card.border.visible = false;
+    });
+    if (states[2] < 5) {
+        hand[states[2]].border.visible = true;
+    }
+}
 
 function spawnPlayers(players) {
     for (let i = 0; i < players.length; i++) {
         let playerSprite = new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, i, players[i]);
         let playerStat = new PlayerStats(game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, i, players[i]);
-        playerMap[players[i].id] = {info: players[i], sprite: playerSprite, stat: playerStat};
+        playerMap[players[i].id] = {info: players[i], sprite: playerSprite, stat: playerStat, deck: undefined};
     }
 }
 
@@ -52,6 +69,11 @@ function spawnEnemies(enemies) {
         let enemySprite = new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, emptyEnemyPosNum.shift(), enemies[i]);
         enemyMap[enemies[i].id] = {info: enemies[i], sprite: enemySprite};
     }
+}
+
+function newTurn(id) {
+    currentPlayerId = id;
+    drawCardBuffer = [];
 }
 
 function clearHand() {
@@ -75,6 +97,7 @@ function animateCardUse() {
         card.graphics.visible = false;
         isAnimating = true;
         tween = game.add.tween(card).to( { y: card.y-50 }, 500, Phaser.Easing.Exponential.Out, true);
+        card.tween = tween;
     });
     if (tween) tween.onComplete.add(removeUsedCards);
 }
@@ -104,6 +127,7 @@ function moveCardsToLeft() {
             newHand[count] = card;
             isAnimating = true;
             tween = game.add.tween(card).to( { x: cardXPositions[count]*card.scale.x }, 500, Phaser.Easing.Exponential.Out, true);
+            card.tween = tween;
             card.posIndex = count;
             card.repositionBorder();
             count++;
@@ -121,20 +145,19 @@ function moveCardsToLeft() {
 }
 
 function addNewDrawnCardsToUI() {
-    let tween;
+    let card;
     for (let i = 0; i < drawCardBuffer.length; i++) {
-        let card = new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, hand.length, deck[drawCardBuffer[i]]);
+        card = new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, hand.length, playerMap[currentPlayerId].deck[drawCardBuffer[i]]);
         hand.push(card);
         card.y -= 50;
         isAnimating = true;
-        tween = game.add.tween(card).to( { y: card.y+50 }, 500, Phaser.Easing.Exponential.Out, true);
+        card.tween = game.add.tween(card).to( { y: card.y+50 }, 500, Phaser.Easing.Exponential.Out, true);
     }
-    if (tween) tween.onComplete.add(onComplete);
+    if (card.tween) card.tween.onComplete.add(onComplete);
     drawCardBuffer = [];
 
     function onComplete() {
         isAnimating = false;
-        myPlayer.updateBlock();
     }
 }
 
@@ -196,10 +219,8 @@ function processMessage(message) {
             else
                 spawnEnemies([message.enemy]);
             break;
-        case undefined:
-            if (message >= 0 && message <= 9) {
-
-            }
+        case messageCode.DState:
+            setDisplayState(message.states);
             break;
         case messageCode.PlayerUpdate:
             id = message.player.id;
@@ -257,6 +278,12 @@ function processMessage(message) {
             enemyMap[message.id].sprite.updateHp(enemyMap[message.id].info.hp);
             enemyMap[message.id].sprite.showHpChangeNumber(message.value);
             break;
+        case messageCode.PlayerStartsTurn:
+            newTurn(message.id);
+            break;
+        case messageCode.Hand:
+            setHand(message.pile);
+            break;
     }
 }
 
@@ -311,4 +338,5 @@ let messageCode = {
     PlayerBlockChange: 28,
     PlayerHateChange: 29,
     EnemyHpChange: 30,
+    DState: 31
 };

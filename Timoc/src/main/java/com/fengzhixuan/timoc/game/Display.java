@@ -17,11 +17,11 @@ public class Display
     private boolean[] enemyStates = new boolean[4];
 
     // 0-4:cards;  6-9:players;  10-13:enemies;  15:invisible
-    private byte cursorPosition = 2;
+    private int cursorPosition = 2;
 
-    private byte numOfCards = 0;
-    private byte numOfPlayers = 0;
-    private byte numOfEnemies = 0;
+    private int numOfCards = 0;
+    private int numOfPlayers = 0;
+    private int numOfEnemies = 0;
 
     public Display()
     {
@@ -29,17 +29,20 @@ public class Display
     }
 
     // reset everything
-    public void reset(byte numOfCards, byte numOfPlayers, byte numOfEnemies)
+    public void reset(int numOfCards, int numOfPlayers, int numOfEnemies)
     {
         state = displayState.SelectingCards;
+        this.numOfCards = numOfCards;
+        this.numOfPlayers = numOfPlayers;
+        this.numOfEnemies = numOfEnemies;
         cardStates = new boolean[5];
         playerStates = new boolean[4];
         enemyStates = new boolean[4];
-        cursorPosition = numOfCards > 0 ? (byte)(numOfCards / 2) : 15;
+        cursorPosition = numOfCards > 0 ? (numOfCards / 2) : 15;
     }
 
-    // first byte: card states; second byte: player and enemy states; third byte: cursor position
-    public byte[] controllerInput(int buttonCode)
+    // first int: card states; second int: player and enemy states; third int: cursor position
+    public int[] controllerInput(int buttonCode)
     {
         if (state == displayState.NotControlling) return null;
 
@@ -69,7 +72,7 @@ public class Display
                 else  // selecting targets
                 {
                     if (cursorPosition == 9 || cursorPosition == 13) return null;
-                    cursorPosition--;
+                    cursorPosition++;
                 }
                 break;
             case 3:  // left
@@ -126,18 +129,18 @@ public class Display
                 return null;
         }
 
-        return toBytes();
+        return toIntegers();
     }
 
-    public byte[] toBytes()
+    public int[] toIntegers()
     {
-        byte[] bytes = new byte[3];
-        bytes[0] = (byte)((cardStates[0]?1<<7:0) + (cardStates[1]?1<<6:0) + (cardStates[2]?1<<5:0) +
+        int[] states = new int[3];
+        states[0] = ((cardStates[0]?1<<7:0) + (cardStates[1]?1<<6:0) + (cardStates[2]?1<<5:0) +
                 (cardStates[3]?1<<4:0) + (cardStates[4]?1<<3:0));
-        bytes[1] = (byte)((playerStates[0]?1<<7:0) + (playerStates[1]?1<<6:0) + (playerStates[2]?1<<5:0) +
+        states[1] = ((playerStates[0]?1<<7:0) + (playerStates[1]?1<<6:0) + (playerStates[2]?1<<5:0) +
             (playerStates[3]?1<<4:0) + (enemyStates[0]?1<<3:0) + (enemyStates[1]?1<<2:0) +
             (enemyStates[2]?1<<1:0) + (enemyStates[3]?1:0));
-        bytes[2] = cursorPosition;
-        return bytes;
+        states[2] = cursorPosition;
+        return states;
     }
 }

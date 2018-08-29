@@ -2,8 +2,9 @@
 // -- user code here --
 let suitNames = ['diamond', 'club', 'heart', 'spade'];
 let effectNames = ['attack', 'block', 'heal', 'mana', 'aoe', 'draw', 'revive', 'hate'];
-let cardXPositions = [50, 100, 150, 200, 250];
-let cardYPosition = 170;
+let scale = 2;
+let cardXPositions = [40 * scale, 90 * scale, 140 * scale, 190 * scale, 240 * scale];
+let cardYPosition = 175 * scale;
 
 function cardClicked() {
     this.isSelected = !this.isSelected;
@@ -15,6 +16,19 @@ function cardClicked() {
         // removeSelectedCard(this);
         // this.border.visible = false;
     }
+}
+
+function cardSelect() {
+    this.isSelected = true;
+    if (this.tween) this.tween.stop();
+    game.add.tween(this).to( { y: cardYPosition-30 }, 100, Phaser.Easing.Linear.None, true);
+    // game.add.tween(this.border).to( { y: -30 }, 100, Phaser.Easing.Linear.None, true);
+}
+
+function cardDeselect() {
+    this.isSelected = false;
+    if (this.tween) this.tween.stop();
+    game.add.tween(this).to( { y: cardYPosition }, 100, Phaser.Easing.Linear.None, true);
 }
 
 function cancelCardSelection() {
@@ -100,16 +114,13 @@ function Card(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType,
     let rank = this.game.add.text(4.0, 3.0, convertNumRankToText(cardInfo.rank), rankFontStyle, this);
     rank.scale.setTo(0.5, 0.5);
 
-    this.scale.setTo(2, 2);
-    this.position.setTo(x*this.scale.x, y*this.scale.y);
+    this.border = game.add.graphics(0, 0, this);
+    this.border.lineStyle(2, 0xFFFF00, 1);
+    this.border.drawRoundedRect(-1, -1, this.cardFrame.width + 2, this.cardFrame.height + 2, 5);
+    this.border.visible = false;
 
-    // this.borderWidth = this.cardFrame.width * this.scale.x + 6;
-    // this.borderHeight = this.cardFrame.height * this.scale.y + 6;
-    //
-    // this.border = game.add.graphics();
-    // this.border.lineStyle(4, 0xFFFF00, 1);
-    // this.border.drawRoundedRect(x * this.scale.x - 3, y * this.scale.y - 3, this.borderWidth, this.borderHeight, 10);
-    // this.border.visible = false;
+    this.scale.setTo(scale);
+    this.position.setTo(x, y);
 }
 
 /** @type Phaser.Group */
@@ -120,4 +131,6 @@ Card.prototype.constructor = Card;
 /* --- end generated code --- */
 // -- user code here --
 Card.prototype.cancelSelection = cancelCardSelection;
+Card.prototype.select = cardSelect;
+Card.prototype.deselect = cardDeselect;
 // Card.prototype.repositionBorder = repositionBorder;

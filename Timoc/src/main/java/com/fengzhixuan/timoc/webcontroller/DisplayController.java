@@ -41,6 +41,11 @@ public class DisplayController
             {
                 messages.add(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));
             }
+
+            Player currentPlayer = game.getCurrentPlayer();
+            messages.add(new GamePlayerMessage(MessageType.PlayerStartsTurn, currentPlayer.getId()));
+            messages.add(new GameCardPileMessage(currentPlayer.getHandIndeckses()));
+            messages.add(new DisplayStateMessage(game.getDisplayStates()));
             return messages;
         }
 
