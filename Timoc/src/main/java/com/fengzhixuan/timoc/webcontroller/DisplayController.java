@@ -39,7 +39,7 @@ public class DisplayController
             messages.add(new GameEnemyInfoMessage(MessageType.EnemyInfo, game.getEnemies().values().toArray(new Enemy[0])));
             for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
             {
-                messages.add(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getName(), playerEntry.getValue().getDeck()));
+                messages.add(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));
             }
             return messages;
         }

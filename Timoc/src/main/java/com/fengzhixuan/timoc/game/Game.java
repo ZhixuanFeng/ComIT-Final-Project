@@ -26,7 +26,7 @@ public class Game
     private Display display;  // emulates the state of displays
     private boolean isDisplayConnected = false;  // is there a connected display?
     private RoundPhase phase;
-    private String[] playerOrder;  // stores all players' names, represents the order of players(who's player1, who plays first) in attack phase
+    private String[] playerOrder;  // stores all players' names, represents the order of players(who's player1, who plays first) in attack phase, is also ids of the players
     private int currentPlayer;  // current index to playerOrder array, represents whose turn it is now
     private Map<Integer, Enemy> enemies = new HashMap<>();
     private int enemyCount;  // increments each time an enemy is spawn, then is given to the spawned enemy as id
@@ -50,6 +50,7 @@ public class Game
             playerOnlineStatuses.put(playerEntry.getValue(), false);
             // fill in the playerOrder array with all the names
             playerOrder[count] = playerEntry.getValue().getName();
+            playerEntry.getValue().setId(count);
             count++;
         }
         enemyCount = 0;
@@ -91,7 +92,7 @@ public class Game
         messages.add(new GameEnemyInfoMessage(MessageType.EnemyInfo, enemies.values().toArray(new Enemy[0])));
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
-            messages.add(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getName(), playerEntry.getValue().getDeck()));
+            messages.add(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));
         }
         messagingTemplate.convertAndSend("/topic/display/" + codeString, messages);
 
@@ -152,7 +153,7 @@ public class Game
     {
         Player player = getCurrentPlayer();
 //        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
-        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
+        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getId()));
     }
 
     public void playerPlaysCard(Player player, PlayCardMessage message)
@@ -566,6 +567,12 @@ public class Game
     public Player getCurrentPlayer()
     {
         return players.get(playerOrder[currentPlayer]);
+    }
+
+    @JsonIgnore
+    public Player getPlayerById(int id)
+    {
+        return players.get(playerOrder[id]);
     }
 
     @JsonIgnore

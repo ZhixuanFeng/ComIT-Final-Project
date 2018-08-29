@@ -6,9 +6,9 @@ public class GameDeckMessage extends GamePlayerMessage
 {
     private Card[] cards;
 
-    public GameDeckMessage(int type, String name, Card[] cards)
+    public GameDeckMessage(int type, int id, Card[] cards)
     {
-        super(type, name);
+        super(type, id);
         this.cards = cards;
     }
 

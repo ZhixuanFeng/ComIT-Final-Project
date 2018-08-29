@@ -43,7 +43,7 @@ function spawnPlayers(players) {
     for (let i = 0; i < players.length; i++) {
         let playerSprite = new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, i, players[i]);
         let playerStat = new PlayerStats(game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, i, players[i]);
-        playerMap[players[i].name] = {info: players[i], sprite: playerSprite, stat: playerStat};
+        playerMap[players[i].id] = {info: players[i], sprite: playerSprite, stat: playerStat};
     }
 }
 
@@ -179,7 +179,7 @@ function onMessageReceived(message) {
 }
 
 function processMessage(message) {
-    let name, id;
+    let id;
     switch (message.type) {
         case messageCode.GameInfo:
             gameInfo = message.game;
@@ -202,9 +202,9 @@ function processMessage(message) {
             }
             break;
         case messageCode.PlayerUpdate:
-            name = message.player.name;
-            playerMap[name].info = message.player;
-            playerMap[name].stat.updateStats(message.player);
+            id = message.player.id;
+            playerMap[id].info = message.player;
+            playerMap[id].stat.updateStats(message.player);
             break;
         case messageCode.EnemyUpdate:
             id = message.enemy.id;
@@ -219,13 +219,13 @@ function processMessage(message) {
             message.cards.forEach(function (card) {
                 deck[card.indecks] = card;
             });
-            playerMap[message.name].deck = deck;
+            playerMap[message.id].deck = deck;
             break;
         case messageCode.PlayerUpdateAll:
             message.players.forEach(function (player) {
-                let name = player.name;
-                playerMap[name].info = player;
-                playerMap[name].stat.updateStats(player);
+                let id = player.id;
+                playerMap[id].info = player;
+                playerMap[id].stat.updateStats(player);
             });
             break;
         case messageCode.EnemyUpdateAll:
@@ -236,21 +236,21 @@ function processMessage(message) {
             });
             break;
         case messageCode.PlayerHpChange:
-            playerMap[message.name].info.hp += message.value;
-            playerMap[message.name].stat.updateHp(playerMap[message.name].info.hp);
-            playerMap[message.name].sprite.showHpChangeNumber(message.value);
+            playerMap[message.id].info.hp += message.value;
+            playerMap[message.id].stat.updateHp(playerMap[message.id].info.hp);
+            playerMap[message.id].sprite.showHpChangeNumber(message.value);
             break;
         case messageCode.PlayerManaChange:
-            playerMap[message.name].info.mana += message.value;
-            playerMap[message.name].stat.updateMana(playerMap[message.name].info.mana);
+            playerMap[message.id].info.mana += message.value;
+            playerMap[message.id].stat.updateMana(playerMap[message.id].info.mana);
             break;
         case messageCode.PlayerBlockChange:
-            playerMap[message.name].info.block += message.value;
-            playerMap[message.name].stat.updateBlock(playerMap[message.name].info.block);
+            playerMap[message.id].info.block += message.value;
+            playerMap[message.id].stat.updateBlock(playerMap[message.id].info.block);
             break;
         case messageCode.PlayerHateChange:
-            playerMap[message.name].info.hate += message.value;
-            playerMap[message.name].stat.updateHate(playerMap[message.name].info.hate);
+            playerMap[message.id].info.hate += message.value;
+            playerMap[message.id].stat.updateHate(playerMap[message.id].info.hate);
             break;
         case messageCode.EnemyHpChange:
             enemyMap[message.id].info.hp += message.value;

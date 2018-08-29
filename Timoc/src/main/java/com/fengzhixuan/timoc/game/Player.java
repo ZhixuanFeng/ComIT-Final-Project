@@ -23,6 +23,7 @@ public class Player
     private static Card[] starters;
 
     private String name;
+    private int id = -1;  // player id in this game
     private String code;  // current room/game code
     private PlayerClass playerClass;  // class of the player
     private Map<Integer, Card> deck;  // information of player's deck, key is card indecks, value is the card
@@ -91,7 +92,7 @@ public class Player
 
     public void onTurnStart()
     {
-        messagingTemplate.convertAndSend("/topic/game" + code, new GamePlayerMessage(MessageType.PlayerStartsTurn, name));
+        messagingTemplate.convertAndSend("/topic/game" + code, new GamePlayerMessage(MessageType.PlayerStartsTurn, id));
     }
 
     // draw certain number of cards, meaning move cards from draw pile to hand pile, if draw pile is empty, shuffle discard pile to draw pile
@@ -216,9 +217,9 @@ public class Player
 
         // update front end display
         if (reducedBlock > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerBlockChange, name, -reducedBlock));
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerBlockChange, id, -reducedBlock));
         if (reducedHp > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHpChange, name, -reducedHp));
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHpChange, id, -reducedHp));
     }
 
     // return actual amount healed
@@ -240,7 +241,7 @@ public class Player
 
         // update front end display
         if (healedAmount > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHpChange, name, healedAmount));
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHpChange, id, healedAmount));
 
         return healedAmount;
     }
@@ -264,7 +265,7 @@ public class Player
 
         // update front end display
         if (restoredAmount > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerManaChange, name, restoredAmount));
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerManaChange, id, restoredAmount));
 
         return restoredAmount;
     }
@@ -273,7 +274,7 @@ public class Player
     {
         // no need to check if mana is enough because it's checked as the command comes in
         mana -= amount;
-        messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerManaChange, name, -amount));
+        messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerManaChange, id, -amount));
     }
 
     public void increaseHate(int amount, String source)
@@ -293,7 +294,7 @@ public class Player
 
         // update front end display
         if (amount > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHateChange, name, amount));
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHateChange, id, amount));
     }
 
     // return actual amount healed on revive
@@ -318,6 +319,16 @@ public class Player
     public String getName()
     {
         return name;
+    }
+
+    public int getId()
+    {
+        return id;
+    }
+
+    public void setId(int id)
+    {
+        if (this.id == -1) this.id = id;  // can be set only once
     }
 
     @JsonIgnore

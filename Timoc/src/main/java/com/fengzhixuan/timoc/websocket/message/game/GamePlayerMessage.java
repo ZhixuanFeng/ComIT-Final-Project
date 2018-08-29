@@ -3,16 +3,16 @@ package com.fengzhixuan.timoc.websocket.message.game;
 // for messages about a player that only includes message type and the player's name
 public class GamePlayerMessage extends GameMessage
 {
-    protected String name;
+    protected int id;
 
-    public GamePlayerMessage(int type, String name)
+    public GamePlayerMessage(int type, int id)
     {
         super(type);
-        this.name = name;
+        this.id = id;
     }
 
-    public String getName()
+    public int getName()
     {
-        return name;
+        return id;
     }
 }
