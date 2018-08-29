@@ -116,12 +116,12 @@ function onError(error) {
 function onMessageReceived(message) {
     let messageBody = JSON.parse(message.body);
     switch (messageBody.type) {
-        case 'EnterSuccessful':
+        case 2:  // EnterSuccessful
             if (!isGameStarted) {
                 instruction.visible = true;
             }
             break;
-        case 'GameStart':
+        case 3:  // GameStart
             isGameStarted = true;
             instruction.visible = false;
             btnGroup.visible = true;

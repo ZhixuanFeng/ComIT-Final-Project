@@ -10,7 +10,7 @@ public class GameEnemyPlayCardMessage extends GameMessage
 
     public GameEnemyPlayCardMessage(int id, Card card, String target)
     {
-        super(MessageType.EnemyPlayCard);
+        super(MessageType.EnemyPlaysCard);
         this.id = id;
         this.card = card;
         this.target = target;

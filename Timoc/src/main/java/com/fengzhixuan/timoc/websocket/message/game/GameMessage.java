@@ -3,14 +3,14 @@ package com.fengzhixuan.timoc.websocket.message.game;
 // For messages that do not have any attributes except type
 public class GameMessage
 {
-    protected MessageType type;
+    protected int type;
 
-    public GameMessage(MessageType type)
+    public GameMessage(int type)
     {
         this.type = type;
     }
 
-    public MessageType getType()
+    public int getType()
     {
         return type;
     }

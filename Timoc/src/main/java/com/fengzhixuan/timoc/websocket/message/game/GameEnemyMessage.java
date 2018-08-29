@@ -6,7 +6,7 @@ public class GameEnemyMessage extends GameMessage
 {
     protected Enemy enemy;
 
-    public GameEnemyMessage(MessageType type, Enemy enemy)
+    public GameEnemyMessage(int type, Enemy enemy)
     {
         super(type);
         this.enemy = enemy;

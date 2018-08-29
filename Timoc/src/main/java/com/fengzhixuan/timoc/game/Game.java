@@ -107,6 +107,7 @@ public class Game
         phase = RoundPhase.RoundStart;
         roundNum++;
 //        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.RoundStart));
+        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameMessage(MessageType.RoundStart));
 
         // deal with all players
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
@@ -134,6 +135,7 @@ public class Game
             enemies.put(newEnemy.getId(), newEnemy);
             enemyCount++;
 //            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.NewEnemy, newEnemy));
+            messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameEnemyMessage(MessageType.EnemyInfo, newEnemy));
         }
     }
 
@@ -150,6 +152,7 @@ public class Game
     {
         Player player = getCurrentPlayer();
 //        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
+        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
     }
 
     public void playerPlaysCard(Player player, PlayCardMessage message)
@@ -405,6 +408,7 @@ public class Game
     {
         currentPlayer++;
 //        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.PlayerEndsTurn));
+        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameMessage(MessageType.PlayerEndsTurn));
 
         // if all players have finished their turns
         if (currentPlayer == playerOrder.length)

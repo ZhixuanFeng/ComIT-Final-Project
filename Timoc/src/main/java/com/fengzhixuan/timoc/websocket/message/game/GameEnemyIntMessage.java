@@ -6,7 +6,7 @@ public class GameEnemyIntMessage extends GameMessage
     private int id;
     private int value;
 
-    public GameEnemyIntMessage(MessageType type, int id, int value)
+    public GameEnemyIntMessage(int type, int id, int value)
     {
         super(type);
         this.id = id;

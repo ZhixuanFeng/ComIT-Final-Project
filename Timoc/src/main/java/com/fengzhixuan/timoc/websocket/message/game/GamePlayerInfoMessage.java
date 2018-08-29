@@ -7,7 +7,7 @@ public class GamePlayerInfoMessage extends GameMessage
 {
     private Player[] players;
 
-    public GamePlayerInfoMessage(MessageType type, Player[] players)
+    public GamePlayerInfoMessage(int type, Player[] players)
     {
         super(type);
         this.players = players;

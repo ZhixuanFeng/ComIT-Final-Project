@@ -181,16 +181,16 @@ function onMessageReceived(message) {
 function processMessage(message) {
     let name, id;
     switch (message.type) {
-        case 'GameInfo':
+        case messageCode.GameInfo:
             gameInfo = message.game;
             break;
-        case 'PlayerInfo':
+        case messageCode.PlayerInfo:
             if (typeof(message.players) !== 'undefined')
                 spawnPlayers(message.players);
             else
                 spawnPlayers([message.player]);
             break;
-        case 'EnemyInfo':
+        case messageCode.EnemyInfo:
             if (typeof(message.enemies) !== 'undefined')
                 spawnEnemies(message.enemies);
             else
@@ -201,17 +201,17 @@ function processMessage(message) {
 
             }
             break;
-        case 'PlayerUpdate':
+        case messageCode.PlayerUpdate:
             name = message.player.name;
             playerMap[name].info = message.player;
             playerMap[name].stat.updateStats(message.player);
             break;
-        case 'EnemyUpdate':
+        case messageCode.EnemyUpdate:
             id = message.enemy.id;
             enemyMap[id].info = message.enemy;
             enemyMap[id].sprite.updateEnemy(message.enemy);
             break;
-        case 'PlayerDeck':
+        case messageCode.PlayerDeck:
             let deck = [];
             for (let i = 0; i < 52; i++) {
                 deck[i] = starter[i];
@@ -221,38 +221,38 @@ function processMessage(message) {
             });
             playerMap[message.name].deck = deck;
             break;
-        case 'PlayerUpdateAll':
+        case messageCode.PlayerUpdateAll:
             message.players.forEach(function (player) {
                 let name = player.name;
                 playerMap[name].info = player;
                 playerMap[name].stat.updateStats(player);
             });
             break;
-        case 'EnemyUpdateAll':
+        case messageCode.EnemyUpdateAll:
             message.enemies.forEach(function (enemy) {
                 let id = enemy.id;
                 enemyMap[id].info = enemy;
                 enemyMap[id].sprite.updateEnemy(enemy);
             });
             break;
-        case 'PlayerHpChange':
+        case messageCode.PlayerHpChange:
             playerMap[message.name].info.hp += message.value;
             playerMap[message.name].stat.updateHp(playerMap[message.name].info.hp);
             playerMap[message.name].sprite.showHpChangeNumber(message.value);
             break;
-        case 'PlayerManaChange':
+        case messageCode.PlayerManaChange:
             playerMap[message.name].info.mana += message.value;
             playerMap[message.name].stat.updateMana(playerMap[message.name].info.mana);
             break;
-        case 'PlayerBlockChange':
+        case messageCode.PlayerBlockChange:
             playerMap[message.name].info.block += message.value;
             playerMap[message.name].stat.updateBlock(playerMap[message.name].info.block);
             break;
-        case 'PlayerHateChange':
+        case messageCode.PlayerHateChange:
             playerMap[message.name].info.hate += message.value;
             playerMap[message.name].stat.updateHate(playerMap[message.name].info.hate);
             break;
-        case 'EnemyHpChange':
+        case messageCode.EnemyHpChange:
             enemyMap[message.id].info.hp += message.value;
             enemyMap[message.id].sprite.updateHp(enemyMap[message.id].info.hp);
             enemyMap[message.id].sprite.showHpChangeNumber(message.value);
@@ -278,3 +278,37 @@ function getUrlParameter(sParam) {
         }
     }
 }
+
+let messageCode = {
+    Empty: 0,
+    Error: 1,
+    EnterSuccessful: 2,
+    GameStart: 3,
+    RoundStart: 4,
+    AttackPhase: 5,
+    DefendPhase: 6,
+    GameInfo: 7,
+    PlayerInfo: 8,
+    EnemyInfo: 9,
+    PlayerDeck: 10,
+    Hand: 11,
+    NewEnemy: 12,
+    RemoveEnemy: 13,
+    EnemyDrawsCard: 14,
+    EnemyPlaysCard: 15,
+    EnemyUpdate: 16,
+    EnemyUpdateAll: 17,
+    PlayerStartsTurn: 18,
+    PlayerEndsTurn: 19,
+    PlayerUpdate: 20,
+    PlayerUpdateAll: 21,
+    PlayerRevive: 22,
+    PlayerDrawCard: 23,
+    PlayCardSuccessful: 24,
+    DiscardCardSuccessful: 25,
+    PlayerHpChange: 26,
+    PlayerManaChange: 27,
+    PlayerBlockChange: 28,
+    PlayerHateChange: 29,
+    EnemyHpChange: 30,
+};

@@ -76,7 +76,7 @@ public class Enemy
         // draw
         drawCards(drawNum);
 
-        messagingTemplate.convertAndSend("/topic/game/" + code, new GameEnemyCardMessage(MessageType.EnemyDrawCard, id, getHand()));
+        messagingTemplate.convertAndSend("/topic/game/" + code, new GameEnemyCardMessage(MessageType.EnemyDrawsCard, id, getHand()));
     }
 
     public List<GameMessage> onTurnStart()

@@ -100,7 +100,7 @@ public class GameController
 
         if (!message.isValid(game, player))
         {
-            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + code, new GameMessage(MessageType.PlayCardFailed));
+            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + code, new GameMessage(MessageType.Error));
             return;
         }
 
@@ -123,7 +123,7 @@ public class GameController
 
         if (!message.isValid(game, player))
         {
-            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + code, new GameMessage(MessageType.DiscardCardFailed));
+            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + code, new GameMessage(MessageType.Error));
             return;
         }
 

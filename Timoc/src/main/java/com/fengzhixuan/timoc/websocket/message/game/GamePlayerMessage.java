@@ -5,7 +5,7 @@ public class GamePlayerMessage extends GameMessage
 {
     protected String name;
 
-    public GamePlayerMessage(MessageType type, String name)
+    public GamePlayerMessage(int type, String name)
     {
         super(type);
         this.name = name;

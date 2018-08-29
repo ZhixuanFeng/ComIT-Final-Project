@@ -5,7 +5,7 @@ public class GamePlayerIntMessage extends GamePlayerMessage
 {
     private int value;
 
-    public GamePlayerIntMessage(MessageType type, String name, int value)
+    public GamePlayerIntMessage(int type, String name, int value)
     {
         super(type, name);
         this.value = value;

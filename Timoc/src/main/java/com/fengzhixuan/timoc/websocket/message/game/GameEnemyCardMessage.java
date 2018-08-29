@@ -7,7 +7,7 @@ public class GameEnemyCardMessage extends GameMessage
     protected int id;
     protected Card[] cards;
 
-    public GameEnemyCardMessage(MessageType type, int id, Card[] cards)
+    public GameEnemyCardMessage(int type, int id, Card[] cards)
     {
         super(type);
         this.id = id;
