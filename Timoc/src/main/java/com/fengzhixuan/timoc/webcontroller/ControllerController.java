@@ -64,6 +64,6 @@ public class ControllerController
         if (game == null) { return null; }
 
         int[] states = game.processControllerInput(buttonCode);
-        return new DisplayStateMessage(states);
+        return states == null ? null : new DisplayStateMessage(states);
     }
 }

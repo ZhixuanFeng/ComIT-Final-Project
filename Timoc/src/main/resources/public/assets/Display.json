@@ -52,10 +52,15 @@
       "textureURL": "assets/atlas/card.png",
       "atlasURL": "assets/atlas/card.json",
       "format": "TEXTURE_ATLAS_JSON_HASH"
+    },
+    {
+      "type": "script",
+      "key": "Summary",
+      "url": "canvas/displayprefabs/Summary.js"
     }
   ],
   "meta": {
-    "generated": "1535473273990",
+    "generated": "1535583749335",
     "app": "Phaser Editor",
     "url": "http://phasereditor.boniatillo.com",
     "version": "1.0",

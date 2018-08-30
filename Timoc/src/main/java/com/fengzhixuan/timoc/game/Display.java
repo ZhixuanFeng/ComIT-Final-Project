@@ -10,6 +10,7 @@ public class Display
     }
 
     private displayState state;
+    private Game game;
 
     // true: selected; false: not selected
     private boolean[] cardStates = new boolean[5];
@@ -19,12 +20,16 @@ public class Display
     // 0-4:cards;  6-9:players;  10-13:enemies;  15:invisible
     private int cursorPosition = 2;
 
-    private int numOfCards = 0;
-    private int numOfPlayers = 0;
-    private int numOfEnemies = 0;
+    private int numOfCards = 0;  // number of cards in hand
+    private int numOfCardsSelected = 0;  // number of cards selected
+    private int numOfPlayers = 0;  // number of players displayed
+    private int numOfEnemies = 0;  // number of enemies displayed
 
-    public Display()
+    private TotalSelectedEffects totalSelectedEffects;
+
+    public Display(Game game)
     {
+        this.game = game;
         state = displayState.SelectingCards;
     }
 
@@ -33,6 +38,7 @@ public class Display
     {
         state = displayState.SelectingCards;
         this.numOfCards = numOfCards;
+        numOfCardsSelected = 0;
         this.numOfPlayers = numOfPlayers;
         this.numOfEnemies = numOfEnemies;
         cardStates = new boolean[5];
@@ -56,6 +62,7 @@ public class Display
                 {
                     if (cardStates[cursorPosition]) return null;
                     cardStates[cursorPosition] = true;
+                    numOfCardsSelected++;
                 }
                 else  // selecting targets
                 {
@@ -68,6 +75,7 @@ public class Display
                 {
                     if (!cardStates[cursorPosition]) return null;
                     cardStates[cursorPosition] = false;
+                    numOfCardsSelected--;
                 }
                 else  // selecting targets
                 {
@@ -106,13 +114,35 @@ public class Display
             case 5:  // play
                 if (state == displayState.SelectingCards)
                 {
-                    // TODO: check if player needs to select target
-                    state = displayState.SelectingTargets;
-                    cursorPosition = 5;
+                    Player currentPlayer = game.getCurrentPlayer();
+                    Card[] hand = currentPlayer.getHand();
+                    Card[] selectedCards = new Card[numOfCardsSelected];
+
+                    // get information of selected cards from player
+                    int count = 0;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        if (cardStates[i])
+                        {
+                            selectedCards[count] = hand[i];
+                            count++;
+                        }
+                    }
+
+                    totalSelectedEffects = new TotalSelectedEffects(selectedCards);
+                    if (totalSelectedEffects.doNeedToSelectTarget())
+                    {
+                        state = displayState.SelectingTargets;
+                        cursorPosition = 6;
+                    }
+                    else
+                    {
+                        // play cards
+                    }
                 }
                 else  // selecting targets
                 {
-
+                    // play cards
                 }
                 break;
             case 6:  // cancel
@@ -125,7 +155,7 @@ public class Display
                 // TODO: do discard
                 break;
             case 0:  // next
-
+                game.finishPlayerTurn();
                 return null;
         }
 
@@ -136,7 +166,7 @@ public class Display
     {
         int[] states = new int[3];
         states[0] = ((cardStates[0]?1<<7:0) + (cardStates[1]?1<<6:0) + (cardStates[2]?1<<5:0) +
-                (cardStates[3]?1<<4:0) + (cardStates[4]?1<<3:0));
+                (cardStates[3]?1<<4:0) + (cardStates[4]?1<<3:0)) + numOfCardsSelected;
         states[1] = ((playerStates[0]?1<<7:0) + (playerStates[1]?1<<6:0) + (playerStates[2]?1<<5:0) +
             (playerStates[3]?1<<4:0) + (enemyStates[0]?1<<3:0) + (enemyStates[1]?1<<2:0) +
             (enemyStates[2]?1<<1:0) + (enemyStates[3]?1:0));

@@ -19,14 +19,17 @@ function cardClicked() {
 }
 
 function cardSelect() {
+    if (this.isSelected) return;
     this.isSelected = true;
+    addSelectedCard(this);
     if (this.tween) this.tween.stop();
     game.add.tween(this).to( { y: cardYPosition-30 }, 100, Phaser.Easing.Linear.None, true);
-    // game.add.tween(this.border).to( { y: -30 }, 100, Phaser.Easing.Linear.None, true);
 }
 
 function cardDeselect() {
+    if (!this.isSelected) return;
     this.isSelected = false;
+    removeSelectedCard(this);
     if (this.tween) this.tween.stop();
     game.add.tween(this).to( { y: cardYPosition }, 100, Phaser.Easing.Linear.None, true);
 }
@@ -57,14 +60,6 @@ function convertNumRankToText(num) {
             return num;
     }
 }
-
-// function repositionBorder() {
-//     this.border.destroy(true);
-//     this.border = game.add.graphics();
-//     this.border.lineStyle(4, 0xFFFF00, 1);
-//     this.border.drawRoundedRect(cardXPositions[this.posIndex] * this.scale.x - 3, cardYPosition * this.scale.y - 3, this.borderWidth, this.borderHeight, 10);
-//     this.border.visible = false;
-// }
 
 /* --- start generated code --- */
 
@@ -133,4 +128,3 @@ Card.prototype.constructor = Card;
 Card.prototype.cancelSelection = cancelCardSelection;
 Card.prototype.select = cardSelect;
 Card.prototype.deselect = cardDeselect;
-// Card.prototype.repositionBorder = repositionBorder;

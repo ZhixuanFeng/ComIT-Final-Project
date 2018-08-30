@@ -80,6 +80,7 @@ public class Player
 
         // draw
         drawCards(drawNum);
+        sortHand();
 
         updateBlock();
         replaceAllowance = 2;
@@ -117,7 +118,30 @@ public class Player
             handPile.add(indecks);
             cardsDrawn[i] = indecks;
         }
+
         return cardsDrawn;
+    }
+
+    private void sortHand()
+    {
+        // sort cards in hand
+        if (handPile.size() > 1)
+        {
+            for (int i = 0; i < handPile.size(); i++)
+            {
+                for (int j = 1; j < handPile.size() - i; j++)
+                {
+                    int r1 = Card.indecksToRank(handPile.get(j-1));
+                    int r2 = Card.indecksToRank(handPile.get(j));
+                    if (r1 > r2 || r1 == r2 && Card.indecksToSuit(handPile.get(j-1)) > Card.indecksToSuit(handPile.get(j)))
+                    {
+                        int c = handPile.get(j-1);
+                        handPile.set(j - 1, handPile.get(j));
+                        handPile.set(j, c);
+                    }
+                }
+            }
+        }
     }
 
     // move a single card from hand pile to discard pile
@@ -145,7 +169,7 @@ public class Player
         {
             hand[i] = getCardByIndecks(handPile.get(i));
         }
-        return Hand.sortCards(hand);
+        return hand;
     }
 
     // returns only the indeckses of the cards in hand pile, sorted

@@ -39,7 +39,7 @@ public class Game
     {
         this.code = code;
         codeString = GameCodeGenerator.intToString(code);
-        display = new Display();
+        display = new Display(this);
         this.players = players;
 
         playerOrder = new String[players.size()];
