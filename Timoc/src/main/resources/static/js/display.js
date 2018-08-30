@@ -44,15 +44,24 @@ function update() {
 function setDisplayState(states) {
     for (let i = 0; i < 5; i++) {
         let bit = Math.pow(2, 7-i);
-        // hand[i].border.visible = (states[0] & bit) === bit;
-        (states[0] & bit) === bit ? hand[i].select() : hand[i].deselect();
+        (states & bit) === bit ? hand[i].select() : hand[i].deselect();
     }
 
     hand.forEach(function (card) {
         card.border.visible = false;
     });
-    if (states[2] < 5) {
-        hand[states[2]].border.visible = true;
+
+    let cursorPosition = states >> 8;
+    if (cursorPosition < 5) {
+        hand[cursorPosition].border.visible = true;
+    }
+    else if (cursorPosition > 5 && cursorPosition < 14) {
+        for (let player in playerMap) {
+            playerMap[player].sprite.border.visible = playerMap[player].sprite.posNum === cursorPosition - 6;
+        }
+        for (let enemy in enemyMap) {
+            enemyMap[enemy].sprite.border.visible = enemyMap[enemy].sprite.posNum === cursorPosition - 10;
+        }
     }
 }
 

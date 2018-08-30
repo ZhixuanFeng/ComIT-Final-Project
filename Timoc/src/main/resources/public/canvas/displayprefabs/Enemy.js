@@ -159,8 +159,12 @@ function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType
     this.hpBarFill.cropEnabled = true;
     this.hpBarFill.crop(this.widthHp);
 
-    this.scale.setTo(2, 2);
+    this.border = game.add.graphics(0, 0, this);
+    this.border.lineStyle(2, 0xFFFF00, 1);
+    this.border.drawRoundedRect(-1, -1, this.sprite.width + 2, this.sprite.height + 2, 5);
+    this.border.visible = false;
 
+    this.scale.setTo(2, 2);
     this.position.setTo(x * this.scale.x, y * this.scale.y);
 
     this.updateHp(enemyInfo.hp);

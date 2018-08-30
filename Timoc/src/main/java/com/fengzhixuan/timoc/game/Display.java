@@ -42,13 +42,11 @@ public class Display
         this.numOfPlayers = numOfPlayers;
         this.numOfEnemies = numOfEnemies;
         cardStates = new boolean[5];
-        playerStates = new boolean[4];
-        enemyStates = new boolean[4];
         cursorPosition = numOfCards > 0 ? (numOfCards / 2) : 15;
     }
 
     // first int: card states; second int: player and enemy states; third int: cursor position
-    public int[] controllerInput(int buttonCode)
+    public Integer controllerInput(int buttonCode)
     {
         if (state == displayState.NotControlling) return null;
 
@@ -112,6 +110,7 @@ public class Display
                 }
                 break;
             case 5:  // play
+                if (numOfCardsSelected == 0) return null;
                 if (state == displayState.SelectingCards)
                 {
                     Player currentPlayer = game.getCurrentPlayer();
@@ -149,9 +148,11 @@ public class Display
                 reset(numOfCards, numOfPlayers, numOfEnemies);
                 break;
             case 7:  // replace
+                if (numOfCardsSelected == 0) return null;
                 // TODO: check if player can still replace and do replace
                 break;
             case 8:  // discard
+                if (numOfCardsSelected == 0) return null;
                 // TODO: do discard
                 break;
             case 0:  // next
@@ -159,18 +160,19 @@ public class Display
                 return null;
         }
 
-        return toIntegers();
+        return toInteger();
     }
 
-    public int[] toIntegers()
+    public int toInteger()
     {
-        int[] states = new int[3];
-        states[0] = ((cardStates[0]?1<<7:0) + (cardStates[1]?1<<6:0) + (cardStates[2]?1<<5:0) +
-                (cardStates[3]?1<<4:0) + (cardStates[4]?1<<3:0)) + numOfCardsSelected;
-        states[1] = ((playerStates[0]?1<<7:0) + (playerStates[1]?1<<6:0) + (playerStates[2]?1<<5:0) +
-            (playerStates[3]?1<<4:0) + (enemyStates[0]?1<<3:0) + (enemyStates[1]?1<<2:0) +
-            (enemyStates[2]?1<<1:0) + (enemyStates[3]?1:0));
-        states[2] = cursorPosition;
+        int states = 0;
+        states = (cursorPosition << 8) +
+                (cardStates[0]?1<<7:0) +
+                (cardStates[1]?1<<6:0) +
+                (cardStates[2]?1<<5:0) +
+                (cardStates[3]?1<<4:0) +
+                (cardStates[4]?1<<3:0) +
+                numOfCardsSelected;
         return states;
     }
 }

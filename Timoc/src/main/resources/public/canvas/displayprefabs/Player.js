@@ -98,6 +98,7 @@ function Player(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyTyp
 
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
 
+	this.posNum = posNum;
     // this.info = playerInfo;
 
     this.playerClass = playerInfo.playerClass.toLowerCase();
@@ -110,8 +111,12 @@ function Player(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyTyp
 	_nametext.anchor.setTo(0.5, 0.0);
 	_nametext.scale.setTo(0.3, 0.3);
 
-    this.scale.setTo(2, 2);
+    this.border = game.add.graphics(0, 0, this);
+    this.border.lineStyle(2, 0xFFFF00, 1);
+    this.border.drawRoundedRect(-1, -1, this.sprite.width + 2, this.sprite.height + 2, 5);
+    this.border.visible = false;
 
+    this.scale.setTo(2, 2);
     this.position.setTo(playerPositions[posNum].x * this.scale.x, playerPositions[posNum].y * this.scale.y);
 
     this.effectNumbers = [];

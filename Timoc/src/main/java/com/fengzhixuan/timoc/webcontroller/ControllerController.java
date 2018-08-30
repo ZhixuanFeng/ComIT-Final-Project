@@ -63,7 +63,7 @@ public class ControllerController
         Game game = Game.getGameByCode(code);
         if (game == null) { return null; }
 
-        int[] states = game.processControllerInput(buttonCode);
+        Integer states = game.processControllerInput(buttonCode);
         return states == null ? null : new DisplayStateMessage(states);
     }
 }

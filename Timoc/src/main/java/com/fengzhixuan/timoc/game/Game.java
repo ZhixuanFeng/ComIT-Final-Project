@@ -539,15 +539,15 @@ public class Game
         return true;
     }
 
-    public int[] processControllerInput(int buttonCode)
+    public Integer processControllerInput(int buttonCode)
     {
         return display.controllerInput(buttonCode);
     }
 
     @JsonIgnore
-    public int[] getDisplayStates()
+    public Integer getDisplayStates()
     {
-        return display.toIntegers();
+        return display.toInteger();
     }
 
     @JsonIgnore
