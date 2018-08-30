@@ -85,7 +85,6 @@ public class Player
         updateBlock();
         replaceAllowance = 2;
 
-//        messagingTemplate.convertAndSendToUser(name, "/topic/game/" + code, new GameCardPileMessage(getHandIndeckses()));
     }
 
     public void onTurnStart()
@@ -119,6 +118,8 @@ public class Player
             cardsDrawn[i] = indecks;
         }
 
+        // update front end
+        messagingTemplate.convertAndSend("/topic/display/" + code, new GameIntMessage(MessageType.PlayerDrawCard, cardsDrawn.length));
         return cardsDrawn;
     }
 

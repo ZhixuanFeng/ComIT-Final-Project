@@ -293,6 +293,10 @@ function processMessage(message) {
         case messageCode.Hand:
             setHand(message.pile);
             break;
+        case messageCode.PlayerDrawCard:
+            drawCardBuffer.push.apply(drawCardBuffer, message.cards);
+            if (!isAnimating) addNewDrawnCardsToUI();
+            break;
     }
 }
 

@@ -45,6 +45,11 @@ public class Display
         cursorPosition = numOfCards > 0 ? (numOfCards / 2) : 15;
     }
 
+    public void reset(int numOfCards)
+    {
+        reset(numOfCards, numOfPlayers, numOfEnemies);
+    }
+
     // first int: card states; second int: player and enemy states; third int: cursor position
     public Integer controllerInput(int buttonCode)
     {
@@ -111,24 +116,13 @@ public class Display
                 break;
             case 5:  // play
                 if (numOfCardsSelected == 0) return null;
+
                 if (state == displayState.SelectingCards)
                 {
                     Player currentPlayer = game.getCurrentPlayer();
-                    Card[] hand = currentPlayer.getHand();
-                    Card[] selectedCards = new Card[numOfCardsSelected];
 
-                    // get information of selected cards from player
-                    int count = 0;
-                    for (int i = 0; i < 5; i++)
-                    {
-                        if (cardStates[i])
-                        {
-                            selectedCards[count] = hand[i];
-                            count++;
-                        }
-                    }
-
-                    totalSelectedEffects = new TotalSelectedEffects(selectedCards);
+                    // check if player should select target
+                    totalSelectedEffects = new TotalSelectedEffects(getSelectedCardsFromPlayer(currentPlayer));
                     if (totalSelectedEffects.doNeedToSelectTarget())
                     {
                         state = displayState.SelectingTargets;
@@ -145,16 +139,31 @@ public class Display
                 }
                 break;
             case 6:  // cancel
-                reset(numOfCards, numOfPlayers, numOfEnemies);
+                if (state == displayState.SelectingCards)
+                {
+                    reset(numOfCards, numOfPlayers, numOfEnemies);
+                }
+                else  // selecting targets
+                {
+                    state = displayState.SelectingCards;
+                    cursorPosition = numOfCards > 0 ? (numOfCards / 2) : 15;
+                }
                 break;
             case 7:  // replace
                 if (numOfCardsSelected == 0) return null;
-                // TODO: check if player can still replace and do replace
-                break;
+                // check if player can still replace and do replace
+                Player currentPlayer = game.getCurrentPlayer();
+                if (numOfCardsSelected > currentPlayer.getReplaceAllowance()) return null;
+
+                Card[] selectedCard = getSelectedCardsFromPlayer(currentPlayer);
+                game.playerReplacesCards(currentPlayer, selectedCard);  // sends display status
+                return null;
             case 8:  // discard
                 if (numOfCardsSelected == 0) return null;
-                // TODO: do discard
-                break;
+                currentPlayer = game.getCurrentPlayer();
+                selectedCard = getSelectedCardsFromPlayer(currentPlayer);
+                game.playerDiscardsCards(currentPlayer, selectedCard);  // sends display status
+                return null;
             case 0:  // next
                 game.finishPlayerTurn();
                 return null;
@@ -174,5 +183,23 @@ public class Display
                 (cardStates[4]?1<<3:0) +
                 numOfCardsSelected;
         return states;
+    }
+
+    // get information of selected cards from player
+    private Card[] getSelectedCardsFromPlayer(Player player)
+    {
+        Card[] hand = player.getHand();
+        Card[] selectedCards = new Card[numOfCardsSelected];
+
+        int count = 0;
+        for (int i = 0; i < 5; i++)
+        {
+            if (cardStates[i])
+            {
+                selectedCards[count] = hand[i];
+                count++;
+            }
+        }
+        return selectedCards;
     }
 }

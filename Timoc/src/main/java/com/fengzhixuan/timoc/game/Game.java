@@ -97,9 +97,6 @@ public class Game
         }
         messagingTemplate.convertAndSend("/topic/display/" + codeString, messages);
 
-//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.GameStart));
-//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
-
         // start first round
         roundStartPhase();
     }
@@ -108,7 +105,6 @@ public class Game
     {
         phase = RoundPhase.RoundStart;
         roundNum++;
-//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.RoundStart));
         messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameMessage(MessageType.RoundStart));
 
         // deal with all players
@@ -136,7 +132,6 @@ public class Game
             Enemy newEnemy = new Orc(this, codeString, enemyCount, messagingTemplate);
             enemies.put(newEnemy.getId(), newEnemy);
             enemyCount++;
-//            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.NewEnemy, newEnemy));
             messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameEnemyMessage(MessageType.EnemyInfo, newEnemy));
         }
     }
@@ -145,7 +140,6 @@ public class Game
     private void startAttackPhase()
     {
         phase = RoundPhase.Attack;
-//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.AttackPhase));
         currentPlayer = 0;
         startPlayerTurn();
     }
@@ -153,8 +147,6 @@ public class Game
     private void startPlayerTurn()
     {
         Player player = getCurrentPlayer();
-//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getName()));
-//        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GamePlayerMessage(MessageType.PlayerStartsTurn, player.getId()));
         display.reset(player.getDrawNum(), playerOrder.length, enemies.size());
         player.onTurnStart();  // sends PlayerStartsTurn message and PlayerDeck message
     }
@@ -214,7 +206,6 @@ public class Game
                 // update front end
                 if (healed > 0 || manaRestored > 0)
                 {
-//                    messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
                 }
 
                 break;
@@ -240,7 +231,6 @@ public class Game
                 // update front end
                 if (attack > 0)
                 {
-//                    messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
                 }
                 break;
             case allPlayers:
@@ -273,7 +263,6 @@ public class Game
                     // update front end
                     if (healed > 0 || manaRestored > 0)
                     {
-//                        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(targetPlayer));
                     }
                 }
 
@@ -304,7 +293,6 @@ public class Game
                     // update front end
                     if (attack > 0)
                     {
-//                        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameEnemyMessage(MessageType.EnemyUpdate, targetEnemy));
                     }
                 }
 
@@ -330,9 +318,7 @@ public class Game
         }
         if (draw > 0)
         {
-            int[] cardsDrawn = player.drawCards(draw);
-//            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
-            messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameIntMessage(MessageType.PlayerDrawCard, cardsDrawn.length));
+            player.drawCards(draw);
         }
 
         // generates hate
@@ -346,72 +332,42 @@ public class Game
         }
 
         player.updateBlock();
-
-        // update the current player
-//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
     }
 
-    public void playerDiscardsCard(Player player, DiscardCardMessage message)
+    public void playerDiscardsCards(Player player, Card[] cards)
     {
-        int[] indecks = message.getCards();
-        Card[] cards = new Card[indecks.length];
-        for (int i = 0; i < cards.length; i++)
-        {
-            // get cards
-            cards[i] = player.getCardByIndecks(indecks[i]);
+        cards = Hand.sortCards(cards);
 
-            // discard cards from hand
-            player.discardCard(indecks[i]);
+        // find how much mana can be generated
+        int manaGeneration = 0;
+        for (Card card : cards)
+        {
+            manaGeneration += card.getRank();
         }
 
-        player.updateBlock();
+        // restore mana and record amount restored
+        int manaRestored = player.restoreMana(manaGeneration);
+        player.recordManaRestored(manaRestored);
 
-        // if discarding more than replaceAllowance, replace the cards with lowest rank and restore mana based on the cards with highest rank
-        if (cards.length > player.getReplaceAllowance())
-        {
-            cards = Hand.sortCards(cards);
+        // update front end
+        display.reset(player.getHandPile().size());
+        sendDisplayStates();
+    }
 
-            // find how much mana can be generated
-            // cards with index<replaceAllowance are the cards with lowest ranks and to be replaced
-            int manaGeneration = 0;
-            for (int i = player.getReplaceAllowance(); i < cards.length; i++)
-            {
-                manaGeneration += cards[i].getRank();
-            }
+    public void playerReplacesCards(Player player, Card[] cards)
+    {
+        // replace with new cards
+        player.drawCards(cards.length);
+        player.setReplaceAllowance(player.getReplaceAllowance() - cards.length);
 
-            // restore mana and record amount restored
-            int manaRestored = player.restoreMana(manaGeneration);
-            player.recordManaRestored(manaRestored);
-
-            // update front end
-            if (manaRestored > 0)
-            {
-//                messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(player));
-            }
-
-            // replace with new cards
-            if (player.getReplaceAllowance() > 0)
-            {
-                int[] cardsDrawn = player.drawCards(player.getReplaceAllowance());
-//                messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
-                messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameIntMessage(MessageType.PlayerDrawCard, cardsDrawn.length));
-                player.setReplaceAllowance(0);
-            }
-        }
-        else
-        {
-            // replace with new cards
-            int[] cardsDrawn = player.drawCards(cards.length);
-//            messagingTemplate.convertAndSendToUser(player.getName(), "/topic/game/" + codeString, new GamePlayerDrawCardMessage(cardsDrawn));
-            messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameIntMessage(MessageType.PlayerDrawCard, cardsDrawn.length));
-            player.setReplaceAllowance(player.getReplaceAllowance() - cards.length);
-        }
+        // update front end
+        display.reset(player.getHandPile().size());
+        sendDisplayStates();
     }
 
     public void finishPlayerTurn()
     {
         currentPlayer++;
-//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.PlayerEndsTurn));
         messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameMessage(MessageType.PlayerEndsTurn));
 
         // if all players have finished their turns
@@ -429,7 +385,6 @@ public class Game
     private void startDefendPhase()
     {
         phase = RoundPhase.Defend;
-//        messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameMessage(MessageType.DefendPhase));
 
         List<GameMessage> messages = new ArrayList<>();
         for (Map.Entry<Integer, Enemy> enemyEntry : enemies.entrySet())
@@ -440,7 +395,6 @@ public class Game
             }
         }
         // combine all enemy actions into a single message and send
-//        messagingTemplate.convertAndSend("/topic/game/" + codeString, messages);
 
         roundEndPhase();
     }
@@ -451,10 +405,14 @@ public class Game
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             // make sure front end is in sync
-//            messagingTemplate.convertAndSend("/topic/game/" + codeString, new GameUpdatePlayerMessage(playerEntry.getValue()));
         }
 
         roundStartPhase();
+    }
+
+    public void sendDisplayStates()
+    {
+        messagingTemplate.convertAndSend("/topic/display/" + codeString, new DisplayStateMessage(display.toInteger()));
     }
 
     public Player findPlayerWithMostHate()
