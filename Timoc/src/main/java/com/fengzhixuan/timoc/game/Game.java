@@ -5,8 +5,6 @@ import com.fengzhixuan.timoc.game.enemies.Orc;
 import com.fengzhixuan.timoc.game.enums.PokerHand;
 import com.fengzhixuan.timoc.game.enums.RoundPhase;
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
-import com.fengzhixuan.timoc.webcontroller.messagetemplate.DiscardCardMessage;
-import com.fengzhixuan.timoc.webcontroller.messagetemplate.PlayCardMessage;
 import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
@@ -14,8 +12,7 @@ import java.util.*;
 
 public class Game
 {
-    // value passed by GameController via gameStart(), used for sending messages to players
-    private SimpMessageSendingOperations messagingTemplate;
+    private MessageSender messageSender;
 
     private static Map<Integer, Game> games = new HashMap<>();
 
@@ -79,23 +76,23 @@ public class Game
     public void gameStart(SimpMessageSendingOperations messagingTemplate)
     {
         gameStarted = true;
-        this.messagingTemplate = messagingTemplate;
+        messageSender = new MessageSender(messagingTemplate, codeString);
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
-            playerEntry.getValue().onGameStart(messagingTemplate);
+            playerEntry.getValue().onGameStart(this);
         }
-        messagingTemplate.convertAndSend("/topic/controller/" + codeString, new GameMessage(MessageType.GameStart));
+        addControllerMessage(new GameMessage(MessageType.GameStart));
 
         // send game, player, enemy information to display
-        List<GameMessage> messages = new ArrayList<>();
-        messages.add(new GameInfoMessage(this));
-        messages.add(new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
-        messages.add(new GameEnemyInfoMessage(MessageType.EnemyInfo, enemies.values().toArray(new Enemy[0])));
+        addDisplayMessage(new GameInfoMessage(this));
+        addDisplayMessage(new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
+        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyInfo, enemies.values().toArray(new Enemy[0])));
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
-            messages.add(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));
+            addDisplayMessage(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));
         }
-        messagingTemplate.convertAndSend("/topic/display/" + codeString, messages);
+
+        flushMessages();
 
         // start first round
         roundStartPhase();
@@ -105,7 +102,7 @@ public class Game
     {
         phase = RoundPhase.RoundStart;
         roundNum++;
-        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameMessage(MessageType.RoundStart));
+        addDisplayMessage(new GameMessage(MessageType.RoundStart));
 
         // deal with all players
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
@@ -122,6 +119,8 @@ public class Game
             enemyEntry.getValue().onRoundStart();
         }
 
+        flushMessages();
+
         startAttackPhase();
     }
 
@@ -129,10 +128,10 @@ public class Game
     {
         if (roundNum < 5)
         {
-            Enemy newEnemy = new Orc(this, codeString, enemyCount, messagingTemplate);
+            Enemy newEnemy = new Orc(this, codeString, enemyCount);
             enemies.put(newEnemy.getId(), newEnemy);
             enemyCount++;
-            messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameEnemyMessage(MessageType.EnemyInfo, newEnemy));
+            addDisplayMessage(new GameEnemyMessage(MessageType.EnemyInfo, newEnemy));
         }
     }
 
@@ -146,27 +145,26 @@ public class Game
 
     private void startPlayerTurn()
     {
+        phase = RoundPhase.PlayerTurnStart;
         Player player = getCurrentPlayer();
         display.reset(player.getDrawNum(), playerOrder.length, enemies.size());
         player.onTurnStart();  // sends PlayerStartsTurn message and PlayerDeck message
+
+        flushMessages();
+        phase = RoundPhase.PlayerTurn;
     }
 
-    public void playerPlaysCard(Player player, PlayCardMessage message)
+    public void playerPlaysCard(Player player, Card[] cards)
     {
-        int[] indecks = message.getCards();
-        Card[] cards = new Card[indecks.length];
         for (int i = 0; i < cards.length; i++)
         {
-            // get cards
-            cards[i] = player.getCardByIndecks(indecks[i]);
-
             // discard cards from hand
-            player.discardCard(indecks[i]);
+            player.removeCard(cards[i].getIndecks());
         }
 
         PokerHand pokerHand = Hand.identifyHand(cards);  // TODO: apply poker hand effect
-        TargetingMode targetingMode = TargetingMode.values()[message.getMode()];
-
+//        TargetingMode targetingMode = TargetingMode.values()[message.getMode()];
+        TargetingMode targetingMode = TargetingMode.enemy;
         // consume mana
         int manaCost = 0;
         for (Card card : cards)
@@ -179,7 +177,7 @@ public class Game
         switch (targetingMode)
         {
             case player:
-                Player targetPlayer = players.get(message.getTarget());
+                Player targetPlayer = player;
 
                 // get card effect summary
                 for (Card card : cards)
@@ -210,7 +208,7 @@ public class Game
 
                 break;
             case enemy:
-                Enemy targetEnemy = enemies.get(Integer.parseInt(message.getTarget()));
+                Enemy targetEnemy = enemies.get(0);
 
                 // get card effect summary
                 for (Card card : cards)
@@ -332,11 +330,14 @@ public class Game
         }
 
         player.updateBlock();
+
+        flushMessages();
     }
 
     public void playerDiscardsCards(Player player, Card[] cards)
     {
-        cards = Hand.sortCards(cards);
+        // remove cards from hand
+        player.removeCards(cards);
 
         // find how much mana can be generated
         int manaGeneration = 0;
@@ -352,10 +353,15 @@ public class Game
         // update front end
         display.reset(player.getHandPile().size());
         sendDisplayStates();
+
+        flushMessages();
     }
 
     public void playerReplacesCards(Player player, Card[] cards)
     {
+        // remove cards from hand
+        player.removeCards(cards);
+
         // replace with new cards
         player.drawCards(cards.length);
         player.setReplaceAllowance(player.getReplaceAllowance() - cards.length);
@@ -363,12 +369,16 @@ public class Game
         // update front end
         display.reset(player.getHandPile().size());
         sendDisplayStates();
+
+        flushMessages();
     }
 
     public void finishPlayerTurn()
     {
         currentPlayer++;
-        messagingTemplate.convertAndSend("/topic/display/" + codeString, new GameMessage(MessageType.PlayerEndsTurn));
+        addDisplayMessage(new GameMessage(MessageType.PlayerEndsTurn));
+
+        flushMessages();
 
         // if all players have finished their turns
         if (currentPlayer == playerOrder.length)
@@ -396,6 +406,8 @@ public class Game
         }
         // combine all enemy actions into a single message and send
 
+        flushMessages();
+
         roundEndPhase();
     }
 
@@ -407,12 +419,14 @@ public class Game
             // make sure front end is in sync
         }
 
+        flushMessages();
+
         roundStartPhase();
     }
 
     public void sendDisplayStates()
     {
-        messagingTemplate.convertAndSend("/topic/display/" + codeString, new DisplayStateMessage(display.toInteger()));
+        addDisplayMessage(new DisplayStateMessage(display.toInteger()));
     }
 
     public Player findPlayerWithMostHate()
@@ -449,6 +463,21 @@ public class Game
     public static Game getGameByCode(String code)
     {
         return getGameByCode(GameCodeGenerator.stringToInt(code));
+    }
+
+    public void addDisplayMessage(GameMessage message)
+    {
+        messageSender.addDisplayMessage(message);
+    }
+
+    public void addControllerMessage(GameMessage message)
+    {
+        messageSender.addControllerMessage(message);
+    }
+
+    public void flushMessages()
+    {
+        messageSender.flush();
     }
 
     @JsonIgnore
@@ -499,7 +528,9 @@ public class Game
 
     public Integer processControllerInput(int buttonCode)
     {
-        return display.controllerInput(buttonCode);
+        Integer output = display.controllerInput(buttonCode);
+        flushMessages();
+        return output;
     }
 
     @JsonIgnore

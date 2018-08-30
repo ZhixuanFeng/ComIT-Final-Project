@@ -44,7 +44,7 @@ public class DisplayController
 
             Player currentPlayer = game.getCurrentPlayer();
             messages.add(new GamePlayerMessage(MessageType.PlayerStartsTurn, currentPlayer.getId()));
-            messages.add(new GameCardPileMessage(currentPlayer.getHandIndeckses()));
+            messages.add(new GameCardsMessage(MessageType.Hand, currentPlayer.getHandIndeckses()));
             messages.add(new DisplayStateMessage(game.getDisplayStates()));
             return messages;
         }

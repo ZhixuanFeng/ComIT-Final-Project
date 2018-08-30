@@ -11,6 +11,10 @@ function removeSelectedCard(card) {
     selectedCards = selectedCards.filter(c => c.info.indecks !== card.info.indecks);
 }
 
+function clearCardSelection() {
+    selectedCards = [];
+}
+
 function updateSelectedEffectAmount() {
     selectedEffectAmount = {'attack': 0, 'block': 0, 'heal': 0, 'mana': 0, 'aoe': 0, 'draw': 0, 'revive': 0, 'hate': 0};
     selectedCards.forEach(function (card) {

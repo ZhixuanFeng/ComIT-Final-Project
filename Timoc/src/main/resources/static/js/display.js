@@ -13,8 +13,8 @@ let enemyMap = {};
 let emptyEnemyPosNum = [0, 1, 2, 3];
 let hand = [];
 let currentPlayerId;
-let isAnimating = false;
-let drawCardBuffer = [];
+let messageBuffer = [];
+let isProcessing = false;
 
 function init() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -43,8 +43,10 @@ function update() {
 
 function setDisplayState(states) {
     for (let i = 0; i < 5; i++) {
-        let bit = Math.pow(2, 7-i);
-        (states & bit) === bit ? hand[i].select() : hand[i].deselect();
+        if (hand[i]) {
+            let bit = Math.pow(2, 7-i);
+            (states & bit) === bit ? hand[i].select() : hand[i].deselect();
+        }
     }
 
     hand.forEach(function (card) {
@@ -82,7 +84,6 @@ function spawnEnemies(enemies) {
 
 function newTurn(id) {
     currentPlayerId = id;
-    drawCardBuffer = [];
 }
 
 function clearHand() {
@@ -95,35 +96,29 @@ function clearHand() {
 
 function setHand(cards) {
     clearHand();
-    drawCardBuffer.push.apply(drawCardBuffer, cards);
-    addNewDrawnCardsToUI();
+    addCardsToUI(cards);
 }
 
 
 function animateCardUse() {
     let tween;
     selectedCards.forEach(function (card) {
-        card.graphics.visible = false;
-        isAnimating = true;
-        tween = game.add.tween(card).to( { y: card.y-50 }, 500, Phaser.Easing.Exponential.Out, true);
+        card.border.visible = false;
+        tween = game.add.tween(card).to( { y: card.y-50 }, 300, Phaser.Easing.Exponential.Out, true);
         card.tween = tween;
     });
     if (tween) tween.onComplete.add(removeUsedCards);
 }
 
 function removeUsedCards() {
-    isAnimating = false;
-    myPlayer.updateBlock();
     for (let i = 0; i < hand.length; i++) {
         if (hand[i].isSelected) {
+            hand[i].kill();
+            hand[i].destroy(true, false);
             hand[i] = undefined;
         }
     }
-    selectedCards.forEach(function (card) {
-        card.kill();
-        card.destroy(true, false);
-    });
-    cancelSelection();
+    clearCardSelection();
     moveCardsToLeft();
 }
 
@@ -134,11 +129,9 @@ function moveCardsToLeft() {
     hand.forEach(function (card) {
         if (card) {
             newHand[count] = card;
-            isAnimating = true;
-            tween = game.add.tween(card).to( { x: cardXPositions[count]*card.scale.x }, 500, Phaser.Easing.Exponential.Out, true);
+            tween = game.add.tween(card).to( { x: cardXPositions[count] }, 500, Phaser.Easing.Exponential.Out, true);
             card.tween = tween;
             card.posIndex = count;
-            card.repositionBorder();
             count++;
         }
     });
@@ -147,26 +140,22 @@ function moveCardsToLeft() {
     if (hand.length === 0) onFinishMovingLeft();
 
     function onFinishMovingLeft() {
-        isAnimating = false;
-        myPlayer.updateBlock();
-        addNewDrawnCardsToUI();
+        processNextMessage();
     }
 }
 
-function addNewDrawnCardsToUI() {
+function addCardsToUI(cards) {
     let card;
-    for (let i = 0; i < drawCardBuffer.length; i++) {
-        card = new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, hand.length, playerMap[currentPlayerId].deck[drawCardBuffer[i]]);
+    for (let i = 0; i < cards.length; i++) {
+        card = new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, hand.length, playerMap[currentPlayerId].deck[cards[i]]);
         hand.push(card);
         card.y -= 50;
-        isAnimating = true;
         card.tween = game.add.tween(card).to( { y: card.y+50 }, 500, Phaser.Easing.Exponential.Out, true);
     }
     if (card.tween) card.tween.onComplete.add(onComplete);
-    drawCardBuffer = [];
 
     function onComplete() {
-        isAnimating = false;
+        processNextMessage();
     }
 }
 
@@ -203,43 +192,54 @@ function onError(error) {
 function onMessageReceived(message) {
     let messageBody = JSON.parse(message.body);
     if (messageBody.constructor === Array) {
-        messageBody.forEach(processMessage);
+        messageBuffer.push.apply(messageBuffer, messageBody);
     }
     else {
-        processMessage(messageBody);
+        messageBuffer.push(messageBody);
     }
+    processMessage()
 }
 
-function processMessage(message) {
+function processMessage() {
+    if (messageBuffer.length === 0 || isProcessing) return;
+
+    isProcessing = true;
+    let message = messageBuffer.shift();
     let id;
     switch (message.type) {
         case messageCode.GameInfo:
             gameInfo = message.game;
+            processNextMessage();
             break;
         case messageCode.PlayerInfo:
             if (typeof(message.players) !== 'undefined')
                 spawnPlayers(message.players);
             else
                 spawnPlayers([message.player]);
+            processNextMessage();
             break;
         case messageCode.EnemyInfo:
             if (typeof(message.enemies) !== 'undefined')
                 spawnEnemies(message.enemies);
             else
                 spawnEnemies([message.enemy]);
+            processNextMessage();
             break;
         case messageCode.DState:
             setDisplayState(message.states);
+            processNextMessage();
             break;
         case messageCode.PlayerUpdate:
             id = message.player.id;
             playerMap[id].info = message.player;
             playerMap[id].stat.updateStats(message.player);
+            processNextMessage();
             break;
         case messageCode.EnemyUpdate:
             id = message.enemy.id;
             enemyMap[id].info = message.enemy;
             enemyMap[id].sprite.updateEnemy(message.enemy);
+            processNextMessage();
             break;
         case messageCode.PlayerDeck:
             let deck = [];
@@ -250,6 +250,7 @@ function processMessage(message) {
                 deck[card.indecks] = card;
             });
             playerMap[message.id].deck = deck;
+            processNextMessage();
             break;
         case messageCode.PlayerUpdateAll:
             message.players.forEach(function (player) {
@@ -257,6 +258,7 @@ function processMessage(message) {
                 playerMap[id].info = player;
                 playerMap[id].stat.updateStats(player);
             });
+            processNextMessage();
             break;
         case messageCode.EnemyUpdateAll:
             message.enemies.forEach(function (enemy) {
@@ -264,40 +266,57 @@ function processMessage(message) {
                 enemyMap[id].info = enemy;
                 enemyMap[id].sprite.updateEnemy(enemy);
             });
+            processNextMessage();
             break;
         case messageCode.PlayerHpChange:
             playerMap[message.id].info.hp += message.value;
             playerMap[message.id].stat.updateHp(playerMap[message.id].info.hp);
             playerMap[message.id].sprite.showHpChangeNumber(message.value);
+            processNextMessage();
             break;
         case messageCode.PlayerManaChange:
             playerMap[message.id].info.mana += message.value;
             playerMap[message.id].stat.updateMana(playerMap[message.id].info.mana);
+            processNextMessage();
             break;
         case messageCode.PlayerBlockChange:
             playerMap[message.id].info.block += message.value;
             playerMap[message.id].stat.updateBlock(playerMap[message.id].info.block);
+            processNextMessage();
             break;
         case messageCode.PlayerHateChange:
             playerMap[message.id].info.hate += message.value;
             playerMap[message.id].stat.updateHate(playerMap[message.id].info.hate);
+            processNextMessage();
             break;
         case messageCode.EnemyHpChange:
             enemyMap[message.id].info.hp += message.value;
             enemyMap[message.id].sprite.updateHp(enemyMap[message.id].info.hp);
             enemyMap[message.id].sprite.showHpChangeNumber(message.value);
+            processNextMessage();
             break;
         case messageCode.PlayerStartsTurn:
             newTurn(message.id);
+            processNextMessage();
             break;
         case messageCode.Hand:
-            setHand(message.pile);
+            setHand(message.cards);
             break;
         case messageCode.PlayerDrawCard:
-            drawCardBuffer.push.apply(drawCardBuffer, message.cards);
-            if (!isAnimating) addNewDrawnCardsToUI();
+            addCardsToUI(message.cards);
+            break;
+        case messageCode.RemoveUsedCard:
+            animateCardUse();
+            break;
+        default:
+            processNextMessage();
             break;
     }
+}
+
+function processNextMessage() {
+    isProcessing = false;
+    processMessage();
 }
 
 function sendMessage(destination, data) {
@@ -345,7 +364,7 @@ let messageCode = {
     PlayerRevive: 22,
     PlayerDrawCard: 23,
     PlayCardSuccessful: 24,
-    DiscardCardSuccessful: 25,
+    RemoveUsedCard: 25,
     PlayerHpChange: 26,
     PlayerManaChange: 27,
     PlayerBlockChange: 28,

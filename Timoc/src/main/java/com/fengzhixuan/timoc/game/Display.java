@@ -155,14 +155,14 @@ public class Display
                 Player currentPlayer = game.getCurrentPlayer();
                 if (numOfCardsSelected > currentPlayer.getReplaceAllowance()) return null;
 
-                Card[] selectedCard = getSelectedCardsFromPlayer(currentPlayer);
-                game.playerReplacesCards(currentPlayer, selectedCard);  // sends display status
+                Card[] selectedCards = getSelectedCardsFromPlayer(currentPlayer);
+                game.playerReplacesCards(currentPlayer, selectedCards);  // sends display status
                 return null;
             case 8:  // discard
                 if (numOfCardsSelected == 0) return null;
                 currentPlayer = game.getCurrentPlayer();
-                selectedCard = getSelectedCardsFromPlayer(currentPlayer);
-                game.playerDiscardsCards(currentPlayer, selectedCard);  // sends display status
+                selectedCards = getSelectedCardsFromPlayer(currentPlayer);
+                game.playerDiscardsCards(currentPlayer, selectedCards);  // sends display status
                 return null;
             case 0:  // next
                 game.finishPlayerTurn();

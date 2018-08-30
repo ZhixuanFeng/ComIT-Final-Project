@@ -4,6 +4,8 @@ public enum RoundPhase
 {
     RoundStart,
     Attack,
+    PlayerTurnStart,
+    PlayerTurn,
     Defend,
     RoundEnd
 }

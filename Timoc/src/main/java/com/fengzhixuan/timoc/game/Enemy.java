@@ -2,7 +2,6 @@ package com.fengzhixuan.timoc.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.websocket.message.game.*;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,8 +10,6 @@ import java.util.Map;
 
 public class Enemy
 {
-    // value passed from GameController to Game to this, used for sending messages to players
-    protected SimpMessageSendingOperations messagingTemplate;
 
     protected Game game;
     protected String code;
@@ -31,10 +28,8 @@ public class Enemy
     protected int drawNum;  // how many cards the enemy draws at the start of a round
     protected boolean dead;
 
-    public Enemy(Game game, String code, String name, int id, SimpMessageSendingOperations messagingTemplate)
+    public Enemy(Game game, String code, String name, int id)
     {
-        this.messagingTemplate = messagingTemplate;
-
         this.game = game;
         this.code = code;
         this.name = name;
@@ -76,7 +71,7 @@ public class Enemy
         // draw
         drawCards(drawNum);
 
-        messagingTemplate.convertAndSend("/topic/game/" + code, new GameEnemyCardMessage(MessageType.EnemyDrawsCard, id, getHand()));
+        game.addDisplayMessage(new GameEnemyCardMessage(MessageType.EnemyDrawsCard, id, getHand()));
     }
 
     public List<GameMessage> onTurnStart()
@@ -176,7 +171,7 @@ public class Enemy
 
         // update front end display
         if (damageTaken > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GameEnemyIntMessage(MessageType.EnemyHpChange, id, -damageTaken));
+            game.addDisplayMessage(new GameEnemyIntMessage(MessageType.EnemyHpChange, id, -damageTaken));
         return damageTaken;
     }
 
@@ -198,7 +193,7 @@ public class Enemy
 
         // update front end display
         if (amountHealed > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GameEnemyIntMessage(MessageType.EnemyHpChange, id, amountHealed));
+            game.addDisplayMessage(new GameEnemyIntMessage(MessageType.EnemyHpChange, id, amountHealed));
     }
 
 

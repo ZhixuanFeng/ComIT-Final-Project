@@ -13,9 +13,9 @@ import java.util.List;
 
 public class Orc extends Enemy
 {
-    public Orc(Game game, String code, int id, SimpMessageSendingOperations messagingTemplate)
+    public Orc(Game game, String code, int id)
     {
-        super(game, code, "orc", id, messagingTemplate);
+        super(game, code, "orc", id);
     }
 
     @Override

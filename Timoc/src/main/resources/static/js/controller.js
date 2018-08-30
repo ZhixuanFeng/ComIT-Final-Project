@@ -115,7 +115,16 @@ function onError(error) {
 
 function onMessageReceived(message) {
     let messageBody = JSON.parse(message.body);
-    switch (messageBody.type) {
+    if (messageBody.constructor === Array) {
+        messageBody.forEach(processMessage);
+    }
+    else {
+        processMessage(messageBody);
+    }
+}
+
+function processMessage(message) {
+    switch (message.type) {
         case 2:  // EnterSuccessful
             if (!isGameStarted) {
                 instruction.visible = true;

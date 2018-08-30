@@ -1,5 +1,7 @@
 package com.fengzhixuan.timoc.game;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,41 +64,49 @@ public class Card
         return rank;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getAttack()
     {
         return attack;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getBlock()
     {
         return block;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getHeal()
     {
         return heal;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getMana()
     {
         return mana;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getAoe()
     {
         return aoe;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getDraw()
     {
         return draw;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getRevive()
     {
         return revive;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public int getTaunt()
     {
         return taunt;

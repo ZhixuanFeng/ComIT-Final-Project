@@ -2,16 +2,13 @@ package com.fengzhixuan.timoc.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.game.enums.PlayerClass;
+import com.fengzhixuan.timoc.game.enums.RoundPhase;
 import com.fengzhixuan.timoc.websocket.message.game.*;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import java.util.*;
 
 public class Player
 {
-    // value passed from GameController to Game to this, used for sending messages to players
-    private SimpMessageSendingOperations messagingTemplate;
-
     // stores existing players (users who have entered a room or a game)
     // mapped by username
     private static Map<String, Player> players = new HashMap<>();
@@ -19,6 +16,7 @@ public class Player
     // GameController initializes this at application launch
     private static Card[] starters;
 
+    private Game game;
     private String name;
     private int id = -1;  // player id in this game
     private String code;  // current room/game code
@@ -54,10 +52,9 @@ public class Player
     }
 
     // triggered when game starter, initialize attributes
-    public void onGameStart(SimpMessageSendingOperations messagingTemplate)
+    public void onGameStart(Game game)
     {
-        this.messagingTemplate = messagingTemplate;
-
+        this.game = game;
         drawPile = new ArrayList<>();
         handPile = new ArrayList<>();
         discardPile = new ArrayList<>();
@@ -78,10 +75,6 @@ public class Player
         discardPile.addAll(handPile);
         handPile.clear();
 
-        // draw
-        drawCards(drawNum);
-        sortHand();
-
         updateBlock();
         replaceAllowance = 2;
 
@@ -89,11 +82,13 @@ public class Player
 
     public void onTurnStart()
     {
-        GameMessage[] messages = new GameMessage[3];
-        messages[0] = new GamePlayerMessage(MessageType.PlayerStartsTurn, id);
-        messages[1] = new GameCardPileMessage(getHandIndeckses());
-        messages[2] = new DisplayStateMessage(Game.getGameByCode(code).getDisplayStates());
-        messagingTemplate.convertAndSend("/topic/display/" + code, messages);
+        // draw
+        drawCards(drawNum);
+        sortHand();
+
+        game.addDisplayMessage(new GamePlayerMessage(MessageType.PlayerStartsTurn, id));
+        game.addDisplayMessage(new GameCardsMessage(MessageType.Hand, getHandIndeckses()));
+        game.addDisplayMessage(new DisplayStateMessage(game.getDisplayStates()));
     }
 
     // draw certain number of cards, meaning move cards from draw pile to hand pile, if draw pile is empty, shuffle discard pile to draw pile
@@ -119,7 +114,8 @@ public class Player
         }
 
         // update front end
-        messagingTemplate.convertAndSend("/topic/display/" + code, new GameIntMessage(MessageType.PlayerDrawCard, cardsDrawn.length));
+        if (game.getPhase() == RoundPhase.PlayerTurn)  // don't send when player is starting their turn and drawing initial 5 cards
+            game.addDisplayMessage(new GameCardsMessage(MessageType.PlayerDrawCard, cardsDrawn));
         return cardsDrawn;
     }
 
@@ -146,11 +142,24 @@ public class Player
     }
 
     // move a single card from hand pile to discard pile
-    public void discardCard(int indecks)
+    public void removeCard(int indecks)
     {
         int i = 0;
         while (handPile.get(i) != indecks && i < handPile.size()) i++;
         discardPile.add(handPile.remove(i));
+        game.addDisplayMessage(new GameMessage(MessageType.RemoveUsedCard));
+    }
+
+    // move an array of cards from hand pile to discard pile
+    public void removeCards(Card[] cards)
+    {
+        for (Card card : cards)
+        {
+            int i = 0;
+            while (handPile.get(i) != card.getIndecks() && i < handPile.size()) i++;
+            discardPile.add(handPile.remove(i));
+        }
+        game.addDisplayMessage(new GameMessage(MessageType.RemoveUsedCard));
     }
 
     // put discard pile into draw pile, then shuffle draw pile
@@ -243,9 +252,9 @@ public class Player
 
         // update front end display
         if (reducedBlock > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerBlockChange, id, -reducedBlock));
+            game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerBlockChange, id, -reducedBlock));
         if (reducedHp > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHpChange, id, -reducedHp));
+            game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerHpChange, id, -reducedHp));
     }
 
     // return actual amount healed
@@ -267,7 +276,7 @@ public class Player
 
         // update front end display
         if (healedAmount > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHpChange, id, healedAmount));
+            game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerHpChange, id, healedAmount));
 
         return healedAmount;
     }
@@ -291,7 +300,7 @@ public class Player
 
         // update front end display
         if (restoredAmount > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerManaChange, id, restoredAmount));
+            game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerManaChange, id, restoredAmount));
 
         return restoredAmount;
     }
@@ -300,7 +309,7 @@ public class Player
     {
         // no need to check if mana is enough because it's checked as the command comes in
         mana -= amount;
-        messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerManaChange, id, -amount));
+        game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerManaChange, id, -amount));
     }
 
     public void increaseHate(int amount, String source)
@@ -320,7 +329,7 @@ public class Player
 
         // update front end display
         if (amount > 0)
-            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerIntMessage(MessageType.PlayerHateChange, id, amount));
+            game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerHateChange, id, amount));
     }
 
     // return actual amount healed on revive
