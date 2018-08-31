@@ -134,9 +134,9 @@ public class Display
                 else  // selecting targets
                 {
                     if (cursorPosition < 10 && cursorPosition > 5) return null;
-                    byte offset = (byte)(cursorPosition - 10);
-                    if (offset > numOfPlayers-1) offset = (byte)(numOfPlayers - 1);
-                    cursorPosition = (byte)(6 + offset);
+                    int offset = cursorPosition - 10;
+                    if (offset > numOfPlayers-1) offset = numOfPlayers - 1;
+                    cursorPosition = 6 + offset;
                 }
                 break;
             case 4:  // right
@@ -148,24 +148,24 @@ public class Display
                 else  // selecting targets
                 {
                     if (cursorPosition < 14 && cursorPosition > 9 || numOfEnemies == 0) return null;
-                    byte offset = (byte)(cursorPosition - 6);
+                    int offset = cursorPosition - 6;
                     if (game.getAliveEnemies()[offset] == null)
                     {
-                        for (int i = 0; i < 3; i++)
+                        for (int i = 1; i < 3; i++)
                         {
-                            if (offset - i > 0 && game.getAliveEnemies()[offset] != null)
+                            if (offset - i >= 0 && game.getAliveEnemies()[offset-i] != null)
                             {
                                 offset -= i;
                                 break;
                             }
-                            if (offset + i < 3 && game.getAliveEnemies()[offset] != null)
+                            if (offset + i <= 3 && game.getAliveEnemies()[offset+i] != null)
                             {
                                 offset += i;
                                 break;
                             }
                         }
                     }
-                    cursorPosition = (byte)(10 + offset);
+                    cursorPosition = 10 + offset;
                 }
                 break;
             case 5:  // play

@@ -11,7 +11,7 @@ let gameInfo;
 let playerMap = {};
 let enemyMap = {};
 let hand = [];
-let currentPlayerId;
+let currentPlayerObject;
 let messageBuffer = [];
 let isProcessing = false;
 
@@ -80,7 +80,8 @@ function spawnEnemies(enemies) {
 }
 
 function newTurn(id) {
-    currentPlayerId = id;
+    currentPlayerObject = playerMap[id];
+    currentPlayerObject.sprite.standOut();
 }
 
 function clearHand() {
@@ -144,7 +145,7 @@ function moveCardsToLeft() {
 function addCardsToUI(cards) {
     let card;
     for (let i = 0; i < cards.length; i++) {
-        card = new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, hand.length, playerMap[currentPlayerId].deck[cards[i]]);
+        card = new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, hand.length, currentPlayerObject.deck[cards[i]]);
         hand.push(card);
         card.y -= 50;
         card.tween = game.add.tween(card).to( { y: card.y+50 }, 500, Phaser.Easing.Exponential.Out, true);
@@ -297,7 +298,9 @@ function processMessage() {
             break;
         case messageCode.PlayerStartsTurn:
             newTurn(message.id);
-            processNextMessage();
+            break;
+        case messageCode.PlayerEndsTurn:
+            currentPlayerObject.sprite.standBack();
             break;
         case messageCode.Hand:
             setHand(message.cards);
@@ -317,10 +320,10 @@ function processMessage() {
             processNextMessage();
             break;
         case messageCode.NotEnoughMana:
-            playerMap[currentPlayerId].sprite.animateInvalidAction();
+            currentPlayerObject.sprite.animateInvalidAction();
             break;
         case messageCode.NoMoreReplace:
-            playerMap[currentPlayerId].sprite.animateInvalidAction();
+            currentPlayerObject.sprite.animateInvalidAction();
             break;
         default:
             processNextMessage();

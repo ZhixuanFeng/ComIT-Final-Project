@@ -182,6 +182,16 @@ function animateInvalidPlayerAction() {
         })
     })
 }
+
+function playerStandsOut() {
+    let tween = game.add.tween(this).to( { x: playerPositions[this.posNum].x * this.scale.x+48 }, 300, Phaser.Easing.Linear.None, true);
+    tween.onComplete.add(processNextMessage);
+}
+
+function playerStandsBack() {
+    let tween = game.add.tween(this).to( { x: playerPositions[this.posNum].x * this.scale.x }, 300, Phaser.Easing.Linear.None, true);
+    tween.onComplete.add(processNextMessage);
+}
 // -- user code here --
 
 /* --- start generated code --- */
@@ -240,3 +250,5 @@ Player.prototype.addBlockChangeNumber = addPlayerBlockChangeNumber;
 Player.prototype.addHateChangeNumber = addPlayerHateChangeNumber;
 Player.prototype.animateEffectNumbers = animatePlayerEffectNumber;
 Player.prototype.animateInvalidAction = animateInvalidPlayerAction;
+Player.prototype.standOut = playerStandsOut;
+Player.prototype.standBack = playerStandsBack;
