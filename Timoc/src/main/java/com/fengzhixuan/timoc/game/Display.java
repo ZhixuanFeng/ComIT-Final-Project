@@ -43,7 +43,7 @@ public class Display
         this.numOfPlayers = numOfPlayers;
         this.numOfEnemies = numOfEnemies;
         cardStates = new boolean[5];
-        cursorPosition = numOfCards > 0 ? (numOfCards / 2) : 15;
+        cursorPosition = numOfCards > 0 ? 0 : 15;
     }
 
     public void reset(int numOfCards)
@@ -71,7 +71,25 @@ public class Display
                 else  // selecting targets
                 {
                     if (cursorPosition == 6 || cursorPosition == 10) return null;
-                    cursorPosition--;
+                    if (cursorPosition < 10)
+                    {
+                        cursorPosition--;
+                    }
+                    else
+                    {
+                        int i;
+                        boolean moved = false;
+                        for (i = 1; cursorPosition - i > 9; i++)
+                        {
+                            if (game.getAliveEnemies()[cursorPosition - 10 - i] != null)
+                            {
+                                cursorPosition -= i;
+                                moved = true;
+                                break;
+                            }
+                        }
+                        if (!moved) return null;
+                    }
                 }
                 break;
             case 2:  // down
@@ -84,7 +102,25 @@ public class Display
                 else  // selecting targets
                 {
                     if (cursorPosition == 9 || cursorPosition == 13) return null;
-                    cursorPosition++;
+                    if (cursorPosition < 10)
+                    {
+                        cursorPosition++;
+                    }
+                    else
+                    {
+                        int i;
+                        boolean moved = false;
+                        for (i = 1; cursorPosition + i < 14; i++)
+                        {
+                            if (game.getAliveEnemies()[cursorPosition - 10 + i] != null)
+                            {
+                                cursorPosition += i;
+                                moved = true;
+                                break;
+                            }
+                        }
+                        if (!moved) return null;
+                    }
                 }
                 break;
             case 3:  // left
@@ -97,7 +133,7 @@ public class Display
                 {
                     if (cursorPosition < 10 && cursorPosition > 5) return null;
                     byte offset = (byte)(cursorPosition - 10);
-                    if (offset > numOfPlayers) offset = (byte)(numOfPlayers - 1);
+                    if (offset > numOfPlayers-1) offset = (byte)(numOfPlayers - 1);
                     cursorPosition = (byte)(6 + offset);
                 }
                 break;
@@ -111,7 +147,22 @@ public class Display
                 {
                     if (cursorPosition < 14 && cursorPosition > 9 || numOfEnemies == 0) return null;
                     byte offset = (byte)(cursorPosition - 6);
-                    if (offset > numOfEnemies) offset = (byte)(numOfEnemies - 1);
+                    if (game.getAliveEnemies()[offset] == null)
+                    {
+                        for (int i = 0; i < 3; i++)
+                        {
+                            if (offset - i > 0 && game.getAliveEnemies()[offset] != null)
+                            {
+                                offset -= i;
+                                break;
+                            }
+                            if (offset + i < 3 && game.getAliveEnemies()[offset] != null)
+                            {
+                                offset += i;
+                                break;
+                            }
+                        }
+                    }
                     cursorPosition = (byte)(10 + offset);
                 }
                 break;

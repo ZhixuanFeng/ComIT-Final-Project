@@ -86,7 +86,7 @@ public class Game
         // send game, player, enemy information to display
         addDisplayMessage(new GameInfoMessage(this));
         addDisplayMessage(new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
-        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyInfo, getAliveEnemies()));
+        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyInfo, getAliveEnemiesWithoutNulls()));
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             addDisplayMessage(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));
@@ -121,7 +121,7 @@ public class Game
         }
 
         addDisplayMessage(new GamePlayerInfoMessage(MessageType.PlayerUpdateAll, players.values().toArray(new Player[0])));
-        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyUpdateAll, getAliveEnemies()));
+        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyUpdateAll, getAliveEnemiesWithoutNulls()));
 
         flushMessages();
 
@@ -132,11 +132,11 @@ public class Game
     {
         if (roundNum < 5)
         {
-            Enemy newEnemy = new Orc(this, codeString, enemyCount);
-            enemies.put(newEnemy.getId(), newEnemy);
-            enemyCount++;
             int positionId;
             for (positionId = 0; aliveEnemies[positionId] != null && positionId < aliveEnemies.length; positionId++);
+            Enemy newEnemy = new Orc(this, enemyCount, positionId);
+            enemies.put(newEnemy.getId(), newEnemy);
+            enemyCount++;
             aliveEnemies[positionId] = newEnemy;
             addDisplayMessage(new GameEnemySpawnMessage(MessageType.EnemyInfo, newEnemy));
         }
@@ -154,7 +154,7 @@ public class Game
     {
         phase = RoundPhase.PlayerTurnStart;
         Player player = getCurrentPlayer();
-        display.reset(player.getDrawNum(), playerOrder.length, enemies.size());
+        display.reset(player.getDrawNum(), playerOrder.length, aliveEnemies.length);
         player.onTurnStart();  // sends PlayerStartsTurn message and PlayerDeck message
 
         flushMessages();
@@ -466,6 +466,12 @@ public class Game
 
     @JsonIgnore
     public Enemy[] getAliveEnemies()
+    {
+        return aliveEnemies;
+    }
+
+    @JsonIgnore
+    public Enemy[] getAliveEnemiesWithoutNulls()
     {
         int count = 0;
         for (Enemy enemy : aliveEnemies) if (enemy != null) count++;

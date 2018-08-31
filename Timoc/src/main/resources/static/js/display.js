@@ -10,7 +10,6 @@ let background;
 let gameInfo;
 let playerMap = {};
 let enemyMap = {};
-let emptyEnemyPosNum = [0, 1, 2, 3];
 let hand = [];
 let currentPlayerId;
 let messageBuffer = [];
@@ -75,7 +74,7 @@ function spawnPlayers(players) {
 
 function spawnEnemies(enemies) {
     for (let i = 0; i < enemies.length; i++) {
-        let enemySprite = new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, emptyEnemyPosNum.shift(), enemies[i]);
+        let enemySprite = new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, enemies[i].position, enemies[i]);
         enemyMap[enemies[i].id] = {info: enemies[i], sprite: enemySprite};
     }
 }

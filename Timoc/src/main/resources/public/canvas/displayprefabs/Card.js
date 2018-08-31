@@ -22,7 +22,6 @@ function cardSelect() {
     if (this.isSelected) return;
     this.isSelected = true;
     addSelectedCard(this);
-    if (this.tween) this.tween.stop();
     game.add.tween(this).to( { y: cardYPosition-30 }, 100, Phaser.Easing.Linear.None, true);
 }
 
@@ -30,7 +29,6 @@ function cardDeselect() {
     if (!this.isSelected) return;
     this.isSelected = false;
     removeSelectedCard(this);
-    if (this.tween) this.tween.stop();
     game.add.tween(this).to( { y: cardYPosition }, 100, Phaser.Easing.Linear.None, true);
 }
 

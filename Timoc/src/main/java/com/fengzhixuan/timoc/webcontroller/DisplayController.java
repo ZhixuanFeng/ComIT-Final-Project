@@ -1,6 +1,5 @@
 package com.fengzhixuan.timoc.webcontroller;
 
-import com.fengzhixuan.timoc.game.Enemy;
 import com.fengzhixuan.timoc.game.Game;
 import com.fengzhixuan.timoc.game.Player;
 import com.fengzhixuan.timoc.websocket.message.game.*;
@@ -36,7 +35,7 @@ public class DisplayController
             List<GameMessage> messages = new ArrayList<>();
             messages.add(new GameInfoMessage(game));
             messages.add(new GamePlayerInfoMessage(MessageType.PlayerInfo, game.getPlayers().values().toArray(new Player[0])));
-            messages.add(new GameEnemyInfoMessage(MessageType.EnemyInfo, game.getAliveEnemies()));
+            messages.add(new GameEnemyInfoMessage(MessageType.EnemyInfo, game.getAliveEnemiesWithoutNulls()));
             for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
             {
                 messages.add(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));

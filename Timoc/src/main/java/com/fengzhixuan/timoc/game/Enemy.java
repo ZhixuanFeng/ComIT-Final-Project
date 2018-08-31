@@ -12,9 +12,9 @@ public class Enemy
 {
 
     protected Game game;
-    protected String code;
     protected String name;
     protected int id;
+    protected int position;
 
     protected static Card[] deck;
     protected List<Integer> drawPile;  // indecks of the cards in the draw pile
@@ -28,12 +28,12 @@ public class Enemy
     protected int drawNum;  // how many cards the enemy draws at the start of a round
     protected boolean dead;
 
-    public Enemy(Game game, String code, String name, int id)
+    public Enemy(Game game, String name, int id, int position)
     {
         this.game = game;
-        this.code = code;
         this.name = name;
         this.id = id;
+        this.position = position;
 
         initStats();
         initDeck();
@@ -205,6 +205,11 @@ public class Enemy
     public int getId()
     {
         return id;
+    }
+
+    public int getPosition()
+    {
+        return position;
     }
 
     public int getHp()
