@@ -163,6 +163,31 @@ function animatePlayerEffectNumber() {
     }
 }
 
+function animatePlayerCardUseOnPlayer(cards) {
+    let player = this, game = this.game, delay = 0, x = this.x + 48, y = this.y + 16;
+    let cardMinis = [];
+    cards.forEach(function (card) {
+        game.time.events.add(delay, createCardMini, player);
+        delay += 200;
+    });
+    game.time.events.add(200 * cards.length, processNextMessage, game);
+    game.time.events.add(300 * cards.length, finish, game);
+
+    function createCardMini() {
+        let cardMini = new CardMini(game, undefined, 'cardMini', false, false, Phaser.Physics.ARCADE, cards[cardMinis.length]);
+        cardMini.position.setTo(x, y);
+        cardMinis.push(cardMini);
+        x += 34;
+    }
+
+    function finish() {
+        cardMinis.forEach(function (cardMini) {
+            cardMini.kill();
+            cardMini.destroy(true, false);
+        });
+    }
+}
+
 function animateInvalidPlayerAction() {
     let game = this.game;
     let player = this;
@@ -249,6 +274,7 @@ Player.prototype.addManaChangeNumber = addPlayerManaChangeNumber;
 Player.prototype.addBlockChangeNumber = addPlayerBlockChangeNumber;
 Player.prototype.addHateChangeNumber = addPlayerHateChangeNumber;
 Player.prototype.animateEffectNumbers = animatePlayerEffectNumber;
+Player.prototype.animateCardUseOnPlayer = animatePlayerCardUseOnPlayer;
 Player.prototype.animateInvalidAction = animateInvalidPlayerAction;
 Player.prototype.standOut = playerStandsOut;
 Player.prototype.standBack = playerStandsBack;

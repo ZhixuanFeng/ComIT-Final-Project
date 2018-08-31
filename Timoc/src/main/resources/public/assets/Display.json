@@ -57,10 +57,15 @@
       "type": "script",
       "key": "Summary",
       "url": "canvas/displayprefabs/Summary.js"
+    },
+    {
+      "type": "script",
+      "key": "CardMini",
+      "url": "canvas/displayprefabs/CardMini.js"
     }
   ],
   "meta": {
-    "generated": "1535583749335",
+    "generated": "1535727169706",
     "app": "Phaser Editor",
     "url": "http://phasereditor.boniatillo.com",
     "version": "1.0",

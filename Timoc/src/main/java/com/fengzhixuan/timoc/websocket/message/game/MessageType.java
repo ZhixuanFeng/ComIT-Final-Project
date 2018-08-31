@@ -38,4 +38,8 @@ public class MessageType
     public static final int DState = 31;
     public static final int NotEnoughMana = 32;
     public static final int NoMoreReplace = 33;
+    public static final int PlayerPlaysCard_Player = 34;
+    public static final int PlayerPlaysCard_Enemy = 35;
+    public static final int EnemyPlaysCard_Player = 36;
+    public static final int EnemyPlaysCard_Enemy = 37;
 }

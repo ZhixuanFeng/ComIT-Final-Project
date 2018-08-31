@@ -98,7 +98,7 @@ function setHand(cards) {
 }
 
 
-function animateCardUse() {
+function animateCardRemoval() {
     let tween;
     selectedCards.forEach(function (card) {
         card.border.visible = false;
@@ -308,8 +308,17 @@ function processMessage() {
         case messageCode.PlayerDrawCard:
             addCardsToUI(message.cards);
             break;
+        case messageCode.PlayerPlaysCard_Player:
+            let cards = [];
+            message.cards.forEach(function (indecks) {
+                cards.push(playerMap[message.id].deck[indecks]);
+            });
+            playerMap[message.targetId].sprite.animateCardUseOnPlayer(cards);
+            break;
+        case messageCode.PlayerPlaysCard_Enemy:
+            break;
         case messageCode.RemoveUsedCard:
-            animateCardUse();
+            animateCardRemoval();
             break;
         case messageCode.RemoveEnemy:
             enemyMap[message.id].sprite.kill();
@@ -389,5 +398,9 @@ let messageCode = {
     EnemyHpChange: 30,
     DState: 31,
     NotEnoughMana: 32,
-    NoMoreReplace: 33
+    NoMoreReplace: 33,
+    PlayerPlaysCard_Player: 34,
+    PlayerPlaysCard_Enemy: 35,
+    EnemyPlaysCard_Player: 36,
+    EnemyPlaysCard_Enemy: 37
 };

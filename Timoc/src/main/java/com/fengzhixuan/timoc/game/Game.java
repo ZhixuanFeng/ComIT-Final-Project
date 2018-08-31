@@ -175,8 +175,15 @@ public class Game
         int healed = 0, manaRestored = 0, revived = 0, damageDealt = 0;
         switch (totalSelectedEffects.getTargetingMode())
         {
+            case Self:
+                // send play card information for front end to animate
+                addDisplayMessage(new GamePlayerPlayCardMessage(MessageType.PlayerPlaysCard_Player, player.getId(), player.getId(), cards));
+
             case Player:
                 Player targetPlayer = getPlayerByPosition(totalSelectedEffects.getTargetPosition());
+
+                // send play card information for front end to animate
+                addDisplayMessage(new GamePlayerPlayCardMessage(MessageType.PlayerPlaysCard_Player, player.getId(), targetPlayer.getId(), cards));
 
                 // get card effect summary
                 heal = totalSelectedEffects.getHeal();
@@ -197,8 +204,12 @@ public class Game
                 player.recordManaRestored(manaRestored);
 
                 break;
+
             case Enemy:
                 Enemy targetEnemy = getEnemyByPosition(totalSelectedEffects.getTargetPosition());
+
+                // send play card information for front end to animate
+                addDisplayMessage(new GamePlayerPlayCardMessage(MessageType.PlayerPlaysCard_Enemy, player.getId(), targetEnemy.getId(), cards));
 
                 // get card effect summary
                 attack = totalSelectedEffects.getAttack();
@@ -213,7 +224,12 @@ public class Game
                 player.recordDamageDealt(damageDealt);
 
                 break;
+
             case AllPlayers:
+                targetPlayer = getPlayerByPosition(totalSelectedEffects.getTargetPosition());
+                // send play card information for front end to animate
+                addDisplayMessage(new GamePlayerPlayCardMessage(MessageType.PlayerPlaysCard_Player, player.getId(), targetPlayer.getId(), cards));
+
                 // get card effect summary
                 heal = totalSelectedEffects.getHeal();
                 mana = totalSelectedEffects.getMana();
@@ -236,7 +252,12 @@ public class Game
                 player.recordDamageHealed(healed);
                 player.recordManaRestored(manaRestored);
                 break;
+
             case AllEnemies:
+                targetEnemy = getEnemyByPosition(totalSelectedEffects.getTargetPosition());
+                // send play card information for front end to animate
+                addDisplayMessage(new GamePlayerPlayCardMessage(MessageType.PlayerPlaysCard_Enemy, player.getId(), targetEnemy.getId(), cards));
+
                 // get card effect summary
                 attack = totalSelectedEffects.getAttack();
 
