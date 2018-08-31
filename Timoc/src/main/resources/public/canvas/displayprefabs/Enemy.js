@@ -139,6 +139,11 @@ function enemyStandsBack() {
     game.time.events.add(500, processNextMessage, this);
 }
 
+function enemyDropDead() {
+    let tween = game.add.tween(this.sprite).to( { angle: 90, y: this.sprite.y+6}, 500, Phaser.Easing.Exponential.Out, true);
+    tween.onComplete.add(processNextMessage);
+}
+
 function updateEnemy(enemyInfo) {
     this.info = enemyInfo;
     this.updateHp(enemyInfo.hp);
@@ -235,3 +240,4 @@ Enemy.prototype.animateEffectNumbers = animateEnemyEffectNumber;
 Enemy.prototype.animateCardUseOnPlayer = animateEnemyCardUseOnPlayer;
 Enemy.prototype.standOut = enemyStandsOut;
 Enemy.prototype.standBack = enemyStandsBack;
+Enemy.prototype.dropDead = enemyDropDead;

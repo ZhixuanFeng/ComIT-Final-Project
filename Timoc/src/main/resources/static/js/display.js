@@ -77,7 +77,7 @@ function spawnPlayers(players) {
         game.time.events.add(1200, playerStat.show, playerStat);
         tween = game.add.tween(playerSprite).to( { x: xPos }, 1000, Phaser.Easing.Linear.None, true);
     }
-    tween.onComplete.add(processNextMessage);
+    if (tween) tween.onComplete.add(processNextMessage);
 }
 
 function spawnEnemies(enemies) {
@@ -92,7 +92,7 @@ function spawnEnemies(enemies) {
         game.time.events.add(1200, enemySprite.doShowHpBar, enemySprite);
         tween = game.add.tween(enemySprite).to( { x: xPos }, 1000, Phaser.Easing.Linear.None, true);
     }
-    tween.onComplete.add(processNextMessage);
+    if (tween) tween.onComplete.add(processNextMessage);
 }
 
 function newTurn(id) {
@@ -336,6 +336,9 @@ function processMessage() {
             });
             playerMap[message.id].sprite.animateCardUseOnEnemy(cards, enemyMap[message.targetId].sprite);
             break;
+        case messageCode.PlayerDies:
+            playerMap[message.id].sprite.dropDead();
+            break;
         case messageCode.RemoveUsedCard:
             animateCardRemoval();
             break;
@@ -347,6 +350,9 @@ function processMessage() {
             break;
         case messageCode.EnemyPlaysCard_Player:
             enemyMap[message.id].sprite.animateCardUseOnPlayer(message.card, playerMap[message.targetId].sprite);
+            break;
+        case messageCode.EnemyDies:
+            enemyMap[message.id].sprite.dropDead();
             break;
         case messageCode.RemoveEnemy:
             enemyMap[message.id].sprite.kill();
@@ -405,7 +411,7 @@ let messageCode = {
     EnemyInfo: 9,
     PlayerDeck: 10,
     Hand: 11,
-    NewEnemy: 12,
+    EnemyDies: 12,
     RemoveEnemy: 13,
     EnemyDrawsCard: 14,
     EnemyStartsTurn: 15,
@@ -417,7 +423,7 @@ let messageCode = {
     PlayerUpdateAll: 21,
     PlayerRevive: 22,
     PlayerDrawCard: 23,
-    PlayCardSuccessful: 24,
+    PlayerDies: 24,
     RemoveUsedCard: 25,
     PlayerHpChange: 26,
     PlayerManaChange: 27,

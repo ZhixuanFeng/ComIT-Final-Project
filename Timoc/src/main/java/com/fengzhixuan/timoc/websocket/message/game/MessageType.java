@@ -15,7 +15,7 @@ public class MessageType
     public static final int EnemyInfo = 9;  // send all enemy information, used when a player enters/re-enters a game
     public static final int PlayerDeck = 10;
     public static final int Hand = 11;  // message containing cards in hand
-    public static final int NewEnemy = 12;  // when a enemy spawns
+    public static final int EnemyDies = 12;  // when a enemy hp drops to 0
     public static final int RemoveEnemy = 13;  // when a enemy dies, send at the end of a round
     public static final int EnemyDrawsCard = 14;  // enemy draws card(s)
     public static final int EnemyStartsTurn = 15;
@@ -27,7 +27,7 @@ public class MessageType
     public static final int PlayerUpdateAll = 21;  // update all player information
     public static final int PlayerRevive = 22;  // when a player revives
     public static final int PlayerDrawCard = 23;  // when player draw card(not at the start of the round)
-    public static final int PlayCardSuccessful = 24;  // send when a play card command is accepted
+    public static final int PlayerDies = 24;  // When a player hp drops to 0
     public static final int RemoveUsedCard = 25;  // send when a discard card command is accepted
 
     public static final int PlayerHpChange = 26;

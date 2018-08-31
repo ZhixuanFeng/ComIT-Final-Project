@@ -230,8 +230,7 @@ public class Player
             reducedHp = hp;
             block = 0;
             hp = 0;
-            isDown = true;
-            recordDamageTaken(hp+block);
+            die();
         }
         else
         {
@@ -255,6 +254,18 @@ public class Player
             game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerBlockChange, id, -reducedBlock));
         if (reducedHp > 0)
             game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerHpChange, id, -reducedHp));
+    }
+
+    public void die()
+    {
+        isDown = true;
+        recordDamageTaken(hp+block);
+        game.addDisplayMessage(new GamePlayerMessage(MessageType.PlayerDies, id));
+
+        if (game.areAllPlayersDown())
+        {
+            // game over
+        }
     }
 
     // return actual amount healed

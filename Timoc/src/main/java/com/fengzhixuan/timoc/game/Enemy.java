@@ -162,6 +162,7 @@ public class Enemy
             damageTaken = hp;
             hp = 0;
             dead = true;
+            game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyDies, id));
         }
         else
         {

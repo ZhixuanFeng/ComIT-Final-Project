@@ -27,7 +27,7 @@ function CardMini(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyT
 
     this.game.add.sprite(0.0, 0.0, 'displayui', 'emptycardmini', this);
     let rankNum = this.game.add.sprite(2.0, 2.0, 'displayui', rank, this);
-    rankNum.tint = cardInfo.suit == 0 || cardInfo.suit == 2 ? 0xff0000 : 0x000000;
+    rankNum.tint = cardInfo.suit == 0 || cardInfo.suit == 2 ? 0xaa3333 : 0x000000;
     this.game.add.sprite(7.0, 7.0, 'displayui', suit, this);
 
     this.scale.setTo(2.0);

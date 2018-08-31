@@ -107,7 +107,8 @@ public class Game
         // deal with all players
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
-            playerEntry.getValue().onRoundStart();
+            Player player = playerEntry.getValue();
+            if (!player.isDown()) player.onRoundStart();
         }
 
         // spawn enemies
@@ -153,12 +154,26 @@ public class Game
     private void startPlayerTurn()
     {
         phase = RoundPhase.PlayerTurnStart;
-        Player player = getCurrentPlayer();
-        display.reset(player.getDrawNum(), playerOrder.length, aliveEnemies.length);
-        player.onTurnStart();  // sends PlayerStartsTurn message and PlayerDeck message
 
-        flushMessages();
-        phase = RoundPhase.PlayerTurn;
+        // find the first player who's not dead
+        Player player = getCurrentPlayer();
+        while (player.isDown() && currentPlayer < playerOrder.length){
+            currentPlayer++;
+            player = getCurrentPlayer();
+        }
+
+        if (player.isDown())
+        {
+            // game over
+        }
+        else
+        {
+            display.reset(player.getDrawNum(), playerOrder.length, aliveEnemies.length);
+            player.onTurnStart();  // sends PlayerStartsTurn message and PlayerDeck message
+
+            flushMessages();
+            phase = RoundPhase.PlayerTurn;
+        }
     }
 
     public void playerPlaysCard(Player player, TotalSelectedEffects totalSelectedEffects)
@@ -470,6 +485,15 @@ public class Game
     public Player getPlayerByPosition(int position)
     {
         return players.get(playerOrder[position]);
+    }
+
+    public boolean areAllPlayersDown()
+    {
+        for (Map.Entry<String, Player> playerEntry : players.entrySet())
+        {
+            if (!playerEntry.getValue().isDown()) return false;
+        }
+        return true;
     }
 
     @JsonIgnore

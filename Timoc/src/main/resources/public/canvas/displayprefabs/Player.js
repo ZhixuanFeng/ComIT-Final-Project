@@ -250,6 +250,11 @@ function playerStandsBack() {
     let tween = game.add.tween(this).to( { x: playerPositions[this.posNum].x * this.scale.x }, 300, Phaser.Easing.Linear.None, true);
     tween.onComplete.add(processNextMessage);
 }
+
+function playerDropDead() {
+    let tween = game.add.tween(this.sprite).to( { angle: -90, y: this.sprite.y+24}, 500, Phaser.Easing.Exponential.Out, true);
+    tween.onComplete.add(processNextMessage);
+}
 // -- user code here --
 
 /* --- start generated code --- */
@@ -275,10 +280,10 @@ function Player(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyTyp
     // this.info = playerInfo;
 
     this.playerClass = playerInfo.playerClass.toLowerCase();
-    let spriteYPos = 10.0;
-    if (this.playerClass === 'knight') spriteYPos = 6.0;
+    this.spriteYPos = 10.0;
+    if (this.playerClass === 'knight') this.spriteYPos = 6.0;
 	this.game.add.sprite(0.0, 21.0, 'entity', 'shadow', this);
-	this.sprite = this.game.add.sprite(0.0, spriteYPos, 'entity', this.playerClass, this);
+	this.sprite = this.game.add.sprite(0.0, this.spriteYPos, 'entity', this.playerClass, this);
 
 	let _nametext = this.game.add.text(this.sprite.width/2, 0.0, playerInfo.name, {"font":"20px Arial", "fill":"#FFFFFF"}, this);
 	_nametext.anchor.setTo(0.5, 0.0);
@@ -312,3 +317,4 @@ Player.prototype.animateCardUseOnEnemy = animatePlayerCardUseOnEnemy;
 Player.prototype.animateInvalidAction = animateInvalidPlayerAction;
 Player.prototype.standOut = playerStandsOut;
 Player.prototype.standBack = playerStandsBack;
+Player.prototype.dropDead = playerDropDead;
