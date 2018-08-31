@@ -17,6 +17,8 @@ public class TotalSelectedEffects
     private int revive = 0;
     private int taunt = 0;
 
+    private int manaCost = 0;
+
     public TotalSelectedEffects(Card[] selectedCards)
     {
         this.selectedCards = selectedCards;
@@ -30,6 +32,8 @@ public class TotalSelectedEffects
             draw += card.getDraw();
             revive += card.getRevive();
             taunt += card.getTaunt();
+
+            manaCost += card.getRank();
         }
 
         if (aoe > 0)
@@ -110,5 +114,10 @@ public class TotalSelectedEffects
     public int getTaunt()
     {
         return taunt;
+    }
+
+    public int getManaCost()
+    {
+        return manaCost;
     }
 }

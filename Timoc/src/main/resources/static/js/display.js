@@ -316,6 +316,12 @@ function processMessage() {
             delete enemyMap[message.id];
             processNextMessage();
             break;
+        case messageCode.NotEnoughMana:
+            playerMap[currentPlayerId].sprite.animateInvalidAction();
+            break;
+        case messageCode.NoMoreReplace:
+            playerMap[currentPlayerId].sprite.animateInvalidAction();
+            break;
         default:
             processNextMessage();
             break;
@@ -378,5 +384,7 @@ let messageCode = {
     PlayerBlockChange: 28,
     PlayerHateChange: 29,
     EnemyHpChange: 30,
-    DState: 31
+    DState: 31,
+    NotEnoughMana: 32,
+    NoMoreReplace: 33
 };

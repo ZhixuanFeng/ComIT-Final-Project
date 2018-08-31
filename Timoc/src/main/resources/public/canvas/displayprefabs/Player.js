@@ -162,6 +162,26 @@ function animatePlayerEffectNumber() {
         }
     }
 }
+
+function animateInvalidPlayerAction() {
+    let game = this.game;
+    let player = this;
+    let originX = player.x;
+    let tween1 = game.add.tween(player).to( { x: originX+8 }, 100, Phaser.Easing.Linear.None, true);
+    tween1.onComplete.add(function () {
+        let tween2 = game.add.tween(player).to( { x: originX-8 }, 100, Phaser.Easing.Linear.None, true);
+        tween2.onComplete.add(function () {
+            let tween3 = game.add.tween(player).to( { x: originX+8 }, 100, Phaser.Easing.Linear.None, true);
+            tween3.onComplete.add(function () {
+                let tween4 = game.add.tween(player).to( { x: originX-8 }, 100, Phaser.Easing.Linear.None, true);
+                tween4.onComplete.add(function () {
+                    let tween5 = game.add.tween(player).to( { x: originX }, 100, Phaser.Easing.Linear.None, true);
+                    tween5.onComplete.add(processNextMessage);
+                })
+            })
+        })
+    })
+}
 // -- user code here --
 
 /* --- start generated code --- */
@@ -219,3 +239,4 @@ Player.prototype.addManaChangeNumber = addPlayerManaChangeNumber;
 Player.prototype.addBlockChangeNumber = addPlayerBlockChangeNumber;
 Player.prototype.addHateChangeNumber = addPlayerHateChangeNumber;
 Player.prototype.animateEffectNumbers = animatePlayerEffectNumber;
+Player.prototype.animateInvalidAction = animateInvalidPlayerAction;

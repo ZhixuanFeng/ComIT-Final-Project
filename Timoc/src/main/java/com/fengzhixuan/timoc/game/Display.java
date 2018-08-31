@@ -1,6 +1,8 @@
 package com.fengzhixuan.timoc.game;
 
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
+import com.fengzhixuan.timoc.websocket.message.game.GameMessage;
+import com.fengzhixuan.timoc.websocket.message.game.MessageType;
 
 public class Display
 {
@@ -190,6 +192,15 @@ public class Display
                 }
                 else  // selecting targets
                 {
+                    Player currentPlayer = game.getCurrentPlayer();
+                    totalSelectedEffects = new TotalSelectedEffects(getSelectedCardsFromPlayer(currentPlayer));
+
+                    if (currentPlayer.getMana() < totalSelectedEffects.getManaCost())
+                    {
+                        game.addDisplayMessage(new GameMessage(MessageType.NotEnoughMana));
+                        return null; // fail
+                    }
+
                     // get targets
                     TargetingMode targetingMode = cursorPosition < 10 ?
                             (isAOE ? TargetingMode.AllPlayers : TargetingMode.Player) :
@@ -217,7 +228,11 @@ public class Display
                 if (numOfCardsSelected == 0) return null;
                 // check if player can still replace and do replace
                 Player currentPlayer = game.getCurrentPlayer();
-                if (numOfCardsSelected > currentPlayer.getReplaceAllowance()) return null;
+                if (numOfCardsSelected > currentPlayer.getReplaceAllowance())
+                {
+                    game.addDisplayMessage(new GameMessage(MessageType.NoMoreReplace));
+                    return null; // fail
+                }
 
                 Card[] selectedCards = getSelectedCardsFromPlayer(currentPlayer);
                 game.playerReplacesCards(currentPlayer, selectedCards);  // sends display status

@@ -169,12 +169,7 @@ public class Game
         PokerHand pokerHand = Hand.identifyHand(cards);  // TODO: apply poker hand effect
 
         // consume mana
-        int manaCost = 0;
-        for (Card card : cards)
-        {
-            manaCost += card.getRank();
-        }
-        player.consumeMana(manaCost);
+        player.consumeMana(totalSelectedEffects.getManaCost());
 
         int attack = 0, heal = 0, mana = 0, draw = 0, revive = 0;
         int healed = 0, manaRestored = 0, revived = 0, damageDealt = 0;
