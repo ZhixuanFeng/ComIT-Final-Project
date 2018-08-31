@@ -1,19 +1,17 @@
 package com.fengzhixuan.timoc.websocket.message.game;
 
-import com.fengzhixuan.timoc.game.Enemy;
-
 public class GameEnemyMessage extends GameMessage
 {
-    protected Enemy enemy;
+    protected int id;
 
-    public GameEnemyMessage(int type, Enemy enemy)
+    public GameEnemyMessage(int type, int id)
     {
         super(type);
-        this.enemy = enemy;
+        this.id = id;
     }
 
-    public Enemy getEnemy()
+    public int getId()
     {
-        return enemy;
+        return id;
     }
 }

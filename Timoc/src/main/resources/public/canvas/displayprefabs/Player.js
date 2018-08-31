@@ -1,37 +1,122 @@
 let playerPositions = [{x:64, y:32}, {x:64, y:64}, {x:64, y:96}, {x:64, y:128}];
 
-function showPlayerHpChangeNumber(hpChange) {
-    let hpChangeNumber;
+function addPlayerHpChangeNumber(hpChange) {
+    let hpChangeUINumber;
     if (hpChange !== 0) {
-        hpChangeNumber = game.add.group();
+        hpChangeUINumber = game.add.group();
         let xPos = 0;
         let absChange = Math.abs(hpChange);
         if (absChange >= 100) {
-            hpChangeNumber.create(xPos, 0, 'displayui', Math.floor(absChange / 100));
+            hpChangeUINumber.create(xPos, 0, 'displayui', Math.floor(absChange / 100));
             xPos += 4;
         }
         if (absChange >= 10) {
-            hpChangeNumber.create(xPos, 0, 'displayui', Math.floor(absChange / 10));
+            hpChangeUINumber.create(xPos, 0, 'displayui', Math.floor(absChange / 10));
             xPos += 4;
         }
-        hpChangeNumber.create(xPos, 0, 'displayui', Math.floor(absChange % 10));
+        hpChangeUINumber.create(xPos, 0, 'displayui', Math.floor(absChange % 10));
     }
     if (hpChange > 0) {
-        hpChangeNumber.children.forEach(function (number) {
+        hpChangeUINumber.children.forEach(function (number) {
             number.tint = 0x00ff00;
         });
-        hpChangeNumber['effectType'] = 'heal';
+        hpChangeUINumber['effectType'] = 'float up';
     }
     else {
-        hpChangeNumber.children.forEach(function (number) {
+        hpChangeUINumber.children.forEach(function (number) {
             number.tint = 0xff0000;
         });
-        hpChangeNumber['effectType'] = 'damage';
+        hpChangeUINumber['effectType'] = 'fly out';
     }
-    hpChangeNumber.scale.setTo(2.0);
-    hpChangeNumber.position.setTo(this.x+this.sprite.x+this.sprite.width, this.y+this.sprite.y+this.sprite.height);
-    hpChangeNumber.visible = false;
-    this.effectNumbers.push(hpChangeNumber);
+    hpChangeUINumber.scale.setTo(2.0);
+    hpChangeUINumber.position.setTo(this.x+this.sprite.x+this.sprite.width, this.y+this.sprite.y+this.sprite.height);
+    hpChangeUINumber.visible = false;
+    this.effectNumbers.push(hpChangeUINumber);
+    this.animateEffectNumbers();
+}
+
+function addPlayerManaChangeNumber(manaChange) {
+    let manaChangeUINumber;
+    if (manaChange > 0) {
+        manaChangeUINumber = game.add.group();
+        let xPos = 0;
+        if (manaChange >= 100) {
+            let digit = manaChangeUINumber.create(xPos, 0, 'displayui', Math.floor(manaChange / 100));
+            digit.tint = 0x57c7ff;
+            xPos += 4;
+        }
+        if (manaChange >= 10) {
+            let digit = manaChangeUINumber.create(xPos, 0, 'displayui', Math.floor(manaChange / 10));
+            digit.tint = 0x57c7ff;
+            xPos += 4;
+        }
+        let digit = manaChangeUINumber.create(xPos, 0, 'displayui', Math.floor(manaChange % 10));
+        digit.tint = 0x57c7ff;
+
+        manaChangeUINumber.scale.setTo(2.0);
+        manaChangeUINumber.position.setTo(this.x+this.sprite.x+this.sprite.width-7, this.y+this.sprite.y+this.sprite.height);
+        manaChangeUINumber.visible = false;
+        manaChangeUINumber['effectType'] = 'float up';
+        this.effectNumbers.push(manaChangeUINumber);
+        this.animateEffectNumbers();
+    }
+}
+
+function addPlayerBlockChangeNumber(blockChange) {
+    let blockChangeUINumber;
+    if (blockChange !== 0) {
+        blockChangeUINumber = game.add.group();
+        let isPositive = blockChange > 0;
+        let xPos = 0;
+        blockChangeUINumber.create(xPos, 0, 'displayui', 'blockmini');
+        xPos += 7;
+        let sign = this.game.add.sprite(xPos, 0, 'displayui', isPositive ? 'plus' : 'minus', blockChangeUINumber);
+        sign.tint = isPositive ? 0x57c7ff : 0xff0000;
+        xPos += 4;
+
+        let absChange = Math.abs(blockChange);
+        if (absChange >= 10) {
+            let digit = blockChangeUINumber.create(xPos, 0, 'displayui', Math.floor(absChange / 10));
+            digit.tint = isPositive ? 0x57c7ff : 0xff0000;
+            xPos += 4;
+        }
+        let digit = blockChangeUINumber.create(xPos, 0, 'displayui', Math.floor(absChange % 10));
+        digit.tint = isPositive ? 0x57c7ff : 0xff0000;
+    }
+    blockChangeUINumber.scale.setTo(2.0);
+    blockChangeUINumber.position.setTo(this.x+this.sprite.x+this.sprite.width-7, this.y+this.sprite.y+this.sprite.height);
+    blockChangeUINumber.visible = false;
+    blockChangeUINumber['effectType'] = 'float up';
+    this.effectNumbers.push(blockChangeUINumber);
+    this.animateEffectNumbers();
+}
+
+function addPlayerHateChangeNumber(hateChange) {
+    let hateChangeUINumber;
+    if (hateChange !== 0) {
+        hateChangeUINumber = game.add.group();
+        let isPositive = hateChange > 0;
+        let xPos = 0;
+        hateChangeUINumber.create(xPos, 0, 'displayui', 'hatemini');
+        xPos += 7;
+        let sign = this.game.add.sprite(xPos, 0, 'displayui', isPositive ? 'plus' : 'minus', hateChangeUINumber);
+        sign.tint = isPositive ? 0xff0000 : 0x00ff00;
+        xPos += 4;
+
+        let absChange = Math.abs(hateChange);
+        if (absChange >= 10) {
+            let digit = hateChangeUINumber.create(xPos, 0, 'displayui', Math.floor(absChange / 10));
+            digit.tint = isPositive ? 0xff0000 : 0x00ff00;
+            xPos += 4;
+        }
+        let digit = hateChangeUINumber.create(xPos, 0, 'displayui', Math.floor(absChange % 10));
+        digit.tint = isPositive ? 0xff0000 : 0x00ff00;
+    }
+    hateChangeUINumber.scale.setTo(2.0);
+    hateChangeUINumber.position.setTo(this.x+this.sprite.x+this.sprite.width-7, this.y+this.sprite.y+this.sprite.height);
+    hateChangeUINumber.visible = false;
+    hateChangeUINumber['effectType'] = 'float up';
+    this.effectNumbers.push(hateChangeUINumber);
     this.animateEffectNumbers();
 }
 
@@ -43,7 +128,7 @@ function animatePlayerEffectNumber() {
 
         let destinationY, destinationX, tween, tween2, tween3;
         switch (number['effectType']) {
-            case 'damage':
+            case 'fly out':
                 destinationY = number.y - 32;
                 destinationX = number.x - 48;
                 tween = this.game.add.tween(number).to( { y: destinationY }, 500, Phaser.Easing.Exponential.Out, true);
@@ -57,7 +142,7 @@ function animatePlayerEffectNumber() {
                 });
                 break;
 
-            case 'heal':
+            case 'float up':
                 destinationY = number.y - 32;
                 tween = this.game.add.tween(number).to( { y: destinationY }, 1000, Phaser.Easing.Linear.None, true);
                 this.isAnimatingNumber = true;
@@ -129,5 +214,8 @@ Player.prototype.constructor = Player;
 
 /* --- end generated code --- */
 // -- user code here --
-Player.prototype.showHpChangeNumber = showPlayerHpChangeNumber;
+Player.prototype.addHpChangeNumber = addPlayerHpChangeNumber;
+Player.prototype.addManaChangeNumber = addPlayerManaChangeNumber;
+Player.prototype.addBlockChangeNumber = addPlayerBlockChangeNumber;
+Player.prototype.addHateChangeNumber = addPlayerHateChangeNumber;
 Player.prototype.animateEffectNumbers = animatePlayerEffectNumber;

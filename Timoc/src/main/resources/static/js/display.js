@@ -57,13 +57,11 @@ function setDisplayState(states) {
     if (cursorPosition < 5) {
         hand[cursorPosition].border.visible = true;
     }
-    else if (cursorPosition > 5 && cursorPosition < 14) {
-        for (let player in playerMap) {
-            playerMap[player].sprite.border.visible = playerMap[player].sprite.posNum === cursorPosition - 6;
-        }
-        for (let enemy in enemyMap) {
-            enemyMap[enemy].sprite.border.visible = enemyMap[enemy].sprite.posNum === cursorPosition - 10;
-        }
+    for (let player in playerMap) {
+        playerMap[player].sprite.border.visible = playerMap[player].sprite.posNum === cursorPosition - 6;
+    }
+    for (let enemy in enemyMap) {
+        enemyMap[enemy].sprite.border.visible = enemyMap[enemy].sprite.posNum === cursorPosition - 10;
     }
 }
 
@@ -271,22 +269,25 @@ function processMessage() {
         case messageCode.PlayerHpChange:
             playerMap[message.id].info.hp += message.value;
             playerMap[message.id].stat.updateHp(playerMap[message.id].info.hp);
-            playerMap[message.id].sprite.showHpChangeNumber(message.value);
+            playerMap[message.id].sprite.addHpChangeNumber(message.value);
             processNextMessage();
             break;
         case messageCode.PlayerManaChange:
             playerMap[message.id].info.mana += message.value;
             playerMap[message.id].stat.updateMana(playerMap[message.id].info.mana);
+            playerMap[message.id].sprite.addManaChangeNumber(message.value);
             processNextMessage();
             break;
         case messageCode.PlayerBlockChange:
             playerMap[message.id].info.block += message.value;
             playerMap[message.id].stat.updateBlock(playerMap[message.id].info.block);
+            playerMap[message.id].sprite.addBlockChangeNumber(message.value);
             processNextMessage();
             break;
         case messageCode.PlayerHateChange:
             playerMap[message.id].info.hate += message.value;
             playerMap[message.id].stat.updateHate(playerMap[message.id].info.hate);
+            playerMap[message.id].sprite.addHateChangeNumber(message.value);
             processNextMessage();
             break;
         case messageCode.EnemyHpChange:
@@ -307,6 +308,14 @@ function processMessage() {
             break;
         case messageCode.RemoveUsedCard:
             animateCardUse();
+            break;
+        case messageCode.RemoveEnemy:
+            enemyMap[message.id].sprite.kill();
+            enemyMap[message.id].sprite.destroy(true, false);
+            delete enemyMap[message.id].sprite;
+            delete enemyMap[message.id].info;
+            delete enemyMap[message.id];
+            processNextMessage();
             break;
         default:
             processNextMessage();

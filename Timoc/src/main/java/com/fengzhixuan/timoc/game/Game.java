@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.game.enemies.Orc;
 import com.fengzhixuan.timoc.game.enums.PokerHand;
 import com.fengzhixuan.timoc.game.enums.RoundPhase;
-import com.fengzhixuan.timoc.game.enums.TargetingMode;
 import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
@@ -24,8 +23,9 @@ public class Game
     private boolean isDisplayConnected = false;  // is there a connected display?
     private RoundPhase phase;
     private String[] playerOrder;  // stores all players' names, represents the order of players(who's player1, who plays first) in attack phase, is also ids of the players
-    private int currentPlayer;  // current index to playerOrder array, represents whose turn it is now
-    private Map<Integer, Enemy> enemies = new HashMap<>();
+    private int currentPlayer;  // id of current player / current index to playerOrder array, represents whose turn it is now
+    private Map<Integer, Enemy> enemies = new HashMap<>();  // mapped by id
+    private Enemy[] aliveEnemies = new Enemy[4];  // stores enemies by position (0-3)
     private int enemyCount;  // increments each time an enemy is spawn, then is given to the spawned enemy as id
     private boolean gameStarted;  // whether the game has started
     private int roundNum;  // current round number
@@ -86,7 +86,7 @@ public class Game
         // send game, player, enemy information to display
         addDisplayMessage(new GameInfoMessage(this));
         addDisplayMessage(new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
-        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyInfo, enemies.values().toArray(new Enemy[0])));
+        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyInfo, getAliveEnemies()));
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             addDisplayMessage(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));
@@ -114,10 +114,14 @@ public class Game
         spawnEnemy();
 
         // deal with all enemies
-        for (Map.Entry<Integer, Enemy> enemyEntry : enemies.entrySet())
+        for (Enemy enemy : aliveEnemies)
         {
-            enemyEntry.getValue().onRoundStart();
+            if (enemy != null)
+                enemy.onRoundStart();
         }
+
+        addDisplayMessage(new GamePlayerInfoMessage(MessageType.PlayerUpdateAll, players.values().toArray(new Player[0])));
+        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyUpdateAll, getAliveEnemies()));
 
         flushMessages();
 
@@ -131,7 +135,10 @@ public class Game
             Enemy newEnemy = new Orc(this, codeString, enemyCount);
             enemies.put(newEnemy.getId(), newEnemy);
             enemyCount++;
-            addDisplayMessage(new GameEnemyMessage(MessageType.EnemyInfo, newEnemy));
+            int positionId;
+            for (positionId = 0; aliveEnemies[positionId] != null && positionId < aliveEnemies.length; positionId++);
+            aliveEnemies[positionId] = newEnemy;
+            addDisplayMessage(new GameEnemySpawnMessage(MessageType.EnemyInfo, newEnemy));
         }
     }
 
@@ -154,17 +161,13 @@ public class Game
         phase = RoundPhase.PlayerTurn;
     }
 
-    public void playerPlaysCard(Player player, Card[] cards)
+    public void playerPlaysCard(Player player, TotalSelectedEffects totalSelectedEffects)
     {
-        for (int i = 0; i < cards.length; i++)
-        {
-            // discard cards from hand
-            player.removeCard(cards[i].getIndecks());
-        }
+        Card[] cards = totalSelectedEffects.getSelectedCards();
+        player.removeCards(cards);
 
         PokerHand pokerHand = Hand.identifyHand(cards);  // TODO: apply poker hand effect
-//        TargetingMode targetingMode = TargetingMode.values()[message.getMode()];
-        TargetingMode targetingMode = TargetingMode.enemy;
+
         // consume mana
         int manaCost = 0;
         for (Card card : cards)
@@ -173,25 +176,22 @@ public class Game
         }
         player.consumeMana(manaCost);
 
-        int attack = 0, heal = 0, mana = 0, draw = 0, revive = 0, taunt = 0;
-        switch (targetingMode)
+        int attack = 0, heal = 0, mana = 0, draw = 0, revive = 0;
+        int healed = 0, manaRestored = 0, revived = 0, damageDealt = 0;
+        switch (totalSelectedEffects.getTargetingMode())
         {
-            case player:
-                Player targetPlayer = player;
+            case Player:
+                Player targetPlayer = getPlayerByPosition(totalSelectedEffects.getTargetPosition());
 
                 // get card effect summary
-                for (Card card : cards)
-                {
-                    heal += card.getHeal();
-                    mana += card.getMana();
-                    revive += card.getRevive();
-                }
+                heal = totalSelectedEffects.getHeal();
+                mana = totalSelectedEffects.getMana();
+                revive = totalSelectedEffects.getRevive();
 
                 // no need to apply effects if they are all zero
                 if (heal == 0 && mana == 0 && revive == 0) break;
 
                 // apply effects
-                int healed = 0, manaRestored = 0, revived = 0;
                 revived += targetPlayer.revive(revive);
                 healed += targetPlayer.heal(heal);
                 healed += revived;
@@ -201,55 +201,33 @@ public class Game
                 player.recordDamageHealed(healed);
                 player.recordManaRestored(manaRestored);
 
-                // update front end
-                if (healed > 0 || manaRestored > 0)
-                {
-                }
-
                 break;
-            case enemy:
-                Enemy targetEnemy = enemies.get(0);
+            case Enemy:
+                Enemy targetEnemy = getEnemyByPosition(totalSelectedEffects.getTargetPosition());
 
                 // get card effect summary
-                for (Card card : cards)
-                {
-                    attack += card.getAttack();
-                }
+                attack = totalSelectedEffects.getAttack();
 
                 // no need to apply effects if they are all zero
                 if (attack == 0) break;
 
                 // apply effect
-                int damageDealt = 0;
                 damageDealt += targetEnemy.takeDamage(attack, player);
 
                 // record effect
                 player.recordDamageDealt(damageDealt);
 
-                // update front end
-                if (attack > 0)
-                {
-                }
                 break;
-            case allPlayers:
+            case AllPlayers:
                 // get card effect summary
-                for (Card card : cards)
-                {
-                    heal += card.getHeal();
-                    mana += card.getMana();
-                    revive += card.getRevive();
-                }
+                heal = totalSelectedEffects.getHeal();
+                mana = totalSelectedEffects.getMana();
+                revive = totalSelectedEffects.getRevive();
 
                 // no need to apply effects if they are all zero
                 if (heal == 0 && mana == 0 && revive == 0) break;
 
-                // effect is halved due to aoe deduction
-                heal = Math.round((float) heal / 2);
-                mana = Math.round((float) mana / 2);
-                revive = Math.round((float) revive / 2);
-
                 // apply effects
-                healed = 0; manaRestored = 0; revived = 0;
                 for (Map.Entry<String, Player> playerEntry : players.entrySet())
                 {
                     targetPlayer = playerEntry.getValue();
@@ -257,41 +235,23 @@ public class Game
                     healed += targetPlayer.heal(heal);
                     healed += revived;
                     manaRestored = targetPlayer.restoreMana(mana);
-
-                    // update front end
-                    if (healed > 0 || manaRestored > 0)
-                    {
-                    }
                 }
 
                 // record effects
                 player.recordDamageHealed(healed);
                 player.recordManaRestored(manaRestored);
                 break;
-            case allEnemies:
+            case AllEnemies:
                 // get card effect summary
-                for (Card card : cards)
-                {
-                    attack += card.getAttack();
-                }
+                attack = totalSelectedEffects.getAttack();
 
                 // no need to apply effects if they are all zero
                 if (attack == 0) break;
 
-                // effect is halved due to aoe deduction
-                attack = Math.round((float) attack / 2);
-
                 // apply effects
-                damageDealt = 0;
-                for (Map.Entry<Integer, Enemy> enemyEntry : enemies.entrySet())
+                for (Enemy enemy : aliveEnemies)
                 {
-                    targetEnemy = enemyEntry.getValue();
-                    damageDealt += targetEnemy.takeDamage(attack, player);
-
-                    // update front end
-                    if (attack > 0)
-                    {
-                    }
+                    if (enemy != null) damageDealt += enemy.takeDamage(attack, player);
                 }
 
                 // record effects
@@ -299,24 +259,22 @@ public class Game
                 break;
         }
 
-        // taunt effect
-        for (Card card : cards)
+        // block
+        if (totalSelectedEffects.getBlock() > 0)
         {
-            taunt += card.getTaunt();
+            player.increaseBlock(totalSelectedEffects.getBlock());
         }
-        if (taunt > 0)
+
+        // taunt effect
+        if (totalSelectedEffects.getTaunt() > 0)
         {
-            player.increaseHate(taunt, "taunt");
+            player.increaseHate(totalSelectedEffects.getTaunt(), "taunt");
         }
 
         // draw effect
-        for (Card card : cards)
+        if (totalSelectedEffects.getDraw() > 0)
         {
-            draw += card.getDraw();
-        }
-        if (draw > 0)
-        {
-            player.drawCards(draw);
+            player.drawCards(totalSelectedEffects.getDraw());
         }
 
         // generates hate
@@ -329,7 +287,9 @@ public class Game
             player.increaseHate(1, "heal");
         }
 
-        player.updateBlock();
+        // update display states
+        display.reset(player.getHandPile().size());
+        sendDisplayStates();
 
         flushMessages();
     }
@@ -397,11 +357,11 @@ public class Game
         phase = RoundPhase.Defend;
 
         List<GameMessage> messages = new ArrayList<>();
-        for (Map.Entry<Integer, Enemy> enemyEntry : enemies.entrySet())
+        for (Enemy enemy : aliveEnemies)
         {
-            if (!enemyEntry.getValue().isDead())
+            if (enemy != null && !enemy.isDead())
             {
-                messages.addAll(enemyEntry.getValue().onTurnStart());
+                messages.addAll(enemy.onTurnStart());
             }
         }
         // combine all enemy actions into a single message and send
@@ -414,9 +374,15 @@ public class Game
     private void roundEndPhase()
     {
         phase = RoundPhase.RoundEnd;
-        for (Map.Entry<String, Player> playerEntry : players.entrySet())
+
+        // remove dead enemies
+        for (int i = 0; i < aliveEnemies.length; i++)
         {
-            // make sure front end is in sync
+            if (aliveEnemies[i] != null && aliveEnemies[i].isDead())
+            {
+                aliveEnemies[i] = null;
+                addDisplayMessage(new GameEnemyMessage(MessageType.RemoveEnemy, i));
+            }
         }
 
         flushMessages();
@@ -487,9 +453,39 @@ public class Game
     }
 
     @JsonIgnore
+    public Player getPlayerByPosition(int position)
+    {
+        return players.get(playerOrder[position]);
+    }
+
+    @JsonIgnore
     public Map<Integer, Enemy> getEnemies()
     {
         return enemies;
+    }
+
+    @JsonIgnore
+    public Enemy[] getAliveEnemies()
+    {
+        int count = 0;
+        for (Enemy enemy : aliveEnemies) if (enemy != null) count++;
+        Enemy[] enemies = new Enemy[count];
+        count = 0;
+        for (int i = 0; i < aliveEnemies.length; i++)
+        {
+            if (aliveEnemies[i] != null)
+            {
+                enemies[count] = aliveEnemies[i];
+                count++;
+            }
+        }
+        return enemies;
+    }
+
+    @JsonIgnore
+    public Enemy getEnemyByPosition(int position)
+    {
+        return aliveEnemies[position];
     }
 
     public static boolean gameCodeExist(int code)

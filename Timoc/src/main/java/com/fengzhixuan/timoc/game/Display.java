@@ -1,5 +1,7 @@
 package com.fengzhixuan.timoc.game;
 
+import com.fengzhixuan.timoc.game.enums.TargetingMode;
+
 public class Display
 {
     public enum displayState
@@ -14,8 +16,6 @@ public class Display
 
     // true: selected; false: not selected
     private boolean[] cardStates = new boolean[5];
-    private boolean[] playerStates = new boolean[4];
-    private boolean[] enemyStates = new boolean[4];
 
     // 0-4:cards;  6-9:players;  10-13:enemies;  15:invisible
     private int cursorPosition = 2;
@@ -24,6 +24,7 @@ public class Display
     private int numOfCardsSelected = 0;  // number of cards selected
     private int numOfPlayers = 0;  // number of players displayed
     private int numOfEnemies = 0;  // number of enemies displayed
+    private boolean isAOE = false;
 
     private TotalSelectedEffects totalSelectedEffects;
 
@@ -123,6 +124,7 @@ public class Display
 
                     // check if player should select target
                     totalSelectedEffects = new TotalSelectedEffects(getSelectedCardsFromPlayer(currentPlayer));
+                    isAOE = totalSelectedEffects.isAoe();
                     if (totalSelectedEffects.doNeedToSelectTarget())
                     {
                         state = displayState.SelectingTargets;
@@ -131,11 +133,22 @@ public class Display
                     else
                     {
                         // play cards
+                        totalSelectedEffects.setTargetingMode(TargetingMode.Self);
+                        game.playerPlaysCard(currentPlayer, totalSelectedEffects);
                     }
                 }
                 else  // selecting targets
                 {
+                    // get targets
+                    TargetingMode targetingMode = cursorPosition < 10 ?
+                            (isAOE ? TargetingMode.AllPlayers : TargetingMode.Player) :
+                            (isAOE ? TargetingMode.AllEnemies : TargetingMode.Enemy);
+                    int targetPosition = cursorPosition < 10 ? cursorPosition-6 : cursorPosition-10;
+                    totalSelectedEffects.setTargetingMode(targetingMode);
+                    totalSelectedEffects.setTargetPosition(targetPosition);
+
                     // play cards
+                    game.playerPlaysCard(game.getCurrentPlayer(), totalSelectedEffects);
                 }
                 break;
             case 6:  // cancel
@@ -181,7 +194,7 @@ public class Display
                 (cardStates[2]?1<<5:0) +
                 (cardStates[3]?1<<4:0) +
                 (cardStates[4]?1<<3:0) +
-                numOfCardsSelected;
+                (isAOE?1:0);
         return states;
     }
 

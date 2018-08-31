@@ -2,21 +2,14 @@ package com.fengzhixuan.timoc.websocket.message.game;
 
 import com.fengzhixuan.timoc.game.Card;
 
-public class GameEnemyCardMessage extends GameMessage
+public class GameEnemyCardMessage extends GameEnemyMessage
 {
-    protected int id;
     protected Card[] cards;
 
     public GameEnemyCardMessage(int type, int id, Card[] cards)
     {
-        super(type);
-        this.id = id;
+        super(type, id);
         this.cards = cards;
-    }
-
-    public int getId()
-    {
-        return id;
     }
 
     public Card[] getCards()

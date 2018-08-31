@@ -107,13 +107,13 @@ public class Enemy
                     for (Map.Entry<Integer, Enemy> enemyEntry : game.getEnemies().entrySet())
                     {
                         enemyEntry.getValue().heal(card.getHeal());
-                        messages.add(new GameEnemyMessage(MessageType.EnemyUpdate, enemyEntry.getValue()));
+                        messages.add(new GameEnemySpawnMessage(MessageType.EnemyUpdate, enemyEntry.getValue()));
                     }
                 }
                 else
                 {
                     heal(card.getHeal());
-                    messages.add(new GameEnemyMessage(MessageType.EnemyUpdate, this));
+                    messages.add(new GameEnemySpawnMessage(MessageType.EnemyUpdate, this));
                 }
             }
         }

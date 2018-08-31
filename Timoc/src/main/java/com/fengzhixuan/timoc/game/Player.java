@@ -75,9 +75,9 @@ public class Player
         discardPile.addAll(handPile);
         handPile.clear();
 
-        updateBlock();
+        // reset block and replace
         replaceAllowance = 2;
-
+        block = 0;
     }
 
     public void onTurnStart()
@@ -211,13 +211,13 @@ public class Player
     }
 
     // update the amount of block the player currently has
-    public void updateBlock()
+    public void increaseBlock(int amount)
     {
-        block = 0;
-        for (Card card : getHand())
-        {
-            block += card.getBlock();
-        }
+        block += amount;
+        if (block > 99) block = 99;
+
+        if (amount > 0)
+            game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerBlockChange, id, amount));
     }
 
     public void takeDamage(int amount)
