@@ -1,9 +1,5 @@
 
 // -- user code here --
-function spin() {
-    this.spin = true;
-}
-
 function update() {
     if (this.spin) this.angle += 1;
 }
@@ -47,4 +43,3 @@ CardMini.prototype.constructor = CardMini;
 /* --- end generated code --- */
 // -- user code here --
 CardMini.prototype.update = update;
-CardMini.prototype.spin = spin;

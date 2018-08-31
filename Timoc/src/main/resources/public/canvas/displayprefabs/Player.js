@@ -188,6 +188,39 @@ function animatePlayerCardUseOnPlayer(cards) {
     }
 }
 
+function animatePlayerCardUseOnEnemy(cards, enemy) {
+    let game = this.game;
+    let player = this;
+    let originX = player.x, originY = player.y;
+    let delay = 0;
+    let tween1 = game.add.tween(player).to( { x: originX-8 }, 100, Phaser.Easing.Linear.None, true);
+    tween1.onComplete.add(function () {
+        let tween2 = game.add.tween(player).to({x: originX}, 100, Phaser.Easing.Linear.None, true);
+        tween2.onComplete.add(shootCards);
+    });
+
+    function shootCards() {
+        cards.forEach(function (card) {
+            game.time.events.add(delay, createCardMini, player);
+            delay += 200;
+        });
+        game.time.events.add(200 * cards.length, processNextMessage, game);
+
+        let count = 0;
+        function createCardMini() {
+            let cardMini = new CardMini(game, undefined, 'cardMini', false, false, Phaser.Physics.ARCADE, cards[count]);
+            cardMini.position.setTo(originX, originY);
+            count++;
+            cardMini.spin = true;
+            let tween = game.add.tween(cardMini).to({x: enemy.x, y: enemy.y}, 200, Phaser.Easing.Linear.None, true);
+            tween.onComplete.add(function () {
+                cardMini.kill();
+                cardMini.destroy(true, false);
+            });
+        }
+    }
+}
+
 function animateInvalidPlayerAction() {
     let game = this.game;
     let player = this;
@@ -275,6 +308,7 @@ Player.prototype.addBlockChangeNumber = addPlayerBlockChangeNumber;
 Player.prototype.addHateChangeNumber = addPlayerHateChangeNumber;
 Player.prototype.animateEffectNumbers = animatePlayerEffectNumber;
 Player.prototype.animateCardUseOnPlayer = animatePlayerCardUseOnPlayer;
+Player.prototype.animateCardUseOnEnemy = animatePlayerCardUseOnEnemy;
 Player.prototype.animateInvalidAction = animateInvalidPlayerAction;
 Player.prototype.standOut = playerStandsOut;
 Player.prototype.standBack = playerStandsBack;

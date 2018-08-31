@@ -203,7 +203,7 @@ function processMessage() {
 
     isProcessing = true;
     let message = messageBuffer.shift();
-    let id;
+    let id, cards;
     switch (message.type) {
         case messageCode.GameInfo:
             gameInfo = message.game;
@@ -309,13 +309,18 @@ function processMessage() {
             addCardsToUI(message.cards);
             break;
         case messageCode.PlayerPlaysCard_Player:
-            let cards = [];
+            cards = [];
             message.cards.forEach(function (indecks) {
                 cards.push(playerMap[message.id].deck[indecks]);
             });
             playerMap[message.targetId].sprite.animateCardUseOnPlayer(cards);
             break;
         case messageCode.PlayerPlaysCard_Enemy:
+            cards = [];
+            message.cards.forEach(function (indecks) {
+                cards.push(playerMap[message.id].deck[indecks]);
+            });
+            playerMap[message.id].sprite.animateCardUseOnEnemy(cards, enemyMap[message.targetId].sprite);
             break;
         case messageCode.RemoveUsedCard:
             animateCardRemoval();
