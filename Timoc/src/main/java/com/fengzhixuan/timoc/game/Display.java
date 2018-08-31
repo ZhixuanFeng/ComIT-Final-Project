@@ -202,6 +202,7 @@ public class Display
                     }
 
                     // get targets
+                    isAOE = totalSelectedEffects.isAoe();
                     TargetingMode targetingMode = cursorPosition < 10 ?
                             (isAOE ? TargetingMode.AllPlayers : TargetingMode.Player) :
                             (isAOE ? TargetingMode.AllEnemies : TargetingMode.Enemy);

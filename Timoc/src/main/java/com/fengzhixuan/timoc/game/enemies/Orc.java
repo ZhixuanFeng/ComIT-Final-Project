@@ -42,9 +42,9 @@ public class Orc extends Enemy
     }
 
     @Override
-    public List<GameMessage> onTurnStart()
+    public void onTurnStart()
     {
-        return super.onTurnStart();
+        super.onTurnStart();
     }
 
     // get cards in hand

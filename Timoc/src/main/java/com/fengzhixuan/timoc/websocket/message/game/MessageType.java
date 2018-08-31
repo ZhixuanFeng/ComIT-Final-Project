@@ -18,8 +18,8 @@ public class MessageType
     public static final int NewEnemy = 12;  // when a enemy spawns
     public static final int RemoveEnemy = 13;  // when a enemy dies, send at the end of a round
     public static final int EnemyDrawsCard = 14;  // enemy draws card(s)
-    public static final int EnemyPlaysCard = 15;  // enemy plays card(s)
-    public static final int EnemyUpdate = 16;  // update enemy information
+    public static final int EnemyStartsTurn = 15;
+    public static final int EnemyEndsTurn = 16;
     public static final int EnemyUpdateAll = 17;  // update all enemy information
     public static final int PlayerStartsTurn = 18;  // start of a player's turn
     public static final int PlayerEndsTurn = 19;  // a player finishes their turn

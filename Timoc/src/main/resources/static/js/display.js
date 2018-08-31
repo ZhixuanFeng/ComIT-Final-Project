@@ -325,6 +325,15 @@ function processMessage() {
         case messageCode.RemoveUsedCard:
             animateCardRemoval();
             break;
+        case messageCode.EnemyStartsTurn:
+            enemyMap[message.id].sprite.standOut();
+            break;
+        case messageCode.EnemyEndsTurn:
+            enemyMap[message.id].sprite.standBack();
+            break;
+        case messageCode.EnemyPlaysCard_Player:
+            enemyMap[message.id].sprite.animateCardUseOnPlayer(message.card, playerMap[message.targetId].sprite);
+            break;
         case messageCode.RemoveEnemy:
             enemyMap[message.id].sprite.kill();
             enemyMap[message.id].sprite.destroy(true, false);
@@ -385,8 +394,8 @@ let messageCode = {
     NewEnemy: 12,
     RemoveEnemy: 13,
     EnemyDrawsCard: 14,
-    EnemyPlaysCard: 15,
-    EnemyUpdate: 16,
+    EnemyStartsTurn: 15,
+    EnemyEndsTurn: 16,
     EnemyUpdateAll: 17,
     PlayerStartsTurn: 18,
     PlayerEndsTurn: 19,

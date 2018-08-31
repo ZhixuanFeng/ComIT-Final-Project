@@ -74,50 +74,50 @@ public class Enemy
         game.addDisplayMessage(new GameEnemyCardMessage(MessageType.EnemyDrawsCard, id, getHand()));
     }
 
-    public List<GameMessage> onTurnStart()
+    public void onTurnStart()
     {
-        if (dead) return null;
+        if (dead) return;
 
-        List<GameMessage> messages = new ArrayList<>();
+        game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyStartsTurn, id));
+
         Player mostHatePlayer = game.findPlayerWithMostHate();
         for (Card card : getHand())
         {
             if (card.getAttack() > 0)
             {
-                messages.add(new GameEnemyPlayCardMessage(id, card, mostHatePlayer.getName()));
+                game.addDisplayMessage(new GameEnemyPlayCardMessage(MessageType.EnemyPlaysCard_Player, id, card, mostHatePlayer.getId()));
                 if (card.getAoe() > 0)
                 {
                     for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
                     {
                         playerEntry.getValue().takeDamage(card.getAttack());
-                        messages.add(new GameUpdatePlayerMessage(playerEntry.getValue()));
                     }
                 }
                 else
                 {
                     mostHatePlayer.takeDamage(card.getAttack());
-                    messages.add(new GameUpdatePlayerMessage(mostHatePlayer));
                 }
             }
             else if (card.getHeal() > 0)
             {
-                messages.add(new GameEnemyPlayCardMessage(id, card, "" + id));
+                game.addDisplayMessage(new GameEnemyPlayCardMessage(MessageType.EnemyPlaysCard_Enemy, id, card, id));
                 if (card.getAoe() > 0)
                 {
                     for (Map.Entry<Integer, Enemy> enemyEntry : game.getEnemies().entrySet())
                     {
                         enemyEntry.getValue().heal(card.getHeal());
-                        messages.add(new GameEnemySpawnMessage(MessageType.EnemyUpdate, enemyEntry.getValue()));
                     }
                 }
                 else
                 {
                     heal(card.getHeal());
-                    messages.add(new GameEnemySpawnMessage(MessageType.EnemyUpdate, this));
                 }
             }
         }
-        return messages;
+
+        game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyEndsTurn, id));
+
+        return;
     }
 
     // draw certain number of cards, meaning move cards from draw pile to hand pile, if draw pile is empty, shuffle discard pile to draw pile

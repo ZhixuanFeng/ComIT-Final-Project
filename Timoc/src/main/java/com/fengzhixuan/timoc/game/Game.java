@@ -372,15 +372,13 @@ public class Game
     {
         phase = RoundPhase.Defend;
 
-        List<GameMessage> messages = new ArrayList<>();
         for (Enemy enemy : aliveEnemies)
         {
             if (enemy != null && !enemy.isDead())
             {
-                messages.addAll(enemy.onTurnStart());
+                enemy.onTurnStart();
             }
         }
-        // combine all enemy actions into a single message and send
 
         flushMessages();
 

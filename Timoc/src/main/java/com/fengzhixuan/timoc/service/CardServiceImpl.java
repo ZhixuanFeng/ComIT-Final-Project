@@ -295,7 +295,7 @@ public class CardServiceImpl implements CardService
             case 10:
                 return new Card(indecks, 11, 0, 0, 0, 0, 0, 0, 0);
             case 11:
-                return new Card(indecks, 12, 0, 0, 0, 0, 0, 0, 0);
+                return new Card(indecks, 12, 0, 0, 0, 1, 0, 0, 0);
             case 12:
                 return new Card(indecks, 13, 0, 0, 0, 0, 0, 0, 0);
             case 13:

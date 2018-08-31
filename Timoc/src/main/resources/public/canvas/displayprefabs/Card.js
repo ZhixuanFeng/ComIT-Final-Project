@@ -86,8 +86,7 @@ function Card(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType,
     if (typeof(cardInfo.rank) === 'undefined') cardInfo.rank = cardInfo.indecks - cardInfo.suit * 13 + 1;
     this.info = cardInfo;
     this.cardFrame = this.game.add.button(0, 0, 'card', cardClicked, this, null, 'empty_card', null, null, this);
-    if (cardInfo.indecks == 14)
-        console.log('yes');
+
     let numOfEffect = 0;
     for (let i = 0; i < 8 && numOfEffect < 4; i++) {
         let effectName = effectNames[i];

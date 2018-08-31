@@ -23,7 +23,7 @@ function CardMini(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyT
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
 
 	let rank = cardInfo.rank == 1 ? 'A' : cardInfo.rank == 11 ? 'J' : cardInfo.rank == 12 ? 'Q' : cardInfo.rank == 3 ? 'K' : cardInfo.rank;
-    let suit = cardInfo.rank == 0 ? 'diamondmini' : cardInfo.rank == 1 ? 'clubmini' : cardInfo.rank == 2 ? 'heartmini' : 'spademini';
+    let suit = cardInfo.suit == 0 ? 'diamondmini' : cardInfo.suit == 1 ? 'clubmini' : cardInfo.suit == 2 ? 'heartmini' : 'spademini';
 
     this.game.add.sprite(0.0, 0.0, 'displayui', 'emptycardmini', this);
     let rankNum = this.game.add.sprite(2.0, 2.0, 'displayui', rank, this);

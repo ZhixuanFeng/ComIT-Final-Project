@@ -94,6 +94,43 @@ function animateEnemyEffectNumber() {
     }
 }
 
+function animateEnemyCardUseOnPlayer(card, player) {
+    let game = this.game;
+    let enemy = this;
+    let originX = enemy.sprite.x, originY = enemy.sprite.y;
+    let tween1 = game.add.tween(enemy.sprite).to( { x: originX+8 }, 100, Phaser.Easing.Linear.None, true);
+    game.add.tween(enemy.shadow).to( { x: originX+8 }, 100, Phaser.Easing.Linear.None, true);
+    tween1.onComplete.add(function () {
+        let tween2 = game.add.tween(enemy.sprite).to({ x: originX }, 100, Phaser.Easing.Linear.None, true);
+        game.add.tween(enemy.shadow).to({ x: originX }, 100, Phaser.Easing.Linear.None, true);
+        tween2.onComplete.add(shootCard);
+    });
+
+    function shootCard() {
+        let cardMini = new CardMini(game, undefined, 'cardMini', false, false, Phaser.Physics.ARCADE, card);
+        cardMini.position.setTo(enemyPositions[enemy.posNum].x * enemy.scale.x + originX, enemyPositions[enemy.posNum].y * enemy.scale.y + originY);
+        cardMini.spin = true;
+        let tween = game.add.tween(cardMini).to({x: player.x + 16, y: player.y + 24}, 300, Phaser.Easing.Linear.None, true);
+        tween.onComplete.add(function () {
+            cardMini.kill();
+            cardMini.destroy(true, false);
+            processNextMessage();
+        });
+    }
+}
+
+function enemyStandsOut() {
+    game.add.tween(this.sprite).to( { x: this.spriteXPosition-32 }, 300, Phaser.Easing.Linear.None, true);
+    game.add.tween(this.shadow).to( { x: this.spriteXPosition-32 }, 300, Phaser.Easing.Linear.None, true);
+    game.time.events.add(500, processNextMessage, this);
+}
+
+function enemyStandsBack() {
+    game.add.tween(this.sprite).to( { x: this.spriteXPosition }, 300, Phaser.Easing.Linear.None, true);
+    game.add.tween(this.shadow).to( { x: this.spriteXPosition }, 300, Phaser.Easing.Linear.None, true);
+    game.time.events.add(500, processNextMessage, this);
+}
+
 function updateEnemy(enemyInfo) {
     this.info = enemyInfo;
     this.updateHp(enemyInfo.hp);
@@ -129,14 +166,15 @@ function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType
     let x = enemyPositions[posNum].x;
     let y = enemyPositions[posNum].y;
 
-    let shadow = this.game.add.sprite(8.0, 15.0, 'entity', 'shadow', this);
-    shadow.scale.setTo(1, 1);
-    shadow.anchor.setTo(0.5);
+    this.shadow = this.game.add.sprite(8.0, 15.0, 'entity', 'shadow', this);
+    this.shadow.scale.setTo(1, 1);
+    this.shadow.anchor.setTo(0.5);
     this.sprite = this.game.add.sprite(8.0, 8.0, 'entity', enemyInfo.name.toLowerCase(), this);
     this.sprite.anchor.setTo(0.5);
-    if (this.sprite.width > 16) shadow.scale.setTo(1.5, 1.0);
+    this.spriteXPosition = this.sprite.position.x;
+    if (this.sprite.width > 16) this.shadow.scale.setTo(1.5, 1.0);
 
-    this.hpBar = this.game.add.sprite(8.0, shadow.y+4, 'displayui', 'bar', this);
+    this.hpBar = this.game.add.sprite(8.0, this.shadow.y+4, 'displayui', 'bar', this);
     this.hpBar.anchor.setTo(0.5, 0.0);
 
     this.hpDigit3 = this.game.add.sprite(this.hpBar.x + this.hpBar.width/2 + 11, this.hpBar.y, 'displayui', '0', this);
@@ -183,3 +221,6 @@ Enemy.prototype.updateHp = updateEnemyHp;
 Enemy.prototype.updateEnemy = updateEnemy;
 Enemy.prototype.showHpChangeNumber = showEnemyHpChangeNumber;
 Enemy.prototype.animateEffectNumbers = animateEnemyEffectNumber;
+Enemy.prototype.animateCardUseOnPlayer = animateEnemyCardUseOnPlayer;
+Enemy.prototype.standOut = enemyStandsOut;
+Enemy.prototype.standBack = enemyStandsBack;
