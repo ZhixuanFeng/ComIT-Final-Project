@@ -58,10 +58,11 @@ public class ControllerController
 
     @MessageMapping("/controller/{code}")
     @SendTo("/topic/display/{code}")
-    public DisplayStateMessage buttonPress(@DestinationVariable String code, int buttonCode)
+    public DisplayStateMessage buttonPress(@DestinationVariable String code, Principal principal, int buttonCode)
     {
         Game game = Game.getGameByCode(code);
-        if (game == null) { return null; }
+        if (game == null) return null;
+        if (!game.getCurrentPlayer().getName().equals(principal.getName())) return null;
 
         Integer states = game.processControllerInput(buttonCode);
         return states == null ? null : new DisplayStateMessage(states);
