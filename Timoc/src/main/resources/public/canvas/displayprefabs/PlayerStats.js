@@ -1,5 +1,17 @@
 let statsPositions = [{x:12, y:32}, {x:12, y:64}, {x:12, y:96}, {x:12, y:128}];
 
+function showStats() {
+    this.visible = true;
+    this.hpBarFill.visible = true;
+    this.manaBarFill.visible = true;
+}
+
+function hideStats() {
+    this.visible = false;
+    this.hpBarFill.visible = false;
+    this.manaBarFill.visible = false;
+}
+
 function updateHp(hp) {
     if (hp === 100) {
         this.hpDigit1.loadTexture('displayui', 1);
@@ -12,7 +24,7 @@ function updateHp(hp) {
         this.hpDigit3.loadTexture('displayui', hp % 10);
         this.hpDigit1.visible = false;
     }
-    this.game.add.tween(this.widthHp).to( { width: hp / this.info.maxHp * 50 }, 200, Phaser.Easing.Linear.None, true);
+    this.game.add.tween(this.widthHp).to( { width: hp / this.info.maxHp * this.totalHp }, 200, Phaser.Easing.Linear.None, true);
     this.info.hp = hp;
 }
 
@@ -28,7 +40,7 @@ function updateMana(mana) {
         this.manaDigit3.loadTexture('displayui', mana % 10);
         this.manaDigit1.visible = false;
     }
-    this.game.add.tween(this.widthMana).to( { width: mana / this.info.maxMana * 50 }, 200, Phaser.Easing.Linear.None, true);
+    this.game.add.tween(this.widthMana).to( { width: mana / this.info.maxMana * this.totalMana }, 200, Phaser.Easing.Linear.None, true);
     this.info.mana = mana;
 }
 
@@ -136,25 +148,25 @@ function PlayerStats(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBo
     this.hpDigit1 = this.game.add.sprite(32.0, 9.0, 'displayui', '0', this);
     this.hpDigit1.tint = 0xdbc0b4;
 
-    let bmd = this.game.add.bitmapData(50, 8);
-    bmd.ctx.beginPath();
-    bmd.ctx.rect(0, 0, 50, 8);
-    bmd.ctx.fillStyle = '#447733';
-    bmd.ctx.fill();
-    this.widthHp = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
-    this.totalHp = bmd.width;
-    this.hpBarFill = this.game.add.sprite((x + this.hpBar.x+1)*2, (y + this.hpBar.y+1)*2, bmd);
+    this.bmd = this.game.add.bitmapData(50, 8);
+    this.bmd.ctx.beginPath();
+    this.bmd.ctx.rect(0, 0, 50, 8);
+    this.bmd.ctx.fillStyle = '#447733';
+    this.bmd.ctx.fill();
+    this.widthHp = new Phaser.Rectangle(0, 0, this.bmd.width, this.bmd.height);
+    this.totalHp = this.bmd.width;
+    this.hpBarFill = this.game.add.sprite((x + this.hpBar.x+1)*2, (y + this.hpBar.y+1)*2, this.bmd);
     this.hpBarFill.cropEnabled = true;
     this.hpBarFill.crop(this.widthHp);
 
-    bmd = this.game.add.bitmapData(50, 8);
-    bmd.ctx.beginPath();
-    bmd.ctx.rect(0, 0, 50, 8);
-    bmd.ctx.fillStyle = '#2b6380';
-    bmd.ctx.fill();
-    this.widthMana = new Phaser.Rectangle(0, 0, bmd.width, bmd.height);
-    this.totalMana = bmd.width;
-    this.manaBarFill = this.game.add.sprite((x + this.manaBar.x+1)*2, (y + this.manaBar.y+1)*2, bmd);
+    this.bmd = this.game.add.bitmapData(50, 8);
+    this.bmd.ctx.beginPath();
+    this.bmd.ctx.rect(0, 0, 50, 8);
+    this.bmd.ctx.fillStyle = '#2b6380';
+    this.bmd.ctx.fill();
+    this.widthMana = new Phaser.Rectangle(0, 0, this.bmd.width, this.bmd.height);
+    this.totalMana = this.bmd.width;
+    this.manaBarFill = this.game.add.sprite((x + this.manaBar.x+1)*2, (y + this.manaBar.y+1)*2, this.bmd);
     this.manaBarFill.cropEnabled = true;
     this.manaBarFill.crop(this.widthMana);
 
@@ -175,6 +187,8 @@ PlayerStats.prototype.constructor = PlayerStats;
 /* --- end generated code --- */
 // -- user code here --
 PlayerStats.prototype.update = update;
+PlayerStats.prototype.show = showStats;
+PlayerStats.prototype.hide = hideStats;
 PlayerStats.prototype.updateHp = updateHp;
 PlayerStats.prototype.updateMana = updateMana;
 PlayerStats.prototype.updateHate = updateHate;

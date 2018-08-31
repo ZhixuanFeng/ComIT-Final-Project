@@ -65,18 +65,34 @@ function setDisplayState(states) {
 }
 
 function spawnPlayers(players) {
+    let tween;
     for (let i = 0; i < players.length; i++) {
         let playerSprite = new Player(game, undefined, 'player', false, false, Phaser.Physics.ARCADE, i, players[i]);
         let playerStat = new PlayerStats(game, undefined, 'playerStats', false, false, Phaser.Physics.ARCADE, i, players[i]);
         playerMap[players[i].id] = {info: players[i], sprite: playerSprite, stat: playerStat, deck: undefined};
+
+        let xPos = playerSprite.x;
+        playerSprite.x = 0 - 32;
+        playerStat.hide();
+        game.time.events.add(1200, playerStat.show, playerStat);
+        tween = game.add.tween(playerSprite).to( { x: xPos }, 1000, Phaser.Easing.Linear.None, true);
     }
+    tween.onComplete.add(processNextMessage);
 }
 
 function spawnEnemies(enemies) {
+    let tween;
     for (let i = 0; i < enemies.length; i++) {
         let enemySprite = new Enemy(game, undefined, 'enemy', false, false, Phaser.Physics.ARCADE, enemies[i].position, enemies[i]);
         enemyMap[enemies[i].id] = {info: enemies[i], sprite: enemySprite};
+
+        let xPos = enemySprite.x;
+        enemySprite.x = game.width + 32;
+        enemySprite.doShowHpBar(false);
+        game.time.events.add(1200, enemySprite.doShowHpBar, enemySprite);
+        tween = game.add.tween(enemySprite).to( { x: xPos }, 1000, Phaser.Easing.Linear.None, true);
     }
+    tween.onComplete.add(processNextMessage);
 }
 
 function newTurn(id) {
@@ -214,14 +230,12 @@ function processMessage() {
                 spawnPlayers(message.players);
             else
                 spawnPlayers([message.player]);
-            processNextMessage();
             break;
         case messageCode.EnemyInfo:
             if (typeof(message.enemies) !== 'undefined')
                 spawnEnemies(message.enemies);
             else
                 spawnEnemies([message.enemy]);
-            processNextMessage();
             break;
         case messageCode.DState:
             setDisplayState(message.states);

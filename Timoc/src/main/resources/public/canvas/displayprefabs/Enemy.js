@@ -16,6 +16,14 @@ function updateEnemyHp(hp) {
     this.info.hp = hp;
 }
 
+function doShowHpBar(bool) {
+    if (typeof bool === 'undefined') bool = true;
+    this.hpBarElement.forEach(function (element) {
+        element.visible = bool;
+    });
+    if (bool) this.updateHp(this.info.hp);
+}
+
 function showEnemyHpChangeNumber(hpChange) {
     let hpChangeNumber;
     if (hpChange !== 0) {
@@ -197,6 +205,8 @@ function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType
     this.hpBarFill.cropEnabled = true;
     this.hpBarFill.crop(this.widthHp);
 
+    this.hpBarElement = [this.hpBar, this.hpDigit1, this.hpDigit2, this.hpDigit3, bmd, this.hpBarFill];
+
     this.border = game.add.graphics(0, 0, this);
     this.border.lineStyle(2, 0xFFFF00, 1);
     this.border.drawRoundedRect(-1, -1, this.sprite.width + 2, this.sprite.height + 2, 5);
@@ -217,6 +227,7 @@ Enemy.prototype.constructor = Enemy;
 /* --- end generated code --- */
 // -- user code here --
 Enemy.prototype.update = update;
+Enemy.prototype.doShowHpBar = doShowHpBar;
 Enemy.prototype.updateHp = updateEnemyHp;
 Enemy.prototype.updateEnemy = updateEnemy;
 Enemy.prototype.showHpChangeNumber = showEnemyHpChangeNumber;
