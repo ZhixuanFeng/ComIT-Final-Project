@@ -1,5 +1,6 @@
 package com.fengzhixuan.timoc.webcontroller;
 
+import com.fengzhixuan.timoc.game.Enemy;
 import com.fengzhixuan.timoc.game.Game;
 import com.fengzhixuan.timoc.game.Player;
 import com.fengzhixuan.timoc.websocket.message.game.*;
@@ -35,10 +36,18 @@ public class DisplayController
             List<GameMessage> messages = new ArrayList<>();
             messages.add(new GameInfoMessage(game));
             messages.add(new GamePlayerInfoMessage(MessageType.PlayerInfo, game.getPlayers().values().toArray(new Player[0])));
-            messages.add(new GameEnemyInfoMessage(MessageType.EnemyInfo, game.getAliveEnemiesWithoutNulls()));
+
+            Enemy[] enemies = game.getAliveEnemiesWithoutNulls();
+            messages.add(new GameEnemyInfoMessage(MessageType.EnemyInfo, enemies));
             for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
             {
-                messages.add(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));
+                Player player = playerEntry.getValue();
+                messages.add(new GameDeckMessage(MessageType.PlayerDeck, player.getId(), player.getDeck()));
+                if (player.isDown()) messages.add(new GamePlayerMessage((MessageType.PlayerDies), player.getId()));
+            }
+            for (Enemy enemy : enemies)
+            {
+                if (enemy.isDead()) messages.add(new GameEnemyMessage(MessageType.EnemyDies, enemy.getId()));
             }
 
             Player currentPlayer = game.getCurrentPlayer();
