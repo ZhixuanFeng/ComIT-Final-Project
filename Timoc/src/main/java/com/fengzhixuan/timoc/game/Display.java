@@ -1,6 +1,7 @@
 package com.fengzhixuan.timoc.game;
 
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
+import com.fengzhixuan.timoc.websocket.message.game.DisplayStateMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GameMessage;
 import com.fengzhixuan.timoc.websocket.message.game.MessageType;
 
@@ -211,6 +212,8 @@ public class Display
                     totalSelectedEffects.setTargetPosition(targetPosition);
 
                     // play cards
+                    pauseControl();
+
                     game.playerPlaysCard(game.getCurrentPlayer(), totalSelectedEffects);
                 }
                 break;
@@ -235,11 +238,14 @@ public class Display
                     return null; // fail
                 }
 
+                pauseControl();
+
                 Card[] selectedCards = getSelectedCardsFromPlayer(currentPlayer);
                 game.playerReplacesCards(currentPlayer, selectedCards);  // sends display status
                 return null;
             case 8:  // discard
                 if (numOfCardsSelected == 0) return null;
+                pauseControl();
                 currentPlayer = game.getCurrentPlayer();
                 selectedCards = getSelectedCardsFromPlayer(currentPlayer);
                 game.playerDiscardsCards(currentPlayer, selectedCards);  // sends display status
@@ -281,5 +287,12 @@ public class Display
             }
         }
         return selectedCards;
+    }
+
+    private void pauseControl()
+    {
+        state = displayState.NotControlling;
+        cursorPosition = 15;
+        game.addDisplayMessage(new DisplayStateMessage(toInteger()));
     }
 }

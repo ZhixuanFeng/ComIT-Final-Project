@@ -49,7 +49,7 @@ public class TotalSelectedEffects
 
         pokerHand = Hand.identifyHand(selectedCards);
 
-        float effectMultiplier = 0f;
+        float effectMultiplier = 1f;
         switch (pokerHand)
         {
             case HighCard:
@@ -81,13 +81,17 @@ public class TotalSelectedEffects
                 effectMultiplier = 10f;
                 break;
         }
-        attack = Math.round(attack * effectMultiplier);
-        block = Math.round(block * effectMultiplier);
-        heal = Math.round(heal * effectMultiplier);
-        mana = Math.round(mana * effectMultiplier);
-        draw = Math.round(draw * effectMultiplier);
-        revive = Math.round(revive * effectMultiplier);
-        taunt = Math.round(taunt * effectMultiplier);
+
+        if (effectMultiplier != 1)
+        {
+            attack = Math.round(attack * effectMultiplier);
+            block = Math.round(block * effectMultiplier);
+            heal = Math.round(heal * effectMultiplier);
+            mana = Math.round(mana * effectMultiplier);
+            draw = Math.round(draw * effectMultiplier);
+            revive = Math.round(revive * effectMultiplier);
+            taunt = Math.round(taunt * effectMultiplier);
+        }
     }
 
     public boolean doNeedToSelectTarget()

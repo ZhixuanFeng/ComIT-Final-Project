@@ -86,7 +86,7 @@ public class Game
         // send game, player, enemy information to display
         addDisplayMessage(new GameInfoMessage(this));
         addDisplayMessage(new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
-        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyInfo, getAliveEnemiesWithoutNulls()));
+//        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyInfo, getAliveEnemiesWithoutNulls()));
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             addDisplayMessage(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));
@@ -307,11 +307,11 @@ public class Game
         }
 
         // generates hate
-        if (attack > 0)
+        if (damageDealt > 0)
         {
             player.increaseHate(2, "attack");
         }
-        else if (heal > 0 || mana > 0 || revive > 0)
+        else if (healed > 0 || manaRestored > 0)
         {
             player.increaseHate(1, "heal");
         }

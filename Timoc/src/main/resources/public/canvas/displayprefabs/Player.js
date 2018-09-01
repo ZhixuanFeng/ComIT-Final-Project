@@ -168,10 +168,10 @@ function animatePlayerCardUseOnPlayer(cards) {
     let cardMinis = [];
     cards.forEach(function (card) {
         game.time.events.add(delay, createCardMini, player);
-        delay += 200;
+        delay += 300;
     });
-    game.time.events.add(200 * cards.length, processNextMessage, game);
-    game.time.events.add(300 * cards.length, finish, game);
+    game.time.events.add(300 * cards.length, processNextMessage, game);
+    game.time.events.add(500 * cards.length, finish, game);
 
     function createCardMini() {
         let cardMini = new CardMini(game, undefined, 'cardMini', false, false, Phaser.Physics.ARCADE, cards[cardMinis.length]);
@@ -202,9 +202,9 @@ function animatePlayerCardUseOnEnemy(cards, enemy) {
     function shootCards() {
         cards.forEach(function (card) {
             game.time.events.add(delay, createCardMini, player);
-            delay += 200;
+            delay += 300;
         });
-        game.time.events.add(200 * cards.length, processNextMessage, game);
+        game.time.events.add(300 * cards.length, processNextMessage, game);
 
         let count = 0;
         function createCardMini() {
