@@ -339,6 +339,9 @@ function processMessage() {
         case messageCode.PlayerDies:
             playerMap[message.id].sprite.dropDead();
             break;
+        case messageCode.PlayerRevive:
+            playerMap[message.id].sprite.revive();
+            break;
         case messageCode.RemoveUsedCard:
             animateCardRemoval();
             break;

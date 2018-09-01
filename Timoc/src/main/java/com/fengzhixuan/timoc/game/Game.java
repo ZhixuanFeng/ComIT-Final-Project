@@ -108,7 +108,7 @@ public class Game
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             Player player = playerEntry.getValue();
-            if (!player.isDown()) player.onRoundStart();
+            player.onRoundStart();
         }
 
         // spawn enemies
@@ -157,14 +157,14 @@ public class Game
 
         // find the first player who's not dead
         Player player = getCurrentPlayer();
-        while (player.isDown() && currentPlayer < playerOrder.length){
+        while (player.isDown() && currentPlayer < playerOrder.length-1){
             currentPlayer++;
             player = getCurrentPlayer();
         }
 
         if (player.isDown())
         {
-            // game over
+            startDefendPhase();
         }
         else
         {
@@ -427,19 +427,20 @@ public class Game
         Player result = null;
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
+            Player player = playerEntry.getValue();
             if (result == null)
             {
-                result = playerEntry.getValue();
+                result = player;
             }
-            else
+            else if (!player.isDown())
             {
-                if (playerEntry.getValue().getHate() > result.getHate() && !playerEntry.getValue().isDown())
+                if (player.getHate() > result.getHate())
                 {
-                    result = playerEntry.getValue();
+                    result = player;
                 }
-                else if (playerEntry.getValue().getHate() == result.getHate() && !playerEntry.getValue().isDown())
+                else if (player.getHate() == result.getHate())
                 {
-                    result = random.nextInt() < 0 ? playerEntry.getValue() : result;
+                    result = random.nextInt() < 0 ? player : result;
                 }
             }
         }

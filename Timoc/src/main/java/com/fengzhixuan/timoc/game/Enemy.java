@@ -81,6 +81,7 @@ public class Enemy
         game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyStartsTurn, id));
 
         Player mostHatePlayer = game.findPlayerWithMostHate();
+        if (mostHatePlayer == null) return;
         for (Card card : getHand())
         {
             if (card.getAttack() > 0)

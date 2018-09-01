@@ -62,6 +62,7 @@ public class Player
         Collections.shuffle(drawPile);  // shuffle
 
         hp = maxHp = 100;
+        if (name.equals("hehe")) hp = 1;
         mana = maxMana = 100;
         hate = 0;
         drawNum = 5;
@@ -75,9 +76,10 @@ public class Player
         discardPile.addAll(handPile);
         handPile.clear();
 
-        // reset block and replace
+        // reset block, replace and hate
         replaceAllowance = 2;
         block = 0;
+        hate = Math.round(hate / 2f);
     }
 
     public void onTurnStart()
@@ -262,6 +264,12 @@ public class Player
         recordDamageTaken(hp+block);
         game.addDisplayMessage(new GamePlayerMessage(MessageType.PlayerDies, id));
 
+        // if player dies during their turn, end turn
+        if (game.getPhase() == RoundPhase.PlayerTurn && game.getCurrentPlayer().id == id)
+        {
+            game.finishPlayerTurn();
+        }
+
         if (game.areAllPlayersDown())
         {
             // game over
@@ -349,6 +357,7 @@ public class Player
         if (!isDown) return 0;
 
         isDown = false;
+        game.addDisplayMessage(new GamePlayerMessage(MessageType.PlayerRevive, id));
         return heal(amount);
     }
 

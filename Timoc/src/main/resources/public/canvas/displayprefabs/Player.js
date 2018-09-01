@@ -255,6 +255,11 @@ function playerDropDead() {
     let tween = game.add.tween(this.sprite).to( { angle: -90, y: this.sprite.y+24}, 500, Phaser.Easing.Exponential.Out, true);
     tween.onComplete.add(processNextMessage);
 }
+
+function playerRevive() {
+    let tween = game.add.tween(this.sprite).to( { angle: 0, y: this.spriteYPos}, 1000, Phaser.Easing.Exponential.Out, true);
+    tween.onComplete.add(processNextMessage);
+}
 // -- user code here --
 
 /* --- start generated code --- */
@@ -318,3 +323,4 @@ Player.prototype.animateInvalidAction = animateInvalidPlayerAction;
 Player.prototype.standOut = playerStandsOut;
 Player.prototype.standBack = playerStandsBack;
 Player.prototype.dropDead = playerDropDead;
+Player.prototype.revive = playerRevive;
