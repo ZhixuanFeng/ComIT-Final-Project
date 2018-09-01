@@ -62,7 +62,6 @@ public class Player
         Collections.shuffle(drawPile);  // shuffle
 
         hp = maxHp = 100;
-        if (name.equals("hehe")) hp = 1;
         mana = maxMana = 100;
         hate = 0;
         drawNum = 5;
@@ -79,7 +78,7 @@ public class Player
         // reset block, replace and hate
         replaceAllowance = 2;
         block = 0;
-        hate = Math.round(hate / 2f);
+        hate = hate / 2;
     }
 
     public void onTurnStart()

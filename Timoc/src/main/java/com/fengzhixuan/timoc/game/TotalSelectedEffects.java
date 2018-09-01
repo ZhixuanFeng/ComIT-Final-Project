@@ -61,7 +61,8 @@ public class TotalSelectedEffects
                 effectMultiplier = 2f;
                 break;
             case ThreeOfAKind:
-                effectMultiplier = 2.5f;
+                revive += 10;
+                effectMultiplier = 2f;
                 break;
             case Straight:
                 manaCost = 0;
@@ -69,6 +70,7 @@ public class TotalSelectedEffects
             case Flush:
                 break;
             case FullHouse:
+                revive += 10;
                 effectMultiplier = 3f;
                 break;
             case FourOfAKind:
