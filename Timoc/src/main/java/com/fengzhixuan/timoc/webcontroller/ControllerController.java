@@ -39,7 +39,7 @@ public class ControllerController
         // if game is already started, meaning this player is reconnecting
         if (game.isGameStarted())
         {
-            // TODO: reconnect
+            messagingTemplate.convertAndSend("/topic/display/" + code, new GamePlayerMessage(MessageType.PlayerReconnected, player.getId()));
             return new GameMessage(MessageType.GameStart);
         }
         // if game is not started yet

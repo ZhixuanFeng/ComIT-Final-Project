@@ -120,6 +120,7 @@ public class RoomController
         }
         if (room.areAllPlayersReady(room))
         {
+            // TODO: check if created game is started in 10 mins, remove if not started
             Game game = Game.createGame(codeInt, room.getPlayers());
             Room.removeRoom(codeInt);
             return new RoomStartMessage();

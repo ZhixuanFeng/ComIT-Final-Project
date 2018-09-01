@@ -2,7 +2,6 @@ package com.fengzhixuan.timoc.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.game.enemies.Orc;
-import com.fengzhixuan.timoc.game.enums.PokerHand;
 import com.fengzhixuan.timoc.game.enums.RoundPhase;
 import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -461,17 +460,17 @@ public class Game
 
     public void addDisplayMessage(GameMessage message)
     {
-        messageSender.addDisplayMessage(message);
+        if (messageSender != null) messageSender.addDisplayMessage(message);
     }
 
     public void addControllerMessage(GameMessage message)
     {
-        messageSender.addControllerMessage(message);
+        if (messageSender != null) messageSender.addControllerMessage(message);
     }
 
     public void flushMessages()
     {
-        messageSender.flush();
+        if (messageSender != null) messageSender.flush();
     }
 
     @JsonIgnore
@@ -563,6 +562,28 @@ public class Game
             }
         }
         return true;
+    }
+
+    public boolean isAnyPlayerConnected()
+    {
+        for (Map.Entry<String, Player> playerEntry : players.entrySet())
+        {
+            if (playerOnlineStatuses.containsKey(playerEntry.getValue()) && playerOnlineStatuses.get(playerEntry.getValue()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void removeGame(int code)
+    {
+        Game game = games.remove(code);
+        for (String playerName : game.playerOrder)
+        {
+            Player.removePlayer(playerName);
+        }
+        if (game != null) game.addDisplayMessage(new GameMessage(MessageType.DisconnectDisplay));
     }
 
     public Integer processControllerInput(int buttonCode)

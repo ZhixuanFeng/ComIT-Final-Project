@@ -108,7 +108,7 @@ public class Room
 
     public static void removeRoom(int code)
     {
-        if (rooms.containsKey(code)) rooms.remove(code);
+        rooms.remove(code);
     }
 
     public boolean isPlayerReady(Player player)

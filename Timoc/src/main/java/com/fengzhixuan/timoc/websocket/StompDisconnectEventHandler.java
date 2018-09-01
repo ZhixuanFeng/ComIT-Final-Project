@@ -1,8 +1,11 @@
 package com.fengzhixuan.timoc.websocket;
 
+import com.fengzhixuan.timoc.game.Game;
 import com.fengzhixuan.timoc.game.GameCodeGenerator;
 import com.fengzhixuan.timoc.game.Player;
 import com.fengzhixuan.timoc.game.Room;
+import com.fengzhixuan.timoc.websocket.message.game.GamePlayerMessage;
+import com.fengzhixuan.timoc.websocket.message.game.MessageType;
 import com.fengzhixuan.timoc.websocket.message.room.RoomLeaveMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.security.Principal;
+import java.util.Map;
 
 @Component
 public class StompDisconnectEventHandler implements ApplicationListener<SessionDisconnectEvent>
@@ -33,16 +37,22 @@ public class StompDisconnectEventHandler implements ApplicationListener<SessionD
             Player player = Player.findPlayerByName(username);
             if (player == null) { return; }
             String codeString = player.getCode();
+            int codeInt = GameCodeGenerator.stringToInt(codeString);
             Room room = Room.getRoomByCode(codeString);
 
-            // if room is not null, it means that user disconnects when being in a room
-            if (room != null)
+            // for now, don't worry when disconnecting from a display
+            String sessionId = headerAccessor.getSessionId(); // Session ID
+            String channel = StompSubscribeEventHandler.sessionIdChannelMap.get(sessionId);
+            if (channel == null) return;
+
+            // user disconnects when being in a room
+            if (channel.equals("room") && room != null)
             {
                 room.removePlayer(player);
                 if (room.isEmpty())
                 {
                     // remove empty room
-                    Room.removeRoom(GameCodeGenerator.stringToInt(codeString));
+                    Room.removeRoom(codeInt);
                 }
                 else
                 {
@@ -52,7 +62,25 @@ public class StompDisconnectEventHandler implements ApplicationListener<SessionD
                 }
                 Player.removePlayer(username);
             }
-            // TODO: if (game != null)
+
+            Game game = Game.getGameByCode(codeInt);
+            if (channel.equals("controller") && game != null)
+            {
+                game.setPlayerOnlineStatus(username, false);
+
+                // show that a player disconnected
+                game.addDisplayMessage(new GamePlayerMessage(MessageType.PlayerDisconnected, player.getId()));
+
+                if (!game.isAnyPlayerConnected())
+                {
+                    // remove empty game
+                    Game.removeGame(codeInt);
+                }
+                // flush the generated message
+                game.flushMessages();
+            }
+
+            StompSubscribeEventHandler.sessionIdChannelMap.remove(sessionId);
         }
     }
 }

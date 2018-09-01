@@ -14,10 +14,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class StompSubscribeEventHandler implements ApplicationListener<SessionSubscribeEvent>
 {
+    // stores what channel the session is connected to
+    public static Map<String, String> sessionIdChannelMap = new HashMap<>();
+
     @Autowired
     @Qualifier("clientOutboundChannel")
     private MessageChannel clientOutboundChannel;
@@ -29,7 +34,8 @@ public class StompSubscribeEventHandler implements ApplicationListener<SessionSu
         if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand()))
         {
             Principal userPrincipal = headerAccessor.getUser();
-            String result = validateSubscription(userPrincipal, headerAccessor.getDestination());
+            String destination = headerAccessor.getDestination();
+            String result = validateSubscription(userPrincipal, destination);
             if (result != null)
             {
                 StompHeaderAccessor errorHeaderAccessor = StompHeaderAccessor.create(StompCommand.ERROR);
@@ -37,12 +43,23 @@ public class StompSubscribeEventHandler implements ApplicationListener<SessionSu
                 errorHeaderAccessor.setSessionId(headerAccessor.getSessionId());
                 this.clientOutboundChannel.send(MessageBuilder.createMessage(new byte[0], errorHeaderAccessor.getMessageHeaders()));
             }
+            else
+            {
+                String channel = destination.split("\\/")[2];
+                if (!channel.equals("topic")) sessionIdChannelMap.put(headerAccessor.getSessionId(), channel);
+            }
         }
     }
 
     // return null if valid
     private String validateSubscription(Principal principal, String topicDestination)
     {
+        // invalid path
+        if (topicDestination == null)
+        {
+            return "Invalid request";
+        }
+
         // split with "/", subs[0] should be "", subs[1] should be "topic"
         String[] subs = topicDestination.split("\\/");
 
@@ -104,8 +121,8 @@ public class StompSubscribeEventHandler implements ApplicationListener<SessionSu
             }
         }
 
-        // game subscription
-        else if (subs[index].equals("game"))
+        // controller subscription
+        else if (subs[index].equals("controller"))
         {
             index++;
             String code = subs[index];
@@ -127,6 +144,14 @@ public class StompSubscribeEventHandler implements ApplicationListener<SessionSu
             {
                 return "Error";
             }
+        }
+        else if (subs[index].equals("display"))
+        {
+            // maybe private game
+        }
+        else
+        {
+            return "Invalid channel";
         }
         return null;
     }

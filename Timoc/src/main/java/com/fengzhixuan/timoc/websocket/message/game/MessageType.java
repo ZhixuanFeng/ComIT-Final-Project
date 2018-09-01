@@ -42,4 +42,7 @@ public class MessageType
     public static final int PlayerPlaysCard_Enemy = 35;
     public static final int EnemyPlaysCard_Player = 36;
     public static final int EnemyPlaysCard_Enemy = 37;
+    public static final int PlayerDisconnected = 38;
+    public static final int PlayerReconnected = 39;
+    public static final int DisconnectDisplay = 40;
 }

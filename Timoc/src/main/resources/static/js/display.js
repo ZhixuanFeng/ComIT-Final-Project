@@ -371,6 +371,18 @@ function processMessage() {
         case messageCode.NoMoreReplace:
             currentPlayerObject.sprite.animateInvalidAction();
             break;
+        case messageCode.PlayerDisconnected:
+            playerMap[message.id].sprite.sprite.tint = 0x606060;
+            processNextMessage();
+            break;
+        case messageCode.PlayerReconnected:
+            playerMap[message.id].sprite.sprite.tint = 0xffffff;
+            processNextMessage();
+            break;
+        case messageCode.DisconnectDisplay:
+            disconnect();
+            processNextMessage();
+            break;
         default:
             processNextMessage();
             break;
@@ -439,5 +451,8 @@ let messageCode = {
     PlayerPlaysCard_Player: 34,
     PlayerPlaysCard_Enemy: 35,
     EnemyPlaysCard_Player: 36,
-    EnemyPlaysCard_Enemy: 37
+    EnemyPlaysCard_Enemy: 37,
+    PlayerDisconnected: 38,
+    PlayerReconnected: 39,
+    DisconnectDisplay: 40
 };

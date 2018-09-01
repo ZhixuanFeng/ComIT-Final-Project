@@ -111,7 +111,14 @@ public class WebController
     public ModelAndView enterController(@RequestParam("code") String code)
     {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("controller");
+        if (GameCodeGenerator.isCodeValid(code.toUpperCase()) && Game.gameCodeExist(code.toUpperCase()))
+        {
+            modelAndView.setViewName("controller");
+        }
+        else
+        {
+            modelAndView.setViewName("error");
+        }
         return modelAndView;
     }
 
