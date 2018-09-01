@@ -1,8 +1,8 @@
 package com.fengzhixuan.timoc.game;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
+import java.util.List;
 
 public class GameCodeGenerator
 {
@@ -20,17 +20,19 @@ public class GameCodeGenerator
         if (codeListInInt == null)
         {
             codeListInInt = new int[MAX_SESSIONS];
-            Random randomGenerator = new Random();
-            for (int i = 0; i < MAX_SESSIONS; i++){
-                codeListInInt[i] = randomGenerator.nextInt(MAX_SESSIONS);
-            }
-            Collections.shuffle(Arrays.asList(codeListInInt));
+            List<Integer> list = new ArrayList<>();
+            for (int i = 0; i < MAX_SESSIONS; i++) list.add(i);
+            Collections.shuffle(list);
+            for (int i = 0; i < MAX_SESSIONS; i++) codeListInInt[i] = list.get(i);
         }
 
         // scan through the code list to find an available code
+        codeListCurrentIndex++;
+        if (codeListCurrentIndex == MAX_SESSIONS-1) codeListCurrentIndex = 0;
         int counter;
-        for (counter = 0; counter < MAX_SESSIONS && Game.gameCodeExist(codeListInInt[codeListCurrentIndex++]); counter++)
+        for (counter = 0; counter < MAX_SESSIONS && (Game.gameCodeExist(codeListInInt[codeListCurrentIndex]) || Room.getRoomByCode(codeListInInt[codeListCurrentIndex]) != null); counter++)
         {
+            codeListCurrentIndex++;
             if (codeListCurrentIndex == MAX_SESSIONS-1) codeListCurrentIndex = 0;
         }
         if (counter == MAX_SESSIONS - 1)
@@ -38,7 +40,7 @@ public class GameCodeGenerator
             // Maximum number of game sessions reached, cannot create new session
             return -1;
         }
-        return codeListInInt[codeListCurrentIndex-1];
+        return codeListInInt[codeListCurrentIndex];
     }
 
     public static String getNextCode()
