@@ -1,5 +1,6 @@
 package com.fengzhixuan.timoc.game;
 
+import com.fengzhixuan.timoc.game.enums.PokerHand;
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
 
 public class TotalSelectedEffects
@@ -18,6 +19,7 @@ public class TotalSelectedEffects
     private int taunt = 0;
 
     private int manaCost = 0;
+    private PokerHand pokerHand;
 
     public TotalSelectedEffects(Card[] selectedCards)
     {
@@ -44,6 +46,48 @@ public class TotalSelectedEffects
             mana = Math.round((float) mana / 2);
             revive = Math.round((float) revive / 2);
         }
+
+        pokerHand = Hand.identifyHand(selectedCards);
+
+        float effectMultiplier = 0f;
+        switch (pokerHand)
+        {
+            case HighCard:
+                break;
+            case OnePair:
+                effectMultiplier = 1.5f;
+                break;
+            case TwoPair:
+                effectMultiplier = 2f;
+                break;
+            case ThreeOfAKind:
+                effectMultiplier = 2.5f;
+                break;
+            case Straight:
+                manaCost = 0;
+                break;
+            case Flush:
+                break;
+            case FullHouse:
+                effectMultiplier = 3f;
+                break;
+            case FourOfAKind:
+                effectMultiplier = 4f;
+                break;
+            case StraightFlush:
+                effectMultiplier = 5f;
+                break;
+            case RoyalFlush:
+                effectMultiplier = 10f;
+                break;
+        }
+        attack = Math.round(attack * effectMultiplier);
+        block = Math.round(block * effectMultiplier);
+        heal = Math.round(heal * effectMultiplier);
+        mana = Math.round(mana * effectMultiplier);
+        draw = Math.round(draw * effectMultiplier);
+        revive = Math.round(revive * effectMultiplier);
+        taunt = Math.round(taunt * effectMultiplier);
     }
 
     public boolean doNeedToSelectTarget()
@@ -119,5 +163,10 @@ public class TotalSelectedEffects
     public int getManaCost()
     {
         return manaCost;
+    }
+
+    public PokerHand getPokerHand()
+    {
+        return pokerHand;
     }
 }

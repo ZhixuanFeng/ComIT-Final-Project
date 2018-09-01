@@ -181,8 +181,6 @@ public class Game
         Card[] cards = totalSelectedEffects.getSelectedCards();
         player.removeCards(cards);
 
-        PokerHand pokerHand = Hand.identifyHand(cards);  // TODO: apply poker hand effect
-
         // consume mana
         player.consumeMana(totalSelectedEffects.getManaCost());
 
