@@ -166,11 +166,16 @@ function addCardsToUI(cards) {
         card.y -= 50;
         card.tween = game.add.tween(card).to( { y: card.y+50 }, 500, Phaser.Easing.Exponential.Out, true);
     }
-    if (card.tween) card.tween.onComplete.add(onComplete);
+    if (card && card.tween) card.tween.onComplete.add(onComplete);
 
     function onComplete() {
         processNextMessage();
     }
+}
+
+function gameOver(ending) {
+    let endingScreen = new EndingScreen(game, undefined, 'endingScreen', false, false, Phaser.Physics.ARCADE, ending);
+    game.time.events.add(1500, endingScreen.fadeIn, endingScreen);
 }
 
 
@@ -383,6 +388,12 @@ function processMessage() {
             disconnect();
             processNextMessage();
             break;
+        case messageCode.GameOverVictory:
+            gameOver('good');
+            break;
+        case messageCode.GameOverDefeat:
+            gameOver('bad');
+            break;
         default:
             processNextMessage();
             break;
@@ -454,5 +465,7 @@ let messageCode = {
     EnemyPlaysCard_Enemy: 37,
     PlayerDisconnected: 38,
     PlayerReconnected: 39,
-    DisconnectDisplay: 40
+    DisconnectDisplay: 40,
+    GameOverVictory: 41,
+    GameOverDefeat: 42
 };

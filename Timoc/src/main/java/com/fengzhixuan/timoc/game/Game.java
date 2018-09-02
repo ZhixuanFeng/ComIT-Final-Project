@@ -27,6 +27,7 @@ public class Game
     private Enemy[] aliveEnemies = new Enemy[4];  // stores enemies by position (0-3)
     private int enemyCount;  // increments each time an enemy is spawn, then is given to the spawned enemy as id
     private boolean gameStarted;  // whether the game has started
+    private boolean gameOver = false;
     private int roundNum;  // current round number
     private Random random;  // random number generator
     private long seed;  // seed of the random
@@ -125,7 +126,7 @@ public class Game
 
         flushMessages();
 
-        startAttackPhase();
+        if (!gameOver) startAttackPhase();
     }
 
     private void spawnEnemy()
@@ -147,7 +148,7 @@ public class Game
     {
         phase = RoundPhase.Attack;
         currentPlayer = 0;
-        startPlayerTurn();
+        if (!gameOver) startPlayerTurn();
     }
 
     private void startPlayerTurn()
@@ -165,7 +166,7 @@ public class Game
         {
             startDefendPhase();
         }
-        else
+        else if (!gameOver)
         {
             display.reset(player.getDrawNum(), playerOrder.length, aliveEnemies.length);
             player.onTurnStart();  // sends PlayerStartsTurn message and PlayerDeck message
@@ -394,7 +395,7 @@ public class Game
 
         flushMessages();
 
-        roundEndPhase();
+        if (!gameOver) roundEndPhase();
     }
 
     private void roundEndPhase()
@@ -413,7 +414,23 @@ public class Game
 
         flushMessages();
 
-        roundStartPhase();
+        if (!gameOver) roundStartPhase();
+    }
+
+    public void defeat()
+    {
+        gameOver = true;
+        display.pauseControl();
+        addDisplayMessage(new GameMessage(MessageType.GameOverDefeat));
+        flushMessages();
+    }
+
+    public void victory()
+    {
+        gameOver = true;
+        display.pauseControl();
+        addDisplayMessage(new GameMessage(MessageType.GameOverVictory));
+        flushMessages();
     }
 
     public void sendDisplayStates()
@@ -579,11 +596,12 @@ public class Game
     public static void removeGame(int code)
     {
         Game game = games.remove(code);
+        if (game == null) return;
         for (String playerName : game.playerOrder)
         {
             Player.removePlayer(playerName);
         }
-        if (game != null) game.addDisplayMessage(new GameMessage(MessageType.DisconnectDisplay));
+        game.addDisplayMessage(new GameMessage(MessageType.DisconnectDisplay));
     }
 
     public Integer processControllerInput(int buttonCode)
@@ -613,6 +631,12 @@ public class Game
     public boolean isGameStarted()
     {
         return gameStarted;
+    }
+
+    public boolean isGameOver()
+    {
+
+        return gameOver;
     }
 
     public RoundPhase getPhase()

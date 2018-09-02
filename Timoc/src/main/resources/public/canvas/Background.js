@@ -20,7 +20,7 @@ function Background(aGame, aX, aY, aKey, aFrame) {
 }
 
 /** @type Phaser.Sprite */
-var Background_proto = Object.create(Phaser.Sprite.prototype);
+let Background_proto = Object.create(Phaser.Sprite.prototype);
 Background.prototype = Background_proto;
 Background.prototype.constructor = Background;
 

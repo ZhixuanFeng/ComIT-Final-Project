@@ -1,24 +1,106 @@
 {
-  "frames": {"dungeonbackground": {
-    "trimmed": true,
-    "rotated": false,
-    "frame": {
-      "x": 2,
-      "y": 2,
-      "w": 320,
-      "h": 240
+  "frames": {
+    "badendbackground": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 324,
+        "y": 271,
+        "w": 320,
+        "h": 240
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 240
+      }
     },
-    "spriteSourceSize": {
-      "x": 0,
-      "y": 0,
-      "w": 320,
-      "h": 240
+    "badendtitle": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 324,
+        "y": 2,
+        "w": 139,
+        "h": 144
+      },
+      "spriteSourceSize": {
+        "x": 89,
+        "y": 0,
+        "w": 139,
+        "h": 144
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 240
+      }
     },
-    "sourceSize": {
-      "w": 320,
-      "h": 240
+    "dungeonbackground": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 2,
+        "y": 271,
+        "w": 320,
+        "h": 240
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 240
+      }
+    },
+    "goodendbackground": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 2,
+        "y": 29,
+        "w": 320,
+        "h": 240
+      },
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 320,
+        "h": 240
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 240
+      }
+    },
+    "goodendtitle": {
+      "trimmed": true,
+      "rotated": false,
+      "frame": {
+        "x": 324,
+        "y": 148,
+        "w": 263,
+        "h": 121
+      },
+      "spriteSourceSize": {
+        "x": 21,
+        "y": 25,
+        "w": 263,
+        "h": 121
+      },
+      "sourceSize": {
+        "w": 320,
+        "h": 240
+      }
     }
-  }},
+  },
   "meta": {
     "app": "Phaser Editor",
     "version": "1",

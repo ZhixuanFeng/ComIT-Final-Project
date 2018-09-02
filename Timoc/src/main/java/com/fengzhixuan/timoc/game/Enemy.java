@@ -76,7 +76,7 @@ public class Enemy
 
     public void onTurnStart()
     {
-        if (dead) return;
+        if (dead || game.isGameOver()) return;
 
         game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyStartsTurn, id));
 
@@ -114,6 +114,7 @@ public class Enemy
                     heal(card.getHeal());
                 }
             }
+            if (game.isGameOver()) return;
         }
 
         game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyEndsTurn, id));
@@ -162,8 +163,7 @@ public class Enemy
         {
             damageTaken = hp;
             hp = 0;
-            dead = true;
-            game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyDies, id));
+            die();
         }
         else
         {
@@ -198,6 +198,11 @@ public class Enemy
             game.addDisplayMessage(new GameEnemyIntMessage(MessageType.EnemyHpChange, id, amountHealed));
     }
 
+    private void die()
+    {
+        dead = true;
+        game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyDies, id));
+    }
 
     public String getName()
     {

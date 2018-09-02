@@ -231,7 +231,6 @@ public class Player
             reducedHp = hp;
             block = 0;
             hp = 0;
-            die();
         }
         else
         {
@@ -255,6 +254,8 @@ public class Player
             game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerBlockChange, id, -reducedBlock));
         if (reducedHp > 0)
             game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerHpChange, id, -reducedHp));
+        if (hp == 0)
+            die();
     }
 
     public void die()
@@ -272,6 +273,7 @@ public class Player
         if (game.areAllPlayersDown())
         {
             // game over
+            game.defeat();
         }
     }
 

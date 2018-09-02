@@ -45,4 +45,6 @@ public class MessageType
     public static final int PlayerDisconnected = 38;
     public static final int PlayerReconnected = 39;
     public static final int DisconnectDisplay = 40;
+    public static final int GameOverVictory = 41;
+    public static final int GameOverDefeat = 42;
 }

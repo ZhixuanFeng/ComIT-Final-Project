@@ -289,7 +289,7 @@ public class Display
         return selectedCards;
     }
 
-    private void pauseControl()
+    public void pauseControl()
     {
         state = displayState.NotControlling;
         cursorPosition = 15;

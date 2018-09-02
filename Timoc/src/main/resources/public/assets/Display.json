@@ -62,10 +62,15 @@
       "type": "script",
       "key": "CardMini",
       "url": "canvas/displayprefabs/CardMini.js"
+    },
+    {
+      "type": "script",
+      "key": "EndingScreen",
+      "url": "canvas/EndingScreen.js"
     }
   ],
   "meta": {
-    "generated": "1535727169706",
+    "generated": "1535844168877",
     "app": "Phaser Editor",
     "url": "http://phasereditor.boniatillo.com",
     "version": "1.0",
