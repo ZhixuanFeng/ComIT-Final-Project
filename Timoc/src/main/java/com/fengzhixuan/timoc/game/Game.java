@@ -81,6 +81,10 @@ public class Game
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             playerEntry.getValue().onGameStart(this);
+            playerEntry.getValue().addCardRewardQuality(5);
+            playerEntry.getValue().addCardRewardQuality(5);
+            playerEntry.getValue().addCardRewardQuality(5);
+            playerEntry.getValue().addGoldReward(10);
         }
         addControllerMessage(new GameMessage(MessageType.GameStart));
 
@@ -470,13 +474,6 @@ public class Game
         addDisplayMessage(new GameMessage(MessageType.GameOverDefeat));
         addControllerMessage(new GameMessage(MessageType.GameOverDefeat));
 
-//        // reward
-//        for (Map.Entry<String, Player> playerEntry : players.entrySet())
-//        {
-//            Player player = playerEntry.getValue();
-//            messageSender.addTargetedControllerMessage(new GameRewardMessage(null, player.getGoldRewards()), player.getName());
-//        }
-
         flushMessages();
     }
 
@@ -485,7 +482,14 @@ public class Game
         gameOver = true;
         display.pauseControl();
         addDisplayMessage(new GameMessage(MessageType.GameOverVictory));
-        addControllerMessage(new GameMessage(MessageType.GameOverDefeat));
+        addControllerMessage(new GameMessage(MessageType.GameOverVictory));
+
+        for (Map.Entry<String, Player> playerEntry : players.entrySet())
+        {
+            playerEntry.getValue().addCardRewardQuality(5);
+            playerEntry.getValue().addCardRewardQuality(5);
+            playerEntry.getValue().addCardRewardQuality(5);
+        }
 
         flushMessages();
     }

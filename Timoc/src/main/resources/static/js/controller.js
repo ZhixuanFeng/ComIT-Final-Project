@@ -11,6 +11,7 @@ let code;
 let isGameStarted = false;
 let instruction;
 let btnGroup;
+let reward;
 
 function init() {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -83,6 +84,35 @@ function onButtonPressed(buttonName) {
     sendMessage('/app/controller/' + code, buttonCode[buttonName]);
 }
 
+function showChest(ending) {
+    btnGroup.visible = false;
+    reward = new Reward(game, undefined, 'reward', false, false, Phaser.Physics.ARCADE, ending);
+}
+
+function showReward(cards, gold) {
+    let numOfItems, xPositions, startingIndex;
+    if (cards.constructor === Array) {
+        numOfItems = cards.length + 1;
+        xPositions = (numOfItems % 2 === 1) ? cardXPositionsOdd : cardXPositions;
+        startingIndex = numOfItems < xPositions.length ? 1 : 0;
+        for (let i = 0; i < cards.length; i++) {
+            let card = new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, xPositions[startingIndex], cards[i]);
+            startingIndex++;
+        }
+    }
+    else {
+        xPositions = cardXPositionsOdd;
+        startingIndex = 1;
+    }
+    let cardFrame = game.add.sprite(xPositions[startingIndex] * 2, cardYPosition * 2, 'card', 'empty_card');
+    cardFrame.scale.setTo(2);
+    let goldIcon = game.add.sprite(cardFrame.position.x + 40, cardFrame.position.y + 32, 'reward', 'gold');
+    goldIcon.anchor.set(0.5);
+    goldIcon.scale.setTo(scale);
+    let goldText = game.add.text(goldIcon.position.x, goldIcon.position.y + 48, gold, {"font": "bold 20px Arial"});
+    goldText.anchor.set(0.5);
+}
+
 
 /*
  * Websocket connectivity
@@ -133,7 +163,17 @@ function processMessage(message) {
         case 3:  // GameStart
             isGameStarted = true;
             instruction.visible = false;
-            btnGroup.visible = true;
+            showChest('victory');
+            // btnGroup.visible = true;
+            break;
+        case 41:  // victory
+            showChest('victory');
+            break;
+        case 42:  // defeat
+            showChest('defeat');
+            break;
+        case 43:  // GameEndReward
+            showReward(message.cards, message.gold);
             break;
     }
 }

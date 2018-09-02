@@ -1,13 +1,39 @@
 {
-  "atlas": [{
-    "type": "atlas",
-    "key": "controller",
-    "textureURL": "assets/atlas/controller.png",
-    "atlasURL": "assets/atlas/controller.json",
-    "format": "TEXTURE_ATLAS_JSON_HASH"
-  }],
+  "atlas": [
+    {
+      "type": "atlas",
+      "key": "controller",
+      "textureURL": "assets/atlas/controller.png",
+      "atlasURL": "assets/atlas/controller.json",
+      "format": "TEXTURE_ATLAS_JSON_HASH"
+    },
+    {
+      "type": "script",
+      "key": "Reward",
+      "url": "canvas/Reward.js"
+    },
+    {
+      "type": "script",
+      "key": "Card",
+      "url": "canvas/prefabs/Card.js"
+    },
+    {
+      "type": "atlas",
+      "key": "card",
+      "textureURL": "assets/atlas/card.png",
+      "atlasURL": "assets/atlas/card.json",
+      "format": "TEXTURE_ATLAS_JSON_HASH"
+    },
+    {
+      "type": "atlas",
+      "key": "reward",
+      "textureURL": "assets/atlas/reward.png",
+      "atlasURL": "assets/atlas/reward.json",
+      "format": "TEXTURE_ATLAS_JSON_HASH"
+    }
+  ],
   "meta": {
-    "generated": "1535403656532",
+    "generated": "1535909719681",
     "app": "Phaser Editor",
     "url": "http://phasereditor.boniatillo.com",
     "version": "1.0",
