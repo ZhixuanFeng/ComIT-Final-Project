@@ -29,6 +29,9 @@ public class Player
     private int maxHp;  // maximum hp
     private int mana;  // current mana of the player
     private int maxMana;  // maximum mana
+    private int STR;  // strength, increases attack power
+    private int VIT;  // vitality, increases blocking power
+    private int INT;  // intelligence, increases healing power
     private int hate;  // current hate of the player, enemies only target player with the highest hate
     private int block;  // how much block the player currently has
     private int drawNum;  // how many cards the player draws at the start of a round
@@ -442,6 +445,36 @@ public class Player
     public void setMaxMana(int maxMana)
     {
         this.maxMana = maxMana;
+    }
+
+    public int getSTR()
+    {
+        return STR;
+    }
+
+    public int getVIT()
+    {
+        return VIT;
+    }
+
+    public int getINT()
+    {
+        return INT;
+    }
+
+    public void increaseSTR(int amount)
+    {
+        STR += amount;
+    }
+
+    public void increaseVIT(int amount)
+    {
+        VIT += amount;
+    }
+
+    public void increaseINT(int amount)
+    {
+        INT += amount;
     }
 
     public int getHate()

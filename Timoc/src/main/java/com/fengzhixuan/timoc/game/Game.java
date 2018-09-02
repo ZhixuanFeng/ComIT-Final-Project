@@ -2,6 +2,7 @@ package com.fengzhixuan.timoc.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fengzhixuan.timoc.game.enemies.Orc;
+import com.fengzhixuan.timoc.game.enums.PokerHand;
 import com.fengzhixuan.timoc.game.enums.RoundPhase;
 import com.fengzhixuan.timoc.websocket.message.game.*;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -86,7 +87,6 @@ public class Game
         // send game, player, enemy information to display
         addDisplayMessage(new GameInfoMessage(this));
         addDisplayMessage(new GamePlayerInfoMessage(MessageType.PlayerInfo, players.values().toArray(new Player[0])));
-//        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyInfo, getAliveEnemiesWithoutNulls()));
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             addDisplayMessage(new GameDeckMessage(MessageType.PlayerDeck, playerEntry.getValue().getId(), playerEntry.getValue().getDeck()));
@@ -184,8 +184,9 @@ public class Game
         // consume mana
         player.consumeMana(totalSelectedEffects.getManaCost());
 
-        int attack = 0, heal = 0, mana = 0, draw = 0, revive = 0;
+        int attack, heal, mana, draw, revive, bonus;
         int healed = 0, manaRestored = 0, revived = 0, damageDealt = 0;
+        PokerHand pokerHand = totalSelectedEffects.getPokerHand();
         switch (totalSelectedEffects.getTargetingMode())
         {
             case Self:
@@ -205,6 +206,12 @@ public class Game
 
                 // no need to apply effects if they are all zero
                 if (heal == 0 && mana == 0 && revive == 0) break;
+
+                // apply INT bonus
+                bonus = player.getINT();
+                heal += bonus;
+                mana += bonus;
+                revive += bonus;
 
                 // apply effects
                 revived += targetPlayer.revive(revive);
@@ -230,6 +237,9 @@ public class Game
                 // no need to apply effects if they are all zero
                 if (attack == 0) break;
 
+                // apply STR bonus
+                attack += player.getSTR();
+
                 // apply effect
                 damageDealt += targetEnemy.takeDamage(attack, player);
 
@@ -250,6 +260,12 @@ public class Game
 
                 // no need to apply effects if they are all zero
                 if (heal == 0 && mana == 0 && revive == 0) break;
+
+                // apply INT bonus
+                bonus = Math.round((float) player.getINT() / 2);
+                heal += bonus;
+                mana += bonus;
+                revive += bonus;
 
                 // apply effects
                 for (Map.Entry<String, Player> playerEntry : players.entrySet())
@@ -277,6 +293,9 @@ public class Game
                 // no need to apply effects if they are all zero
                 if (attack == 0) break;
 
+                // apply STR bonus
+                attack += Math.round((float) player.getSTR() / 2);
+
                 // apply effects
                 for (Enemy enemy : aliveEnemies)
                 {
@@ -291,7 +310,7 @@ public class Game
         // block
         if (totalSelectedEffects.getBlock() > 0)
         {
-            player.increaseBlock(totalSelectedEffects.getBlock());
+            player.increaseBlock(totalSelectedEffects.getBlock() + player.getVIT());
         }
 
         // taunt effect
@@ -314,6 +333,33 @@ public class Game
         else if (healed > 0 || manaRestored > 0)
         {
             player.increaseHate(1, "heal");
+        }
+
+        // if a flush is played, player gain STR, VIT or INT
+        int statIncrease = 0;
+        if (pokerHand == PokerHand.Flush) statIncrease = 1;
+        else if (pokerHand == PokerHand.StraightFlush) statIncrease = 2;
+        else if (pokerHand == pokerHand.RoyalFlush) statIncrease = 3;
+        if (statIncrease > 0)
+        {
+            switch (cards[0].getSuit())
+            {
+                case 0:  // diamond flush increases STR
+                    player.increaseSTR(statIncrease);
+                    break;
+                case 1:  // club flush increases STR or VIT
+                    if (random.nextInt(2) == 0)
+                        player.increaseSTR(statIncrease);
+                    else
+                        player.increaseVIT(statIncrease);
+                    break;
+                case 2:  // heart flush increases INT
+                    player.increaseINT(statIncrease);
+                    break;
+                case 3:  // spade flush increases VIT
+                    player.increaseVIT(statIncrease);
+                    break;
+            }
         }
 
         // update display states

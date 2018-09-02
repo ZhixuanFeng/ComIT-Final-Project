@@ -74,13 +74,15 @@ public class TotalSelectedEffects
                 effectMultiplier = 3f;
                 break;
             case FourOfAKind:
-                effectMultiplier = 4f;
+                effectMultiplier = 3f;
                 break;
             case StraightFlush:
-                effectMultiplier = 5f;
+                manaCost = 0;
+                effectMultiplier = 3f;
                 break;
             case RoyalFlush:
-                effectMultiplier = 10f;
+                manaCost = 0;
+                effectMultiplier = 5f;
                 break;
         }
 
