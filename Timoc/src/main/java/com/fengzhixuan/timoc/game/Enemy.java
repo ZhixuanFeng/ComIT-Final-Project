@@ -28,6 +28,8 @@ public class Enemy
     protected int drawNum;  // how many cards the enemy draws at the start of a round
     protected boolean dead;
 
+    protected int gold;  // how much gold reward for killing this enemy
+
     public Enemy(Game game, String name, int id, int position)
     {
         this.game = game;
@@ -202,6 +204,7 @@ public class Enemy
     {
         dead = true;
         game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyDies, id));
+        game.addGoldRewardAllPlayers(gold);
     }
 
     public String getName()

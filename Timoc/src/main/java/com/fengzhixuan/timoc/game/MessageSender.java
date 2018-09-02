@@ -4,8 +4,9 @@ import com.fengzhixuan.timoc.websocket.message.game.GameMessage;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MessageSender
 {
@@ -16,6 +17,7 @@ public class MessageSender
     // message buffers
     private List<GameMessage> displayMessages = new ArrayList<>();
     private List<GameMessage> controllerMessages = new ArrayList<>();
+    private Map<String, List<GameMessage>> usernameControllerMsgsMap = new HashMap<>();
 
     public MessageSender(SimpMessageSendingOperations messagingTemplate, String codeString)
     {
@@ -33,18 +35,34 @@ public class MessageSender
         controllerMessages.add(message);
     }
 
+    public void addTargetedControllerMessage(GameMessage message, String name)
+    {
+        if (!usernameControllerMsgsMap.containsKey(name))
+            usernameControllerMsgsMap.put(name, new ArrayList<>());
+
+        usernameControllerMsgsMap.get(name).add(message);
+    }
+
     // send out all messages and clear buffers
     public void flush()
     {
         if (displayMessages.size() > 0)
         {
             messagingTemplate.convertAndSend("/topic/display/" + codeString, displayMessages);
-            displayMessages = new ArrayList<>();
+            displayMessages.clear();
         }
         if (controllerMessages.size() > 0)
         {
             messagingTemplate.convertAndSend("/topic/controller/" + codeString, controllerMessages);
-            controllerMessages = new ArrayList<>();
+            controllerMessages.clear();
+        }
+
+        for (Map.Entry<String, List<GameMessage>> entry : usernameControllerMsgsMap.entrySet())
+        {
+            String name = entry.getKey();
+            List<GameMessage> messages = entry.getValue();
+            messagingTemplate.convertAndSendToUser(name, "/topic/controller/" + codeString, messages);
+            messages.clear();
         }
     }
 }

@@ -25,6 +25,8 @@ public class Orc extends Enemy
         hp = maxHp;
         str = 0;
         drawNum = 1;
+
+        gold = game.nextInt(5) + 7 + id;
     }
 
     // orc is a simple enemy, it's not necessary to save a deck in memory for it

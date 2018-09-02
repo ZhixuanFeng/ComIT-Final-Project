@@ -468,6 +468,15 @@ public class Game
         gameOver = true;
         display.pauseControl();
         addDisplayMessage(new GameMessage(MessageType.GameOverDefeat));
+        addControllerMessage(new GameMessage(MessageType.GameOverDefeat));
+
+//        // reward
+//        for (Map.Entry<String, Player> playerEntry : players.entrySet())
+//        {
+//            Player player = playerEntry.getValue();
+//            messageSender.addTargetedControllerMessage(new GameRewardMessage(null, player.getGoldRewards()), player.getName());
+//        }
+
         flushMessages();
     }
 
@@ -476,7 +485,17 @@ public class Game
         gameOver = true;
         display.pauseControl();
         addDisplayMessage(new GameMessage(MessageType.GameOverVictory));
+        addControllerMessage(new GameMessage(MessageType.GameOverDefeat));
+
         flushMessages();
+    }
+
+    public void addGoldRewardAllPlayers(int gold)
+    {
+        for (Map.Entry<String, Player> playerEntry : players.entrySet())
+        {
+            playerEntry.getValue().addGoldReward(gold);
+        }
     }
 
     public void sendDisplayStates()
@@ -706,6 +725,11 @@ public class Game
     public long getSeed()
     {
         return seed;
+    }
+
+    public int nextInt(int bound)
+    {
+        return random.nextInt(bound);
     }
 
     public String toString()

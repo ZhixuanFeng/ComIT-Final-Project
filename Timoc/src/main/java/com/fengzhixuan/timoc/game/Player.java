@@ -38,6 +38,11 @@ public class Player
     private int replaceAllowance;  // how many more cards can be replaced in this turn
     private boolean isDown;  // is player dead?
 
+    // stores the qualities of the cards to be generated, becomes empty again after player receives the rewards
+    private List<Integer> cardRewardQualities = new ArrayList<>();
+    // accumulated gold rewards
+    private int goldRewards = 0;
+
     // statistic attributes
     private int damageDealt;  // records the total damage the player has dealt to enemies
     private int damageBlocked;  // records the total damage the player has blocked
@@ -112,7 +117,7 @@ public class Player
             {
                 shuffleDiscardPileIntoDrawPile();
             }
-            int indecks = drawPile.remove(drawPile.size()-1);
+            int indecks = drawPile.remove(drawPile.size() - 1);
             handPile.add(indecks);
             cardsDrawn[i] = indecks;
         }
@@ -132,11 +137,11 @@ public class Player
             {
                 for (int j = 1; j < handPile.size() - i; j++)
                 {
-                    int r1 = Card.indecksToRank(handPile.get(j-1));
+                    int r1 = Card.indecksToRank(handPile.get(j - 1));
                     int r2 = Card.indecksToRank(handPile.get(j));
-                    if (r1 > r2 || r1 == r2 && Card.indecksToSuit(handPile.get(j-1)) > Card.indecksToSuit(handPile.get(j)))
+                    if (r1 > r2 || r1 == r2 && Card.indecksToSuit(handPile.get(j - 1)) > Card.indecksToSuit(handPile.get(j)))
                     {
-                        int c = handPile.get(j-1);
+                        int c = handPile.get(j - 1);
                         handPile.set(j - 1, handPile.get(j));
                         handPile.set(j, c);
                     }
@@ -264,7 +269,7 @@ public class Player
     public void die()
     {
         isDown = true;
-        recordDamageTaken(hp+block);
+        recordDamageTaken(hp + block);
         game.addDisplayMessage(new GamePlayerMessage(MessageType.PlayerDies, id));
 
         // if player dies during their turn, end turn
@@ -522,6 +527,31 @@ public class Player
     public void setDown(boolean down)
     {
         isDown = down;
+    }
+
+    public List<Integer> getCardRewardQualities()
+    {
+        return cardRewardQualities;
+    }
+
+    public void addCardRewardQuality(int quality)
+    {
+        cardRewardQualities.add(quality);
+    }
+
+    public int getGoldRewards()
+    {
+        return goldRewards;
+    }
+
+    public void addGoldReward(int gold)
+    {
+        goldRewards += gold;
+    }
+
+    public void clearGoldReward()
+    {
+        goldRewards = 0;
     }
 
     @JsonIgnore
