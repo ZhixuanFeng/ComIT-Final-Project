@@ -5,6 +5,7 @@ import com.fengzhixuan.timoc.game.enums.TargetingMode;
 
 public class TotalSelectedEffects
 {
+    private Player player;
     private Card[] selectedCards;
     private TargetingMode targetingMode;
     private int TargetPosition;
@@ -21,15 +22,16 @@ public class TotalSelectedEffects
     private int manaCost = 0;
     private PokerHand pokerHand;
 
-    public TotalSelectedEffects(Card[] selectedCards)
+    public TotalSelectedEffects(Player player, Card[] selectedCards)
     {
+        this.player = player;
         this.selectedCards = selectedCards;
         for (Card card : selectedCards)
         {
-            attack += card.getAttack();
-            block += card.getBlock();
-            heal += card.getHeal();
-            mana += card.getMana();
+            attack += card.getAttack() + player.getSTR();
+            block += card.getBlock() + player.getVIT();
+            heal += card.getHeal() + player.getINT();
+            mana += card.getMana() + player.getINT();
             aoe += card.getAoe();
             draw += card.getDraw();
             revive += card.getRevive();

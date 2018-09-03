@@ -221,12 +221,6 @@ public class Game
                 // no need to apply effects if they are all zero
                 if (heal == 0 && mana == 0 && revive == 0) break;
 
-                // apply INT bonus
-                bonus = player.getINT();
-                heal += bonus;
-                mana += bonus;
-                revive += bonus;
-
                 // apply effects
                 revived += targetPlayer.revive(revive);
                 healed += targetPlayer.heal(heal);
@@ -251,9 +245,6 @@ public class Game
                 // no need to apply effects if they are all zero
                 if (attack == 0) break;
 
-                // apply STR bonus
-                attack += player.getSTR();
-
                 // apply effect
                 damageDealt += targetEnemy.takeDamage(attack, player);
 
@@ -274,12 +265,6 @@ public class Game
 
                 // no need to apply effects if they are all zero
                 if (heal == 0 && mana == 0 && revive == 0) break;
-
-                // apply INT bonus
-                bonus = Math.round((float) player.getINT() / 2);
-                heal += bonus;
-                mana += bonus;
-                revive += bonus;
 
                 // apply effects
                 for (Map.Entry<String, Player> playerEntry : players.entrySet())
@@ -307,9 +292,6 @@ public class Game
                 // no need to apply effects if they are all zero
                 if (attack == 0) break;
 
-                // apply STR bonus
-                attack += Math.round((float) player.getSTR() / 2);
-
                 // apply effects
                 for (Enemy enemy : existingEnemies)
                 {
@@ -324,7 +306,7 @@ public class Game
         // block
         if (totalSelectedEffects.getBlock() > 0)
         {
-            player.increaseBlock(totalSelectedEffects.getBlock() + player.getVIT());
+            player.increaseBlock(totalSelectedEffects.getBlock());
         }
 
         // taunt effect

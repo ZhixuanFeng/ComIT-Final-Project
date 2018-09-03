@@ -181,7 +181,7 @@ public class Display
                         Player currentPlayer = game.getCurrentPlayer();
 
                         // check if player should select target
-                        totalSelectedEffects = new TotalSelectedEffects(getSelectedCardsFromPlayer(currentPlayer));
+                        totalSelectedEffects = new TotalSelectedEffects(currentPlayer, getSelectedCardsFromPlayer(currentPlayer));
                         isAOE = totalSelectedEffects.isAoe();
                         if (totalSelectedEffects.doNeedToSelectTarget())
                         {
@@ -217,7 +217,7 @@ public class Display
                 else  // selecting targets
                 {
                     Player currentPlayer = game.getCurrentPlayer();
-                    totalSelectedEffects = new TotalSelectedEffects(getSelectedCardsFromPlayer(currentPlayer));
+                    totalSelectedEffects = new TotalSelectedEffects(currentPlayer, getSelectedCardsFromPlayer(currentPlayer));
 
                     if (currentPlayer.getMana() < totalSelectedEffects.getManaCost())
                     {

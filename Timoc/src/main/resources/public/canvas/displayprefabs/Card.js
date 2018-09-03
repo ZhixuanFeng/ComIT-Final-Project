@@ -87,6 +87,7 @@ function Card(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType,
     this.info = cardInfo;
     this.cardFrame = this.game.add.button(0, 0, 'card', cardClicked, this, null, 'empty_card', null, null, this);
 
+    // TODO: show effect amount = card effect amount + player stat bonus
     let numOfEffect = 0;
     for (let i = 0; i < 8 && numOfEffect < 4; i++) {
         let effectName = effectNames[i];
