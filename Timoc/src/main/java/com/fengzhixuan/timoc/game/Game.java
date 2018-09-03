@@ -27,7 +27,7 @@ public class Game
     private String[] playerOrder;  // stores all players' names, represents the order of players(who's player1, who plays first) in attack phase, is also ids of the players
     private int currentPlayer;  // id of current player / current index to playerOrder array, represents whose turn it is now
     private Map<Integer, Enemy> enemies = new HashMap<>();  // mapped by id
-    private Enemy[] aliveEnemies = new Enemy[4];  // stores enemies by position (0-3)
+    private Enemy[] existingEnemies = new Enemy[4];  // stores enemies by position (0-3)
     private int enemyCount;  // increments each time an enemy is spawn, then is given to the spawned enemy as id
     private boolean gameStarted;  // whether the game has started
     private boolean gameOver = false;
@@ -117,14 +117,14 @@ public class Game
         spawnEnemy();
 
         // deal with all enemies
-        for (Enemy enemy : aliveEnemies)
+        for (Enemy enemy : existingEnemies)
         {
             if (enemy != null)
                 enemy.onRoundStart();
         }
 
         addDisplayMessage(new GamePlayerInfoMessage(MessageType.PlayerUpdateAll, players.values().toArray(new Player[0])));
-        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyUpdateAll, getAliveEnemiesWithoutNulls()));
+        addDisplayMessage(new GameEnemyInfoMessage(MessageType.EnemyUpdateAll, getExistingEnemiesWithoutNulls()));
 
         flushMessages();
 
@@ -152,7 +152,7 @@ public class Game
         if (newEnemy == null) return;
         enemies.put(newEnemy.getId(), newEnemy);
         enemyCount++;
-        aliveEnemies[positionId] = newEnemy;
+        existingEnemies[positionId] = newEnemy;
         addDisplayMessage(new GameEnemySpawnMessage(MessageType.EnemyInfo, newEnemy));
     }
 
@@ -181,7 +181,7 @@ public class Game
         }
         else if (!gameOver)
         {
-            display.reset(player.getDrawNum(), playerOrder.length, aliveEnemies.length);
+            display.reset(player.getDrawNum(), playerOrder.length, existingEnemies.length);
             player.onTurnStart();  // sends PlayerStartsTurn message and PlayerDeck message
 
             flushMessages();
@@ -193,6 +193,7 @@ public class Game
     {
         Card[] cards = totalSelectedEffects.getSelectedCards();
         player.removeCards(cards);
+        addDisplayMessage(new GameMessage(MessageType.RemovePlayedCards));
 
         // consume mana
         player.consumeMana(totalSelectedEffects.getManaCost());
@@ -310,7 +311,7 @@ public class Game
                 attack += Math.round((float) player.getSTR() / 2);
 
                 // apply effects
-                for (Enemy enemy : aliveEnemies)
+                for (Enemy enemy : existingEnemies)
                 {
                     if (enemy != null) damageDealt += enemy.takeDamage(attack, player);
                 }
@@ -382,20 +383,13 @@ public class Game
         flushMessages();
     }
 
-    public void playerDiscardsCards(Player player, Card[] cards)
+    public void playerDiscardsCard(Player player, Card card)
     {
         // remove cards from hand
-        player.removeCards(cards);
-
-        // find how much mana can be generated
-        int manaGeneration = 0;
-        for (Card card : cards)
-        {
-            manaGeneration += card.getRank();
-        }
+        player.removeCard(card.getIndecks());
 
         // restore mana and record amount restored
-        int manaRestored = player.restoreMana(manaGeneration);
+        int manaRestored = player.restoreMana(card.getRank());
         player.recordManaRestored(manaRestored);
 
         // update front end
@@ -405,14 +399,14 @@ public class Game
         flushMessages();
     }
 
-    public void playerReplacesCards(Player player, Card[] cards)
+    public void playerReplacesCard(Player player, Card card)
     {
         // remove cards from hand
-        player.removeCards(cards);
+        player.removeCard(card.getIndecks());
 
         // replace with new cards
-        player.drawCards(cards.length);
-        player.setReplaceAllowance(player.getReplaceAllowance() - cards.length);
+        player.drawCards(1);
+        player.setReplaceAllowance(player.getReplaceAllowance() - 1);
 
         // update front end
         display.reset(player.getHandPile().size());
@@ -444,7 +438,7 @@ public class Game
     {
         phase = RoundPhase.Defend;
 
-        for (Enemy enemy : aliveEnemies)
+        for (Enemy enemy : existingEnemies)
         {
             if (enemy != null && !enemy.isDead())
             {
@@ -462,12 +456,12 @@ public class Game
         phase = RoundPhase.RoundEnd;
 
         // remove dead enemies
-        for (int i = 0; i < aliveEnemies.length; i++)
+        for (int i = 0; i < existingEnemies.length; i++)
         {
-            if (aliveEnemies[i] != null && aliveEnemies[i].isDead())
+            if (existingEnemies[i] != null && existingEnemies[i].isDead())
             {
-                addDisplayMessage(new GameEnemyMessage(MessageType.RemoveEnemy, aliveEnemies[i].getId()));
-                aliveEnemies[i] = null;
+                addDisplayMessage(new GameEnemyMessage(MessageType.RemoveEnemy, existingEnemies[i].getId()));
+                existingEnemies[i] = null;
             }
         }
 
@@ -596,23 +590,31 @@ public class Game
     }
 
     @JsonIgnore
-    public Enemy[] getAliveEnemies()
+    public int getNumOfAliveEnemies()
     {
-        return aliveEnemies;
+        int count = 0;
+        for (Enemy enemy : existingEnemies) if (enemy != null && !enemy.isDead()) count++;
+        return count;
     }
 
     @JsonIgnore
-    public Enemy[] getAliveEnemiesWithoutNulls()
+    public Enemy[] getExistingEnemies()
+    {
+        return existingEnemies;
+    }
+
+    @JsonIgnore
+    public Enemy[] getExistingEnemiesWithoutNulls()
     {
         int count = 0;
-        for (Enemy enemy : aliveEnemies) if (enemy != null) count++;
+        for (Enemy enemy : existingEnemies) if (enemy != null) count++;
         Enemy[] enemies = new Enemy[count];
         count = 0;
-        for (int i = 0; i < aliveEnemies.length; i++)
+        for (int i = 0; i < existingEnemies.length; i++)
         {
-            if (aliveEnemies[i] != null)
+            if (existingEnemies[i] != null)
             {
-                enemies[count] = aliveEnemies[i];
+                enemies[count] = existingEnemies[i];
                 count++;
             }
         }
@@ -622,17 +624,17 @@ public class Game
     public int findAvailableEnemyPosition()
     {
         int count = 0;
-        for (Enemy enemy : aliveEnemies) if (enemy != null) count++;
+        for (Enemy enemy : existingEnemies) if (enemy != null) count++;
         if (count == 4) return -1;
         int positionId;
-        for (positionId = 0; aliveEnemies[positionId] != null && positionId < aliveEnemies.length; positionId++);
+        for (positionId = 0; existingEnemies[positionId] != null && positionId < existingEnemies.length; positionId++);
         return positionId;
     }
 
     @JsonIgnore
     public Enemy getEnemyByPosition(int position)
     {
-        return aliveEnemies[position];
+        return existingEnemies[position];
     }
 
     public static boolean gameCodeExist(int code)

@@ -2,6 +2,7 @@ package com.fengzhixuan.timoc.game;
 
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
 import com.fengzhixuan.timoc.websocket.message.game.DisplayStateMessage;
+import com.fengzhixuan.timoc.websocket.message.game.GameIntMessage;
 import com.fengzhixuan.timoc.websocket.message.game.GameMessage;
 import com.fengzhixuan.timoc.websocket.message.game.MessageType;
 
@@ -84,7 +85,8 @@ public class Display
                         boolean moved = false;
                         for (i = 1; cursorPosition - i > 9; i++)
                         {
-                            if (game.getAliveEnemies()[cursorPosition - 10 - i] != null)
+                            Enemy enemy = game.getExistingEnemies()[cursorPosition - 10 - i];
+                            if (enemy != null && !enemy.isDead())
                             {
                                 cursorPosition -= i;
                                 moved = true;
@@ -105,7 +107,7 @@ public class Display
                 else  // selecting targets
                 {
                     if (cursorPosition == 9 || cursorPosition == 13) return null;
-                    if (cursorPosition < 10)
+                    if (cursorPosition < 10 && cursorPosition - 5 < numOfPlayers)
                     {
                         cursorPosition++;
                     }
@@ -115,7 +117,8 @@ public class Display
                         boolean moved = false;
                         for (i = 1; cursorPosition + i < 14; i++)
                         {
-                            if (game.getAliveEnemies()[cursorPosition - 10 + i] != null)
+                            Enemy enemy = game.getExistingEnemies()[cursorPosition - 10 + i];
+                            if (enemy != null && !enemy.isDead())
                             {
                                 cursorPosition += i;
                                 moved = true;
@@ -148,18 +151,18 @@ public class Display
                 }
                 else  // selecting targets
                 {
-                    if (cursorPosition < 14 && cursorPosition > 9 || numOfEnemies == 0) return null;
+                    if (cursorPosition < 14 && cursorPosition > 9 || numOfEnemies == 0 || game.getNumOfAliveEnemies() == 0) return null;
                     int offset = cursorPosition - 6;
-                    if (game.getAliveEnemies()[offset] == null)
+                    if (game.getExistingEnemies()[offset] == null)
                     {
                         for (int i = 1; i < 3; i++)
                         {
-                            if (offset - i >= 0 && game.getAliveEnemies()[offset-i] != null)
+                            if (offset - i >= 0 && game.getExistingEnemies()[offset-i] != null)
                             {
                                 offset -= i;
                                 break;
                             }
-                            if (offset + i <= 3 && game.getAliveEnemies()[offset+i] != null)
+                            if (offset + i <= 3 && game.getExistingEnemies()[offset+i] != null)
                             {
                                 offset += i;
                                 break;
@@ -170,25 +173,45 @@ public class Display
                 }
                 break;
             case 5:  // play
-                if (numOfCardsSelected == 0) return null;
-
                 if (state == displayState.SelectingCards)
                 {
-                    Player currentPlayer = game.getCurrentPlayer();
-
-                    // check if player should select target
-                    totalSelectedEffects = new TotalSelectedEffects(getSelectedCardsFromPlayer(currentPlayer));
-                    isAOE = totalSelectedEffects.isAoe();
-                    if (totalSelectedEffects.doNeedToSelectTarget())
+                    // if card at cursor position is selected, play it along with other selected
+                    if (cardStates[cursorPosition])
                     {
-                        state = displayState.SelectingTargets;
-                        cursorPosition = 6;
+                        Player currentPlayer = game.getCurrentPlayer();
+
+                        // check if player should select target
+                        totalSelectedEffects = new TotalSelectedEffects(getSelectedCardsFromPlayer(currentPlayer));
+                        isAOE = totalSelectedEffects.isAoe();
+                        if (totalSelectedEffects.doNeedToSelectTarget())
+                        {
+                            state = displayState.SelectingTargets;
+                            // if the cards have attack, move cursor to enemy
+                            if (totalSelectedEffects.getAttack() > 0 && game.getNumOfAliveEnemies() > 0)
+                            {
+                                Enemy[] enemyArray = game.getExistingEnemies();
+                                int index = 0;
+                                while (enemyArray[index] == null || enemyArray[index].isDead()) index++;
+                                cursorPosition = 10 + index;
+                            }
+                            // else move cursor to player
+                            else
+                            {
+                                cursorPosition = 6;
+                            }
+                        }
+                        else
+                        {
+                            // play cards
+                            totalSelectedEffects.setTargetingMode(TargetingMode.Self);
+                            game.playerPlaysCard(currentPlayer, totalSelectedEffects);
+                        }
                     }
+                    // select this card
                     else
                     {
-                        // play cards
-                        totalSelectedEffects.setTargetingMode(TargetingMode.Self);
-                        game.playerPlaysCard(currentPlayer, totalSelectedEffects);
+                        cardStates[cursorPosition] = true;
+                        numOfCardsSelected++;
                     }
                 }
                 else  // selecting targets
@@ -213,14 +236,28 @@ public class Display
 
                     // play cards
                     pauseControl();
-
                     game.playerPlaysCard(game.getCurrentPlayer(), totalSelectedEffects);
+
+                    // auto finish player turn if player has no more cards left
+                    if (currentPlayer.getHandPile().size() == 0) game.finishPlayerTurn();
                 }
                 break;
             case 6:  // cancel
                 if (state == displayState.SelectingCards)
                 {
-                    reset(numOfCards, numOfPlayers, numOfEnemies);
+                    // if current card is selected, deselect
+                    if (cardStates[cursorPosition])
+                    {
+                        cardStates[cursorPosition] = false;
+                        numOfCardsSelected--;
+                    }
+                    // otherwise deselect all selected cards
+                    else
+                    {
+                        int prevCursorPos = cursorPosition;
+                        reset(numOfCards, numOfPlayers, numOfEnemies);
+                        cursorPosition = prevCursorPos;
+                    }
                 }
                 else  // selecting targets
                 {
@@ -229,26 +266,32 @@ public class Display
                 }
                 break;
             case 7:  // replace
-                if (numOfCardsSelected == 0) return null;
-                // check if player can still replace and do replace
                 Player currentPlayer = game.getCurrentPlayer();
-                if (numOfCardsSelected > currentPlayer.getReplaceAllowance())
+                // check if player can still replace and do replace
+                if (currentPlayer.getReplaceAllowance() > 0)
+                {
+                    Card card = getCardAtCursorPosition(currentPlayer);
+                    int prevCursorPosition = cursorPosition;
+                    pauseControl();  // sets cursor to 15
+                    game.addDisplayMessage(new GameIntMessage(MessageType.RemoveCardAtPosition, prevCursorPosition));
+                    game.playerReplacesCard(currentPlayer, card);  // sends display status
+                }
+                else
                 {
                     game.addDisplayMessage(new GameMessage(MessageType.NoMoreReplace));
                     return null; // fail
                 }
-
-                pauseControl();
-
-                Card[] selectedCards = getSelectedCardsFromPlayer(currentPlayer);
-                game.playerReplacesCards(currentPlayer, selectedCards);  // sends display status
                 return null;
             case 8:  // discard
-                if (numOfCardsSelected == 0) return null;
-                pauseControl();
                 currentPlayer = game.getCurrentPlayer();
-                selectedCards = getSelectedCardsFromPlayer(currentPlayer);
-                game.playerDiscardsCards(currentPlayer, selectedCards);  // sends display status
+                Card card = getCardAtCursorPosition(currentPlayer);
+                int prevCursorPosition = cursorPosition;
+                pauseControl();  // sets cursor to 15
+                game.addDisplayMessage(new GameIntMessage(MessageType.RemoveCardAtPosition, prevCursorPosition));
+                game.playerDiscardsCard(currentPlayer, card);  // sends display status
+
+                // auto finish player turn if player has no more cards left
+                if (currentPlayer.getHandPile().size() == 0) game.finishPlayerTurn();
                 return null;
             case 0:  // next
                 game.finishPlayerTurn();
@@ -258,6 +301,7 @@ public class Display
         return toInteger();
     }
 
+    // sum up the display into an integer
     public int toInteger()
     {
         int states = 0;
@@ -269,6 +313,13 @@ public class Display
                 (cardStates[4]?1<<3:0) +
                 (isAOE?1:0);
         return states;
+    }
+
+    // get information of the card at cursor position
+    private Card getCardAtCursorPosition(Player player)
+    {
+        int indecks = player.getHandPile().get(cursorPosition);
+        return player.getCardByIndecks(indecks);
     }
 
     // get information of selected cards from player

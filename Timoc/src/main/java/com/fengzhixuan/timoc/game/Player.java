@@ -156,7 +156,6 @@ public class Player
         int i = 0;
         while (handPile.get(i) != indecks && i < handPile.size()) i++;
         discardPile.add(handPile.remove(i));
-        game.addDisplayMessage(new GameMessage(MessageType.RemoveUsedCard));
     }
 
     // move an array of cards from hand pile to discard pile
@@ -168,7 +167,6 @@ public class Player
             while (handPile.get(i) != card.getIndecks() && i < handPile.size()) i++;
             discardPile.add(handPile.remove(i));
         }
-        game.addDisplayMessage(new GameMessage(MessageType.RemoveUsedCard));
     }
 
     // put discard pile into draw pile, then shuffle draw pile

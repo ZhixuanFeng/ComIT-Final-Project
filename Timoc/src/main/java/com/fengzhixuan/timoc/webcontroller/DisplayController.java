@@ -37,7 +37,7 @@ public class DisplayController
             messages.add(new GameInfoMessage(game));
             messages.add(new GamePlayerInfoMessage(MessageType.PlayerInfo, game.getPlayers().values().toArray(new Player[0])));
 
-            Enemy[] enemies = game.getAliveEnemiesWithoutNulls();
+            Enemy[] enemies = game.getExistingEnemiesWithoutNulls();
             messages.add(new GameEnemyInfoMessage(MessageType.EnemyInfo, enemies));
             for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
             {

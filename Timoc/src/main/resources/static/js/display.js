@@ -116,17 +116,18 @@ function setHand(cards) {
 
 function animateCardRemoval() {
     let tween;
-    selectedCards.forEach(function (card) {
+    hand.forEach(function (card) {
         card.border.visible = false;
-        tween = game.add.tween(card).to( { y: card.y-50 }, 300, Phaser.Easing.Exponential.Out, true);
-        card.tween = tween;
+        if (card.toBeRemoved) {
+            tween = game.add.tween(card).to({y: card.y - 50}, 300, Phaser.Easing.Exponential.Out, true);
+        }
     });
     if (tween) tween.onComplete.add(removeUsedCards);
 }
 
 function removeUsedCards() {
     for (let i = 0; i < hand.length; i++) {
-        if (hand[i].isSelected) {
+        if (hand[i].toBeRemoved) {
             hand[i].kill();
             hand[i].destroy(true, false);
             hand[i] = undefined;
@@ -144,7 +145,6 @@ function moveCardsToLeft() {
         if (card) {
             newHand[count] = card;
             tween = game.add.tween(card).to( { x: cardXPositions[count] }, 500, Phaser.Easing.Exponential.Out, true);
-            card.tween = tween;
             card.posIndex = count;
             count++;
         }
@@ -159,14 +159,14 @@ function moveCardsToLeft() {
 }
 
 function addCardsToUI(cards) {
-    let card;
+    let card, tween;
     for (let i = 0; i < cards.length; i++) {
         card = new Card(game, undefined, 'card', false, false, Phaser.Physics.ARCADE, hand.length, currentPlayerObject.deck[cards[i]]);
         hand.push(card);
         card.y -= 50;
-        card.tween = game.add.tween(card).to( { y: card.y+50 }, 500, Phaser.Easing.Exponential.Out, true);
+        tween = game.add.tween(card).to( { y: card.y+50 }, 500, Phaser.Easing.Exponential.Out, true);
     }
-    if (card && card.tween) card.tween.onComplete.add(onComplete);
+    if (card && tween) tween.onComplete.add(onComplete);
 
     function onComplete() {
         processNextMessage();
@@ -347,7 +347,14 @@ function processMessage() {
         case messageCode.PlayerRevive:
             playerMap[message.id].sprite.revive();
             break;
-        case messageCode.RemoveUsedCard:
+        case messageCode.RemovePlayedCards:
+            selectedCards.forEach(function (card) {
+                card.toBeRemoved = true;
+            });
+            animateCardRemoval();
+            break;
+        case messageCode.RemoveCardAtPosition:
+            hand[message.value].toBeRemoved = true;
             animateCardRemoval();
             break;
         case messageCode.EnemyStartsTurn:
@@ -450,7 +457,7 @@ let messageCode = {
     PlayerRevive: 22,
     PlayerDrawCard: 23,
     PlayerDies: 24,
-    RemoveUsedCard: 25,
+    RemovePlayedCards: 25,
     PlayerHpChange: 26,
     PlayerManaChange: 27,
     PlayerBlockChange: 28,
@@ -467,5 +474,6 @@ let messageCode = {
     PlayerReconnected: 39,
     DisconnectDisplay: 40,
     GameOverVictory: 41,
-    GameOverDefeat: 42
+    GameOverDefeat: 42,
+    RemoveCardAtPosition: 44
 };

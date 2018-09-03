@@ -28,7 +28,7 @@ public class MessageType
     public static final int PlayerRevive = 22;  // when a player revives
     public static final int PlayerDrawCard = 23;  // when player draw card(not at the start of the round)
     public static final int PlayerDies = 24;  // When a player hp drops to 0
-    public static final int RemoveUsedCard = 25;  // send when a discard card command is accepted
+    public static final int RemovePlayedCards = 25;
 
     public static final int PlayerHpChange = 26;
     public static final int PlayerManaChange = 27;
@@ -48,4 +48,5 @@ public class MessageType
     public static final int GameOverVictory = 41;
     public static final int GameOverDefeat = 42;
     public static final int GameEndReward = 43;
+    public static final int RemoveCardAtPosition = 44;
 }

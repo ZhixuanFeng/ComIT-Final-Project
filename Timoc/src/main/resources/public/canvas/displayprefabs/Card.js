@@ -113,6 +113,8 @@ function Card(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType,
 
     this.scale.setTo(scale);
     this.position.setTo(x, y);
+
+    this.toBeRemoved = false;
 }
 
 /** @type Phaser.Group */
