@@ -176,8 +176,7 @@ public class Enemy
         }
 
         // update front end display
-        if (damageTaken > 0)
-            game.addDisplayMessage(new GameEnemyIntMessage(MessageType.EnemyHpChange, id, -damageTaken));
+        game.addDisplayMessage(new GameEnemyIntMessage(MessageType.EnemyHpChange, id, -damageTaken));
         return damageTaken;
     }
 

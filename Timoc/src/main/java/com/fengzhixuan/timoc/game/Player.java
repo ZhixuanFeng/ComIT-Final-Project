@@ -258,7 +258,6 @@ public class Player
         // update front end display
         if (reducedBlock > 0)
             game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerBlockChange, id, -reducedBlock));
-        if (reducedHp > 0)
             game.addDisplayMessage(new GamePlayerIntMessage(MessageType.PlayerHpChange, id, -reducedHp));
         if (hp == 0)
             die();
