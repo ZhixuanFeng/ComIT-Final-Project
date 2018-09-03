@@ -81,10 +81,6 @@ public class Game
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             playerEntry.getValue().onGameStart(this);
-            playerEntry.getValue().addCardRewardQuality(5);
-            playerEntry.getValue().addCardRewardQuality(5);
-            playerEntry.getValue().addCardRewardQuality(5);
-            playerEntry.getValue().addGoldReward(10);
         }
         addControllerMessage(new GameMessage(MessageType.GameStart));
 

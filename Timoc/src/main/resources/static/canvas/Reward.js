@@ -47,7 +47,6 @@ function Reward(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyTyp
 	Phaser.Group.call(this, aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType);
 
 	this.ending = ending;
-    console.log('here');
 	if (ending === 'victory') this.chestType = 'goldenchest';
 	else if (ending === 'defeat') this.chestType = 'ironchest';
 	this.chestClosed = this.game.add.button(64.0, 32.0, 'reward', this.onClick, this, null, this.chestType + 'closed', null, null, this);

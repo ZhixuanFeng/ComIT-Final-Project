@@ -109,9 +109,11 @@ public class StompDisconnectEventHandler implements ApplicationListener<SessionD
                             if (userStorageRemainingSpace < quantity) quantity = userStorageRemainingSpace;
                             if (quantity > 0)
                             {
-                                while (qualities.get(0) != null)
+                                while (qualities.size() > 0)
                                 {
-                                    cardCollectionService.addCard(cardService.createCard(qualities.get(0), 10), cardCollection, user);
+                                    com.fengzhixuan.timoc.data.entity.Card cardEntity = cardService.createCard(qualities.get(0), 10);
+                                    cardService.setCollection(cardEntity, cardCollection);
+                                    userService.incrementCardCount(user);
                                     qualities.remove(0);
                                 }
                                 _player.getCardRewardQualities().clear();

@@ -99,14 +99,6 @@ public class WebController
         return modelAndView;
     }
 
-    @RequestMapping(value = "/game", method = RequestMethod.GET)
-    public ModelAndView enterGame(@RequestParam("code") String code)
-    {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("game");
-        return modelAndView;
-    }
-
     @RequestMapping(value = "/controller", method = RequestMethod.GET)
     public ModelAndView enterController(@RequestParam("code") String code)
     {

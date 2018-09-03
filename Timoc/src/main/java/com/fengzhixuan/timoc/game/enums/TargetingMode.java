@@ -1,6 +1,6 @@
 package com.fengzhixuan.timoc.game.enums;
 
-// the chosen target(s) when a player plays cards.  Should match targetingModeEnum in RightPanel.js
+// the chosen target(s) when a player plays cards.
 public enum TargetingMode
 {
     Self,

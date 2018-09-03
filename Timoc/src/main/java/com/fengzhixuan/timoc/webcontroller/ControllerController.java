@@ -110,7 +110,8 @@ public class ControllerController
             for (int i = 0; i < quantity; i++)
             {
                 com.fengzhixuan.timoc.data.entity.Card cardEntity = cardService.createCard(qualities.get(i), 10);
-                cardCollectionService.addCard(cardEntity, cardCollection, user);
+                cardService.setCollection(cardEntity, cardCollection);
+                userService.incrementCardCount(user);
                 cards[i] = new Card(cardEntity.getIndecks(), cardEntity.getSuit(),
                         cardEntity.getRank(), cardEntity.getAttack(),
                         cardEntity.getBlock(), cardEntity.getHeal(),
