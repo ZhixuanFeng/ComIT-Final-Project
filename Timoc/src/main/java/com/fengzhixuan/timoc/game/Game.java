@@ -1,7 +1,9 @@
 package com.fengzhixuan.timoc.game;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fengzhixuan.timoc.game.enemies.HighOrc;
 import com.fengzhixuan.timoc.game.enemies.Orc;
+import com.fengzhixuan.timoc.game.enemies.TimocOdium;
 import com.fengzhixuan.timoc.game.enums.PokerHand;
 import com.fengzhixuan.timoc.game.enums.RoundPhase;
 import com.fengzhixuan.timoc.websocket.message.game.*;
@@ -131,16 +133,27 @@ public class Game
 
     private void spawnEnemy()
     {
+        int positionId = findAvailableEnemyPosition();
+        Enemy newEnemy = null;
+        if (positionId < 0) return;
         if (roundNum < 5)
         {
-            int positionId;
-            for (positionId = 0; aliveEnemies[positionId] != null && positionId < aliveEnemies.length; positionId++);
-            Enemy newEnemy = new Orc(this, enemyCount, positionId);
-            enemies.put(newEnemy.getId(), newEnemy);
-            enemyCount++;
-            aliveEnemies[positionId] = newEnemy;
-            addDisplayMessage(new GameEnemySpawnMessage(MessageType.EnemyInfo, newEnemy));
+            newEnemy = new Orc(this, enemyCount, positionId);
         }
+        else if (roundNum > 5 && enemyCount < 5)
+        {
+            newEnemy = new HighOrc(this, enemyCount, positionId);
+        }
+        else if (roundNum > 10 && enemyCount < 6)
+        {
+            newEnemy = new TimocOdium(this, enemyCount, positionId);
+        }
+
+        if (newEnemy == null) return;
+        enemies.put(newEnemy.getId(), newEnemy);
+        enemyCount++;
+        aliveEnemies[positionId] = newEnemy;
+        addDisplayMessage(new GameEnemySpawnMessage(MessageType.EnemyInfo, newEnemy));
     }
 
     // players' turns
@@ -453,8 +466,8 @@ public class Game
         {
             if (aliveEnemies[i] != null && aliveEnemies[i].isDead())
             {
+                addDisplayMessage(new GameEnemyMessage(MessageType.RemoveEnemy, aliveEnemies[i].getId()));
                 aliveEnemies[i] = null;
-                addDisplayMessage(new GameEnemyMessage(MessageType.RemoveEnemy, i));
             }
         }
 
@@ -604,6 +617,16 @@ public class Game
             }
         }
         return enemies;
+    }
+
+    public int findAvailableEnemyPosition()
+    {
+        int count = 0;
+        for (Enemy enemy : aliveEnemies) if (enemy != null) count++;
+        if (count == 4) return -1;
+        int positionId;
+        for (positionId = 0; aliveEnemies[positionId] != null && positionId < aliveEnemies.length; positionId++);
+        return positionId;
     }
 
     @JsonIgnore

@@ -52,7 +52,7 @@ public class Enemy
 
     protected void initDeck()
     {
-        deck = Player.getStarters();
+
     }
 
     protected void initCardPiles()
@@ -60,7 +60,7 @@ public class Enemy
         drawPile = new ArrayList<>();
         handPile = new ArrayList<>();
         discardPile = new ArrayList<>();
-        for (int i = 0; i < deck.length; i++) drawPile.add(i);  // generate numbers which represent cards in a deck
+        for (int i = 0; i < 52; i++) drawPile.add(i);  // generate numbers which represent cards in a deck
         Collections.shuffle(drawPile);  // shuffle
     }
 
@@ -89,16 +89,18 @@ public class Enemy
             if (card.getAttack() > 0)
             {
                 game.addDisplayMessage(new GameEnemyPlayCardMessage(MessageType.EnemyPlaysCard_Player, id, card, mostHatePlayer.getId()));
+                int attack = card.getAttack();
                 if (card.getAoe() > 0)
                 {
+                    attack = Math.round((float) attack / 2 + str);
                     for (Map.Entry<String, Player> playerEntry : game.getPlayers().entrySet())
                     {
-                        playerEntry.getValue().takeDamage(card.getAttack());
+                        playerEntry.getValue().takeDamage(card.getAttack()/2);
                     }
                 }
                 else
                 {
-                    mostHatePlayer.takeDamage(card.getAttack());
+                    mostHatePlayer.takeDamage(attack + str);
                 }
             }
             else if (card.getHeal() > 0)
@@ -108,7 +110,7 @@ public class Enemy
                 {
                     for (Map.Entry<Integer, Enemy> enemyEntry : game.getEnemies().entrySet())
                     {
-                        enemyEntry.getValue().heal(card.getHeal());
+                        enemyEntry.getValue().heal(card.getHeal()/2);
                     }
                 }
                 else
@@ -138,7 +140,7 @@ public class Enemy
     }
 
     // put discard pile into draw pile, then shuffle draw pile
-    private void shuffleDiscardPileIntoDrawPile()
+    protected void shuffleDiscardPileIntoDrawPile()
     {
         drawPile = discardPile;
         discardPile = new ArrayList<>();
@@ -200,7 +202,7 @@ public class Enemy
             game.addDisplayMessage(new GameEnemyIntMessage(MessageType.EnemyHpChange, id, amountHealed));
     }
 
-    private void die()
+    protected void die()
     {
         dead = true;
         game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyDies, id));

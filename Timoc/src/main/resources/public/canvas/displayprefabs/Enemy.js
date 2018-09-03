@@ -3,7 +3,7 @@ let enemyPositions = [{x:240, y:42}, {x:240, y:74}, {x:240, y:106}, {x:240, y:13
 function updateEnemyHp(hp) {
     if (hp >= 100) {
         this.hpDigit1.loadTexture('displayui', Math.floor(hp / 100));
-        this.hpDigit2.loadTexture('displayui', Math.floor(hp / 10));
+        this.hpDigit2.loadTexture('displayui', Math.floor((hp % 10) / 10));
         this.hpDigit3.loadTexture('displayui', hp % 10);
         this.hpDigit3.visible = true;
     }
@@ -214,7 +214,10 @@ function Enemy(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyType
 
     this.border = game.add.graphics(0, 0, this);
     this.border.lineStyle(2, 0xFFFF00, 1);
-    this.border.drawRoundedRect(-1, -1, this.sprite.width + 2, this.sprite.height + 2, 5);
+    if (this.sprite.width > 16)
+        this.border.drawRoundedRect(-10, -10, this.sprite.width, this.sprite.height, 5);
+    else
+        this.border.drawRoundedRect(-1, -1, this.sprite.width + 2, this.sprite.height + 2, 5);
     this.border.visible = false;
 
     this.scale.setTo(2, 2);

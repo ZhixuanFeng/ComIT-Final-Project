@@ -163,8 +163,7 @@ function processMessage(message) {
         case 3:  // GameStart
             isGameStarted = true;
             instruction.visible = false;
-            showChest('victory');
-            // btnGroup.visible = true;
+            btnGroup.visible = true;
             break;
         case 41:  // victory
             showChest('victory');

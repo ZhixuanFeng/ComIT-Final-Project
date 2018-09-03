@@ -529,6 +529,7 @@ public class Player
         isDown = down;
     }
 
+    @JsonIgnore
     public List<Integer> getCardRewardQualities()
     {
         return cardRewardQualities;
@@ -539,6 +540,7 @@ public class Player
         cardRewardQualities.add(quality);
     }
 
+    @JsonIgnore
     public int getGoldRewards()
     {
         return goldRewards;
