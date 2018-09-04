@@ -6,77 +6,121 @@
     <meta charset="UTF-8">
     <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
     <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Market</title>
     <link rel="stylesheet" href="css/site.css">
     <link rel="stylesheet" href="css/card.css">
-    <link rel="stylesheet" href="css/collection.css">
+    <!--<link rel="stylesheet" href="css/collection.css">-->
     <link rel="stylesheet" href="css/market.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="js/cardDisplay.js"></script>
     <script src="js/market.js"></script>
 </head>
 <body>
 
-<h1>Card Market</h1>
+<div class="topnav navbar-fixed-top" id="topnav">
+    <a href="javascript:void(0);" class="menuIcon" onclick="onMenuClicked()" style="text-decoration: none">
+        <span class="glyphicon glyphicon-menu-hamburger"></span> Menu
+    </a>
+    <a href="/join" style="text-decoration: none">Play</a>
+    <a href="/deck" style="text-decoration: none">Deck</a>
+    <a href="/collection" style="text-decoration: none">Collection</a>
+    <a href="#" class="active" style="text-decoration: none">Market</a>
+    <a href="#" id="userInfo" style="text-decoration: none">
+        <span class="glyphicon glyphicon-user"></span>
+         namenamename
+        <div class="newLine"></div>
+        <img src="images/gold.png" height="16" width="16"> 0
+        <img src="images/draw.png" height="16" width="16"> 0
+    </a>
+    <a href="/logout" id="logoutBtn" style="text-decoration: none"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+    <a href="#filterPanel" data-toggle="collapse" class="filterIcon" style="text-decoration: none">
+        <span class="glyphicon glyphicon-filter"></span> Filter
+    </a>
+</div>
+<script>
 
-<div class="panel">
-    <div class="filter">
-        <input type="button" class="apply" value="search">
-        <div class="cbs">
-            <div class="f_header"> Effect</div>
-            <label class="cb"><input type="checkbox" id="cb_effect_any" value="any" checked> Any</label><br>
-            <label class="cb"><input type="checkbox" id="cb_attack" value="attack"> attack</label><br>
-            <label class="cb"><input type="checkbox" id="cb_block" value="block"> block</label><br>
-            <label class="cb"><input type="checkbox" id="cb_heal" value="heal"> heal</label><br>
-            <label class="cb"><input type="checkbox" id="cb_mana" value="mana"> mana</label><br>
-            <label class="cb"><input type="checkbox" id="cb_aoe" value="aoe"> AOE</label><br>
-            <label class="cb"><input type="checkbox" id="cb_draw" value="draw"> draw</label><br>
-            <label class="cb"><input type="checkbox" id="cb_revive" value="revive"> revive</label><br>
-            <label class="cb"><input type="checkbox" id="cb_taunt" value="taunt"> taunt</label><br>
+</script>
+
+
+
+
+<h1 class="jumbotron text-center" style="font-family: 'Amstrad CPC464 Regular'">Card Market</h1>
+
+<div class="container-fluid">
+    <div class="row content">
+        <div class="col-sm-2 col-sm-offset-1 sidenav text-center">
+            <div class="panel panel-default">
+                <div class="panel-body" id="filterPanel">
+                    <button class="btn btn-default apply" type="button"><span class="glyphicon glyphicon-search"></span>Search</button>
+                    <br><br>
+                    <a href="#effect_cbs" data-toggle="collapse" style="text-decoration: none; font-size: 2rem;" onclick="cbTitleOnClick('e_chevron')"><span id="e_chevron" class="glyphicon glyphicon-chevron-down"></span> Effects</a>
+                    <ul class="list-group collapse in" id="effect_cbs">
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_effect_any" value="any" checked> Any</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_attack" value="attack"> <img src="images/attack.png" height="32" width="32"></label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_block" value="block"> <img src="images/block.png" height="32" width="32"></label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_heal" value="heal"> <img src="images/heal.png" height="32" width="32"></label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_mana" value="mana"> <img src="images/mana.png" height="32" width="32"></label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_aoe" value="aoe"> <img src="images/aoe.png" height="32" width="32"></label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_draw" value="draw"> <img src="images/draw.png" height="32" width="32"></label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_revive" value="revive"> <img src="images/revive.png" height="32" width="32"></label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_taunt" value="taunt"> <img src="images/hate.png" height="32" width="32"></label><br></li>
+                    </ul>
+                    <br><br>
+                    <a href="#suit_cbs" data-toggle="collapse" style="text-decoration: none; font-size: 2rem;" onclick="cbTitleOnClick('s_chevron')"><span id="s_chevron" class="glyphicon glyphicon-chevron-down"></span> Suits</a>
+                    <ul class="list-group collapse in" id="suit_cbs">
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_suit_all" value="all" checked> All</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_diamond" value="0" checked> <img src="images/diamond.png" height="22" width="22"></label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_club" value="1" checked> <img src="images/club.png" height="22" width="22"></label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_heart" value="2" checked> <img src="images/heart.png" height="22" width="22"></label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_spade" value="3" checked> <img src="images/spade.png" height="22" width="22"></label><br></li>
+                    </ul>
+                    <br><br>
+                    <a href="#rank_cbs" data-toggle="collapse" style="text-decoration: none; font-size: 2rem;" onclick="cbTitleOnClick('r_chevron')"><span id="r_chevron" class="glyphicon glyphicon-chevron-down"></span> Ranks</a>
+                    <ul class="list-group collapse in" id="rank_cbs">
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_rank_all" value="all" checked> All</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_1" value="1" checked> A</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_2" value="2" checked> 2</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_3" value="3" checked> 3</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_4" value="4" checked> 4</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_5" value="5" checked> 5</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_6" value="6" checked> 6</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_7" value="7" checked> 7</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_8" value="8" checked> 8</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_9" value="9" checked> 9</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_10" value="10" checked> 10</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_11" value="11" checked> J</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_12" value="12" checked> Q</label><br></li>
+                        <li class="list-group-item"><label class="cb"><input type="checkbox" id="cb_13" value="13" checked> K</label><br></li>
+                    </ul>
+                    <br><br>
+                    <button class="btn btn-default apply" type="button"><span class="glyphicon glyphicon-search"></span>Search</button>
+                </div>
+            </div>
         </div>
-        <div class="cbs">
-            <div class="f_header"> Suit</div>
-            <label class="cb"><input type="checkbox" id="cb_suit_all" value="all" checked> All</label><br>
-            <label class="cb"><input type="checkbox" id="cb_diamond" value="0" checked> Diamond</label><br>
-            <label class="cb"><input type="checkbox" id="cb_club" value="1" checked> Club</label><br>
-            <label class="cb"><input type="checkbox" id="cb_heart" value="2" checked> Heart</label><br>
-            <label class="cb"><input type="checkbox" id="cb_spade" value="3" checked> Spade</label><br>
-        </div>
-        <div class="cbs">
-            <div class="f_header"> Rank</div>
-            <label class="cb"><input type="checkbox" id="cb_rank_all" value="all" checked> All</label><br>
-            <label class="cb"><input type="checkbox" id="cb_1" value="1" checked> A</label><br>
-            <label class="cb"><input type="checkbox" id="cb_2" value="2" checked> 2</label><br>
-            <label class="cb"><input type="checkbox" id="cb_3" value="3" checked> 3</label><br>
-            <label class="cb"><input type="checkbox" id="cb_4" value="4" checked> 4</label><br>
-            <label class="cb"><input type="checkbox" id="cb_5" value="5" checked> 5</label><br>
-            <label class="cb"><input type="checkbox" id="cb_6" value="6" checked> 6</label><br>
-            <label class="cb"><input type="checkbox" id="cb_7" value="7" checked> 7</label><br>
-            <label class="cb"><input type="checkbox" id="cb_8" value="8" checked> 8</label><br>
-            <label class="cb"><input type="checkbox" id="cb_9" value="9" checked> 9</label><br>
-            <label class="cb"><input type="checkbox" id="cb_10" value="10" checked> 10</label><br>
-            <label class="cb"><input type="checkbox" id="cb_11" value="11" checked> J</label><br>
-            <label class="cb"><input type="checkbox" id="cb_12" value="12" checked> Q</label><br>
-            <label class="cb"><input type="checkbox" id="cb_13" value="13" checked> K</label><br>
-        </div>
-        <input type="button" class="apply" value="search">
-    </div>
-    <div class="offers">
-        <div id="card_area"></div>
-        <div id="pagination">
-            <div id="page_numbers"></div>
+        <div class="col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-body offers">
+                    <div id="card_area"></div>
+                    <div id="pagination">
+                        <div id="page_numbers"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-<div id="overlay">
-    <div id="ol_card"></div>
-    <div id="message"></div>
-    <div id="ol_sold_by"></div>
-    <div id="ol_buttons">
-        <input type="button" class="bt" id="bt_buy" value="buy">
-        <input type="button" class="bt" id="bt_dismiss" value="dismiss">
-    </div>
-    </div>
-</div>
+<!--<div id="overlay">-->
+    <!--<div id="ol_card"></div>-->
+    <!--<div id="message"></div>-->
+    <!--<div id="ol_sold_by"></div>-->
+    <!--<div id="ol_buttons">-->
+        <!--<input type="button" class="bt" id="bt_buy" value="buy">-->
+        <!--<input type="button" class="bt" id="bt_dismiss" value="dismiss">-->
+    <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
 </body>
 </html>

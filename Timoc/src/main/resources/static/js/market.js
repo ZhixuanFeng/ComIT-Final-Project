@@ -1,5 +1,30 @@
 "use strict"
 
+function onMenuClicked() {
+    let nav = document.getElementById("topnav");
+    if (nav.className === "topnav navbar-fixed-top") {
+        nav.className += " menuClicked";
+    } else {
+        nav.className = "topnav navbar-fixed-top";
+    }
+}
+
+window.onload = function() {
+    if (screen.width <= 768) {
+        let fltPanel = document.getElementById("filterPanel");
+        fltPanel.className += " collapse";
+
+        document.getElementById("effect_cbs").className += " collapse";
+        document.getElementById("suit_cbs").className += " collapse";
+        document.getElementById("rank_cbs").className += " collapse";
+    }
+};
+
+function cbTitleOnClick(id) {
+    let chevron = document.getElementById(id);
+    chevron.className = chevron.className === "glyphicon glyphicon-chevron-right" ? "glyphicon glyphicon-chevron-down" : "glyphicon glyphicon-chevron-right";
+}
+
 let gold;
 let numOfCards = 0;
 let maxNumOfCards = 52;
