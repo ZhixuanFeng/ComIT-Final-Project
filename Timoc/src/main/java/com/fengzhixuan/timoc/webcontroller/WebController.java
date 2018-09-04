@@ -3,6 +3,8 @@ package com.fengzhixuan.timoc.webcontroller;
 import com.fengzhixuan.timoc.data.entity.*;
 import com.fengzhixuan.timoc.game.Game;
 import com.fengzhixuan.timoc.game.GameCodeGenerator;
+import com.fengzhixuan.timoc.game.Player;
+import com.fengzhixuan.timoc.game.Room;
 import com.fengzhixuan.timoc.service.CardCollectionService;
 import com.fengzhixuan.timoc.service.CardDeckService;
 import com.fengzhixuan.timoc.service.CardService;
@@ -90,12 +92,37 @@ public class WebController
         return modelAndView;
     }
 
-    @RequestMapping(value = "/room", method = RequestMethod.GET)
-    public ModelAndView viewRoom()
+    @RequestMapping(value = "/join", method = RequestMethod.GET)
+    public ModelAndView getJoinPage()
     {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("room");
+        modelAndView.setViewName("join");
         modelAndView.addObject("maxcodelength", 4);
+        return modelAndView;
+    }
+
+    @RequestMapping(value = "/room", method = RequestMethod.GET)
+    public ModelAndView enterRoom(@RequestParam("code") String code)
+    {
+        ModelAndView modelAndView = new ModelAndView();
+        code = code.toUpperCase();
+        Room room = Room.getRoomByCode(code);
+        if (GameCodeGenerator.isCodeValid(code) && room != null && !room.isFull())
+        {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            User user = userService.findUserByUsername(auth.getName());
+            long userId = user.getId();
+            CardDeck deck = cardDeckService.getCardDeckById(userId);
+
+            // create player object and add into room
+            Player player = new Player(user.getUsername(), code, com.fengzhixuan.timoc.game.Card.cardEntitiesToCards(deck.getCards()));
+            room.addPlayer(player);
+            modelAndView.setViewName("room");
+        }
+        else
+        {
+            modelAndView.setViewName("error");
+        }
         return modelAndView;
     }
 

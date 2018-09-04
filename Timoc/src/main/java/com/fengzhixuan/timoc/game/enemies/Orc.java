@@ -15,8 +15,7 @@ public class Orc extends Enemy
     @Override
     protected void initStats()
     {
-//        maxHp = 40 + 10 * game.getPlayers().size();
-        maxHp = 1;
+        maxHp = 40 + 10 * game.getPlayers().size();
         hp = maxHp;
         str = 0;
         drawNum = 1;

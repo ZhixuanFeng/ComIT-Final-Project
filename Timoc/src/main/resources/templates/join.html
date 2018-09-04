@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Join Game</title>
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/join.js"></script>
+</head>
+
+<body>
+
+<br><br><br>
+<div class="container text-center">
+    <div class="row">
+        <div class="well col-xs-6 col-xs-offset-3 ">
+            <button type="button" id="create" class="btn btn-success btn-lg">Create a Game</button>
+            <p><br><br>- or -<br><br></p>
+            <p>Enter room code to join:</p>
+            <input type="text" class="form-control" placeholder="example: ABAB" id="code" style="text-align:center;" th:maxlength="${maxcodelength}">
+            <div id="err" data-toggle="popover" data-placement="bottom" data-content="Code"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

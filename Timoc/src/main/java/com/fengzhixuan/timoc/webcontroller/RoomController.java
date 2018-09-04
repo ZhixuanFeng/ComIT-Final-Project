@@ -5,13 +5,12 @@ import com.fengzhixuan.timoc.data.entity.User;
 import com.fengzhixuan.timoc.game.*;
 import com.fengzhixuan.timoc.service.CardDeckService;
 import com.fengzhixuan.timoc.service.UserService;
-import com.fengzhixuan.timoc.websocket.message.room.RoomInfoMessage;
-import com.fengzhixuan.timoc.websocket.message.room.RoomReadyMessage;
-import com.fengzhixuan.timoc.websocket.message.room.RoomStartMessage;
+import com.fengzhixuan.timoc.websocket.message.room.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -22,6 +21,9 @@ import java.security.Principal;
 @Controller
 public class RoomController
 {
+    @Autowired
+    private SimpMessageSendingOperations messagingTemplate;
+
     @Autowired
     private UserService userService;
 
@@ -42,7 +44,7 @@ public class RoomController
      */
     @RequestMapping(value = "/room/enter", method = RequestMethod.POST)
     public @ResponseBody
-    String enterRoom(@RequestParam String code)
+    String tryCode(@RequestParam String code)
     {
         // code invalid
         if (!GameCodeGenerator.isCodeValid(code)) { return "Invalid code"; }
@@ -50,7 +52,7 @@ public class RoomController
         Room room = Room.getRoomByCode(code);
 
         // room not exist
-        if (room == null) { return "Invalid code"; }
+        if (room == null) { return "Wrong code"; }
 
         // room full
         if (room.isFull()) { return "Room full"; }
@@ -72,12 +74,15 @@ public class RoomController
      */
     @MessageMapping("/room.enter/{code}")
     @SendTo("/topic/room/{code}")
-    public RoomInfoMessage enterRoom(@DestinationVariable String code, Principal principal)
+    public RoomNewPlayerMessage enterRoom(@DestinationVariable String code, Principal principal)
     {
         if (principal == null) { return null; }
         Room room = Room.getRoomByCode(code);
         if (room == null) { return null; }
-        return RoomInfoMessage.createMessage(room, room.getPlayers());
+        RoomInfoMessage roomInfoMessage = new RoomInfoMessage(room.getAllPlayerInfo());
+        messagingTemplate.convertAndSendToUser(principal.getName(), "/topic/room/" + code, roomInfoMessage);
+
+        return new RoomNewPlayerMessage(room.getPlayerInfo(principal.getName()));
     }
 
     /*
@@ -95,12 +100,15 @@ public class RoomController
 
         boolean currentIsReady = room.isPlayerReady(player);
         room.setPlayerReady(player, !currentIsReady); // toggle ready status
-        return new RoomReadyMessage(username, !currentIsReady);
+
+        if (room.areAllPlayersReady())
+            messagingTemplate.convertAndSend("/topic/room/" + code, new RoomMessage(MessageType.AllReady));
+        return new RoomReadyMessage(MessageType.Ready, username, !currentIsReady);
     }
 
     @MessageMapping("/room.start/{code}")
     @SendTo("/topic/room/{code}")
-    public RoomStartMessage createGame(@DestinationVariable String code, Principal principal)
+    public RoomStartGameMessage createGame(@DestinationVariable String code, Principal principal)
     {
         if (principal == null) { return null; }
         Room room = Room.getRoomByCode(code);
@@ -111,19 +119,19 @@ public class RoomController
             // check if the game is already created and the player belongs in the game
             if (Game.gameCodeExist(codeInt) && Game.getGameByCode(codeInt).isPlayerInThisGame(principal.getName()))
             {
-                return new RoomStartMessage();
+                return new RoomStartGameMessage();
             }
             else
             {
                 return null;
             }
         }
-        if (room.areAllPlayersReady(room))
+        if (room.areAllPlayersReady())
         {
             // TODO: check if created game is started in 10 mins, remove if not started
             Game game = Game.createGame(codeInt, room.getPlayers());
             Room.removeRoom(codeInt);
-            return new RoomStartMessage();
+            return new RoomStartGameMessage();
         }
 
         return null;

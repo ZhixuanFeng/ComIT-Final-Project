@@ -63,12 +63,12 @@ public class Game
     }
 
     // use this method which calls the constructor to create a game object
-    public static Game createGame(int code, List<Player> playerList)
+    public static Game createGame(int code, Player[] playerList)
     {
         Map<String, Player> players = new HashMap<>();
         for (Player player : playerList)
         {
-            players.put(player.getName(), player);
+            if (player != null) players.put(player.getName(), player);
         }
         Game game = new Game(code, players);
         games.put(code, game);

@@ -1,7 +1,25 @@
 "use strict";
 
 let roomCode;
-let players = [];
+let playerMap = {};
+let myInfo;
+let myPosition;
+
+let knightImage = new Image();
+let wizardImage = new Image();
+let berserkerImage = new Image();
+let priestImage = new Image();
+knightImage.src = 'images/knight.png';
+wizardImage.src = 'images/wizard.png';
+berserkerImage.src = 'images/berserker.png';
+priestImage.src = 'images/priest.png';
+
+let classImages = [knightImage, wizardImage, berserkerImage, priestImage];
+let canvases = [];
+let playerSlots = [];
+
+let readyButton;
+
 $(document).ready(function() {
     const token = $("meta[name='_csrf']").attr("content");
     const header = $("meta[name='_csrf_header']").attr("content");
@@ -9,34 +27,44 @@ $(document).ready(function() {
         xhr.setRequestHeader(header, token);
     });
 
-    let $overlay = $('#overlay');
-    let $readyBt = $('#ready_bt');
-    $('#player_list').hide();
-    $readyBt.hide();
-    $overlay.show();
+    $('#ctn_lost_warning').hide();
 
-    $('#ol_create').click(function () {
-        $.post('room/create', function (code) {
-            enterRoom(code);
-        });
+    canvases = [
+        document.getElementById('player1').getContext('2d'),
+        document.getElementById('player2').getContext('2d'),
+        document.getElementById('player3').getContext('2d'),
+        document.getElementById('player4').getContext('2d'),
+    ];
+
+    playerSlots = [
+        {name: $('#name1'), sprite: canvases[0], pop: $('#pop1')},
+        {name: $('#name2'), sprite: canvases[1], pop: $('#pop2')},
+        {name: $('#name3'), sprite: canvases[2], pop: $('#pop3')},
+        {name: $('#name4'), sprite: canvases[3], pop: $('#pop4')}
+    ];
+
+    roomCode = getUrlParameter('code');
+    connect(roomCode);
+    $('#room_code').text('Room: ' + roomCode);
+
+    $('[data-toggle="popover"]').popover();
+
+    $.post('userInfo/myInfo', function (result) {
+        myInfo = result;
     });
 
-    let $input = $('#ol_code_input');
-    $input.on('input', function(e){
-        let code = $input.val().toUpperCase();
-        $input.val(code);
-        if (code.length == 4) {
-            enterRoom(code);
-        }
-        else {
-            $('#ol_message').text('');
-        }
-    });
-
-    $readyBt.click(function () {
-        sendMessage('/app/room.ready/' + roomCode, {}); // toggle
+    readyButton = $('#ready_bt');
+    readyButton.click(function () {
+        sendMessage('/app/room.ready/' + roomCode, ''); // toggle
     });
 });
+
+
+
+/*
+ * Websocket connectivity
+ */
+
 
 let stompClient = null;
 
@@ -45,8 +73,8 @@ function connect(code) {
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
         stompClient.subscribe('/topic/room/' + code, onMessageReceived);
+        stompClient.subscribe('/user/topic/room/' + code, onMessageReceived);
         stompClient.send('/app/room.enter/' + code, {}, code);
-        hideOverlay(code);
     }, onError);
 }
 
@@ -58,14 +86,8 @@ function disconnect() {
 
 function onError(error) {
     if (typeof(error) === "string" && error.indexOf('Whoops!') !== -1) {
-        let $overlay = $('#overlay');
-        $overlay.empty();
-        $('<div>').text('Connection Lost. Please refresh the page.').appendTo($overlay);
-        $overlay.show();
+        $('#ctn_lost_warning').show();
         return;  // lost connection
-    }
-    if ($('#ol_message').is(':visible')) {
-        $('#ol_message').text(error.headers.message);
     }
     // disconnect();
 }
@@ -73,17 +95,26 @@ function onError(error) {
 function onMessageReceived(message) {
     let messageBody = JSON.parse(message.body);
     if (messageBody.type === 'Info') {
-        let newPlayers = findNewPlayers(messageBody.players);
-        displayPlayers(newPlayers);
+        messageBody.players.forEach(function (info) {
+            addPlayer(info);
+            displayPlayer(info);
+        });
     }
     else if (messageBody.type === 'Chat') {
 
+    }
+    else if (messageBody.type === 'Enter') {
+        addPlayer(messageBody.player);
+        displayPlayer(messageBody.player);
     }
     else if (messageBody.type === 'Leave') {
         removePlayer(messageBody.name);
     }
     else if (messageBody.type === 'Ready') {
         setPlayerReady(messageBody.name, messageBody.ready);
+    }
+    else if (messageBody.type === 'AllReady') {
+        startCountdown(5);
     }
     else if (messageBody.type === 'Start') {
         disconnect();
@@ -95,97 +126,33 @@ function sendMessage(destination, data) {
     stompClient.send(destination, {}, data);
 }
 
-function enterRoom(code) {
-    $.post('room/enter', {code: code}, function (response) {
-        if (response === 'OK') {
-            connect(code);
-            roomCode = code;
-        }
-        else if (response.length < 20) {
-            if ($('#ol_message').is(':visible')) {
-                $('#ol_message').text(response);
-            }
-        }
-    });
+function addPlayer(player) {
+    playerMap[player.name] = player;
+    if (player.name === myInfo.name) myPosition = player.position;
 }
 
-function hideOverlay(roomCode) {
-    $('#player_list').show();
-    $('#ready_bt').show();
-    $('#overlay').hide();
-    $('#room_code').text(roomCode);
-}
-
-function findNewPlayers(playerInfoes) {
-    let newPlayers = [];
-    // find the ones not already displayed
-    playerInfoes.forEach(function (playerInfo) {
-        let exists = false;
-        players.forEach(function (player) {
-            if (player.name === playerInfo.name) {
-                exists = true;
-            }
-        });
-        if (!exists) {
-            newPlayers.push(playerInfo);
-        }
-    });
-    return newPlayers;
-}
-
-function displayPlayers(player) {
-    let availableDivs = [];
-    $('.playerDiv').toArray().forEach(function (div) {
-        if (!$(div).hasClass('occupied')) {
-            availableDivs.push(div);
-        }
-    });
-    for (let i = 0; i < player.length; i++) {
-        let $player = $('<div>').addClass('player').appendTo(availableDivs[i]);
-        $('<div>').text(player[i].name).addClass('name').appendTo($player);
-        $('<img src="images/player.png" height="32" width="32"/>').addClass('avatar').appendTo($player);
-        $('<div>').text('Ready').addClass('ready').hide().appendTo($player);
-        $(availableDivs[i]).addClass('occupied');
-        $(availableDivs[i]).attr('id', player[i].name);
-        players.push(player[i]);
-    }
-    stopCountdown();
-    player.forEach(function (p) {
-        setPlayerReady(p.name, p.ready);
-    });
+function displayPlayer(player) {
+    let slot = playerSlots[player.position];
+    slot.name.text(player.name);
+    slot.sprite.drawImage(classImages[player.classId], 0, 0);
 }
 
 function removePlayer(name) {
-    let playerDiv = $('#' + name);
-    $(playerDiv).empty();
-    $(playerDiv).removeClass('occupied');
-    $(playerDiv).removeAttr('id');
-    stopCountdown();
-    players = $.grep(players, function (e) {
-        return e.name !== name;
-    });
+    let player = playerMap[name];
+    let slot = playerSlots[player.position];
+    slot.name.text('Player ' + (player.position + 1));
+    slot.pop.popover('hide');
+    let canvas = slot.sprite;
+    canvas.clearRect(0, 0, canvas.canvas.width, canvas.canvas.height);
+    playerMap[name] = undefined;
 }
 
 function setPlayerReady(name, isReady) {
-    let $playerDiv = $('#' + name);
-    isReady ? $playerDiv.find('.ready').show() : $playerDiv.find('.ready').hide();
-    if (isReady && areAllPlayersReady()) {
-        startCountdown(0);
-    }
-    else if (!isReady) {
-        stopCountdown();
-    }
-}
-
-function areAllPlayersReady() {
-    let $playerDivs = $('.playerDiv');
-    let result = true;
-    $playerDivs.toArray().forEach(function (div) {
-        if ($(div).hasClass('occupied') && !$(div).find('.ready').is(':visible')) {
-            result = false;
-        }
-    });
-    return result;
+    let position = playerMap[name].position;
+    let pop = playerSlots[position].pop;
+    isReady ? pop.popover('show') : pop.popover('hide');
+    playerMap[name].ready = isReady;
+    if (!isReady) stopCountdown();
 }
 
 let cd = undefined;
@@ -200,14 +167,29 @@ function stopCountdown() {
         clearInterval(cd);
         cd = undefined;
     }
-    $('#ready_bt').text('Ready!');
+    readyButton.text('Ready!');
 }
 
 function countdown() {
-    $('#ready_bt').text('Ready(' + waitTime + ')');
-    if (waitTime === 0 && areAllPlayersReady()) {
+    readyButton.text('Ready(' + waitTime + ')');
+    if (waitTime === 0) {
         stopCountdown();
-        sendMessage('/app/room.start/' + roomCode, {});
+        sendMessage('/app/room.start/' + roomCode, '');
     }
     waitTime--;
+}
+
+function getUrlParameter(sParam) {
+    let sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
 }

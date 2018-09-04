@@ -1,8 +1,6 @@
 package com.fengzhixuan.timoc.game;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Room
@@ -10,8 +8,8 @@ public class Room
     private static Map<Integer, Room> rooms = new HashMap<>();
 
     private int code;
-    private List<Player> players = new ArrayList<>();
-    private Map<Player, PlayerStatus> playerStatuses = new HashMap<>();
+    private Player[] players = new Player[4];
+    private Map<String, RoomPlayerInfo> playerStatuses = new HashMap<>();
 
     public Room(int code)
     {
@@ -26,18 +24,6 @@ public class Room
         return room;
     }
 
-    public static Room createRoom(int code)
-    {
-        Room room = new Room(code);
-        rooms.put(code, room);
-        return room;
-    }
-
-    public static Map<Integer, Room> getRooms()
-    {
-        return rooms;
-    }
-
     public int getCode()
     {
         return code;
@@ -48,9 +34,19 @@ public class Room
         return GameCodeGenerator.intToString(code);
     }
 
-    public List<Player> getPlayers()
+    public Player[] getPlayers()
     {
         return players;
+    }
+
+    public RoomPlayerInfo getPlayerInfo(String name)
+    {
+        return playerStatuses.get(name);
+    }
+
+    public RoomPlayerInfo[] getAllPlayerInfo()
+    {
+        return playerStatuses.values().toArray(new RoomPlayerInfo[0]);
     }
 
     public static Room getRoomByCode(int code)
@@ -63,47 +59,53 @@ public class Room
         return getRoomByCode(GameCodeGenerator.stringToInt(code));
     }
 
+    // get the first empty slot in players array
+    public int findFirstAvailablePosition()
+    {
+        int index = 0;
+        while (index < players.length && players[index] != null) index++;
+        return (players[index] != null) ? -1 : index;
+    }
+
     // add player to player list
     public void addPlayer(Player player)
     {
-        if (!containsPlayer(player))
+        String name = player.getName();
+        if (!playerStatuses.containsKey(name))
         {
-            players.add(player);
-            playerStatuses.put(player, new PlayerStatus());
+            int position = findFirstAvailablePosition();
+            players[position] = player;
+            playerStatuses.put(name, new RoomPlayerInfo(player.getName(), false, position));
         }
     }
 
     // remove player from player list
     public void removePlayer(Player player)
     {
-        if (containsPlayer(player))
+        String name = player.getName();
+        if (playerStatuses.containsKey(name))
         {
-            players.remove(player);
-            playerStatuses.remove(player);
+            int position = playerStatuses.get(name).getPosition();
+            players[position] = null;
+            playerStatuses.remove(name);
         }
-    }
-
-    public boolean containsPlayer(Player player)
-    {
-        return players.contains(player);
-    }
-
-    public boolean containsPlayer(String name)
-    {
-        for (Player player : players)
-            if (player.getName().equals(name))
-                return true;
-        return false;
     }
 
     public boolean isFull()
     {
-        return players.size() == 4;
+        return findFirstAvailablePosition() == -1;
     }
 
     public boolean isEmpty()
     {
-        return players.isEmpty();
+        for (Player player : players)
+            if (player != null) return false;
+        return true;
+    }
+
+    public boolean containsPlayer(String name)
+    {
+        return playerStatuses.containsKey(name);
     }
 
     public static void removeRoom(int code)
@@ -113,40 +115,20 @@ public class Room
 
     public boolean isPlayerReady(Player player)
     {
-        return playerStatuses.get(player).isReady();
+        return playerStatuses.get(player.getName()).isReady();
     }
 
     public void setPlayerReady(Player player, boolean isReady)
     {
-        playerStatuses.get(player).setReady(isReady);
+        playerStatuses.get(player.getName()).setReady(isReady);
     }
 
-    public boolean areAllPlayersReady(Room room)
+    public boolean areAllPlayersReady()
     {
-        for (Map.Entry<Player, PlayerStatus> entry : playerStatuses.entrySet())
+        for (Map.Entry<String, RoomPlayerInfo> entry : playerStatuses.entrySet())
         {
             if (!entry.getValue().isReady()) return false;
         }
         return true;
-    }
-}
-
-class PlayerStatus
-{
-    private boolean isReady;
-
-    public PlayerStatus()
-    {
-        isReady = false;
-    }
-
-    public boolean isReady()
-    {
-        return isReady;
-    }
-
-    public void setReady(boolean ready)
-    {
-        isReady = ready;
     }
 }

@@ -8,37 +8,65 @@
     <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Room</title>
     <link rel="stylesheet" href="css/site.css">
-    <link rel="stylesheet" href="css/room.css">
+    <!--<link rel="stylesheet" href="css/room.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
     <script src="js/room.js"></script>
+    <style>
+        canvas
+        {
+            width: 60%;
+            height: auto;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+    </style>
 </head>
 
-<div id="room_code"></div>
-<body>
-<div id="player_list">
-    <div class="playerDiv"></div>
-    <div class="playerDiv"></div>
-    <div class="playerDiv"></div>
-    <div class="playerDiv"></div>
+<div id="ctn_lost_warning" class="alert alert-danger alert-dismissible fade in">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>Connection Lost.</strong> Please go back or refresh the page.
 </div>
-<a href="#" id="ready_bt">Ready!</a>
 
-<div id="overlay">
-    <div id="ol_panel">
-        <a href="#" id="ol_create">Create a Game</a>
-        <div id="ol_divider">- or -</div>
-        <input id="ol_code_input" type="text" placeholder="enter code to join" th:maxlength="${maxcodelength}"/>
-        <div id="ol_message"></div>
+<div class="container text-center">
+    <h3 id="room_code">Room</h3><br>
+    <br><br>
+    <div class="row">
+        <div class="well col-xs-3">
+            <div id="pop1" data-toggle="popover" data-placement="top" data-content="Ready"></div>
+            <canvas id="player1" width="16" height="20">
+                Sorry, your browser doesn't support the &lt;canvas&gt; element.
+            </canvas>
+            <br>
+            <p id="name1">Player 1</p>
+        </div>
+        <div class="well col-xs-3">
+            <div id="pop2" data-toggle="popover" data-placement="top" data-content="Ready"></div>
+            <canvas id="player2" width="16" height="20"></canvas>
+            <br>
+            <p id="name2">Player 2</p>
+        </div>
+        <div class="well col-xs-3">
+            <div id="pop3" data-toggle="popover" data-placement="top" data-content="Ready"></div>
+            <canvas id="player3" width="16" height="20"></canvas>
+            <br>
+            <p id="name3">Player 3</p>
+        </div>
+        <div class="well col-xs-3">
+            <div id="pop4" data-toggle="popover" data-placement="top" data-content="Ready"></div>
+            <canvas id="player4" width="16" height="20"></canvas>
+            <br>
+            <p id="name4">Player 4</p>
+        </div>
     </div>
+    <br><br>
+    <button id="ready_bt" type="button" class="btn btn-success">Ready!</button>
 </div>
-
-<script>
-    window.onload = function() {
-        document.getElementById("ol_code_input").focus();
-    };
-</script>
 
 </body>
 </html>
