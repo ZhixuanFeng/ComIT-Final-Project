@@ -132,7 +132,26 @@
 }
 
 .overlay button {
-    /*margin:5px;*/
+    position: absolute;
+    left: 25%;
+}
+
+.overlay .btn-warning {
+    top: 75%;
+}
+
+.overlay .seller, .confirm {
+    position: relative;
+    color: white;
+    top: 10%;
+}
+
+.overlay .btn-success {
+    top: 25%;
+}
+
+.overlay .btn-danger {
+    top: 50%;
 }
 
 

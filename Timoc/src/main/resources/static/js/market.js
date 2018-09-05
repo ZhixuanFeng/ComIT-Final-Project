@@ -24,6 +24,11 @@ window.onload = function() {
         document.getElementById("suit_cbs").className += " collapse";
         document.getElementById("rank_cbs").className += " collapse";
     }
+
+    let target = (width <= 768) ? '#filterPanel' : '#';
+    $('.apply').resize().each(function () {
+        $(this).attr('data-target', target);
+    });
 };
 
 function cbTitleOnClick(id) {
@@ -213,48 +218,69 @@ $(document).ready(function()
 
 function displayCards(cards, div) {
     div.empty();
-    let $overlay = $('#overlay');
     cards.forEach(function (offer) {
-        let container = $('<div>').addClass('col-xs-6 col-sm-4 col-md-3 col-lg-2').appendTo(div);
-        let cardDiv = addCardBody(offer, container);
-        let overlay = $('<div>').addClass('overlay').appendTo(cardDiv);
-        let button = $('<button>').addClass('btn btn-primary').appendTo(overlay);
-        let $price = $('<div>').addClass('price').appendTo(container);
+        let $container = $('<div>').addClass('col-xs-6 col-sm-4 col-md-3 col-lg-2').appendTo(div);
+        let $cardDiv = addCardBody(offer, $container);
+        let $overlay = $('<div>').addClass('overlay').appendTo($cardDiv);
+        let $soldByText = $('<div>').addClass('seller').text('Seller: ' + offer.playerName).hide().appendTo($overlay);
+        let $buyBtn = $('<button>').addClass('btn btn-warning').text('Buy').hide().appendTo($overlay);
+        let $confirmText = $('<div>').addClass('confirm').text('Sure?').hide().appendTo($overlay);
+        let $confirmBtn = $('<button>').addClass('btn btn-success').text('Yes').hide().appendTo($overlay);
+        let $cancelBtn = $('<button>').addClass('btn btn-danger').text('No').hide().appendTo($overlay);
+        let $price = $('<div>').addClass('price').appendTo($container);
         let $goldIcon = $('<img src="images/gold.png"/>').addClass('gold_icon').appendTo($price);
         let $priceNum = $('<div>').text(offer.price).addClass('price_num').appendTo($price);
 
-        $(cardDiv).click(function () {
-            if ($overlay.is(':visible')) {
-                $overlay.hide();
-                return;
+        $cardDiv.mouseenter(resetButtons);
+        $cardDiv.mouseleave(hideButtons);
+
+        $buyBtn.click(function () {
+            $soldByText.hide();
+            $buyBtn.hide();
+            $confirmText.show();
+            $confirmBtn.show();
+            $cancelBtn.show();
+        });
+
+        $cancelBtn.click(resetButtons);
+
+        function hideButtons() {
+            $soldByText.hide();
+            $buyBtn.hide();
+            $confirmText.hide();
+            $confirmBtn.hide();
+            $cancelBtn.hide();
+        }
+
+        function resetButtons() {
+            $soldByText.show();
+            $buyBtn.show();
+            $confirmText.hide();
+            $confirmBtn.hide();
+            $cancelBtn.hide();
+        }
+
+        $confirmBtn.click(function () {
+            if (gold < offer.price) {
+                $('#message').text('Not enough gold').css('color', 'red');
             }
-
-            $($overlay).show();
-            displayCards([offer], $('#ol_card'));
-            $('#ol_sold_by').text('Sold by: ' + offer.playerName);
-            $('#bt_buy').show();
-            $('#bt_dismiss').show();
-
-            $('#bt_buy').click(function () {
-                if (gold < offer.price) {
-                    $('#message').text('Not enough gold').css('color', 'red');
-                }
-                else if (numOfCards >= maxNumOfCards) {
-                    $('#message').text('Your storage is full').css('color', 'red');
-                }
-                else {
-                    $.post('market/accept/offer_id', {id: offer.id}, function () {
-                        $(cardDiv).hide();
-                        gold -= offer.price;
-                        updateGold();
-                        $overlay.hide();
-                    });
-                }
-            });
+            else if (numOfCards >= maxNumOfCards) {
+                $('#message').text('Your storage is full').css('color', 'red');
+            }
+            else {
+                // $.post('market/accept/offer_id', {id: offer.id}, function () {
+                //     $($cardDiv).hide();
+                //     gold -= offer.price;
+                //     // updateGold();
+                //     $overlay.hide();
+                // });
+                console.log('confirm purchase');
+            }
         });
     });
 
-    // sizeOverlays();
+    resizeCardFonts();
+    sizeOverlays();
 }
 
 function addCardBody(card, div) {
@@ -287,9 +313,6 @@ function addCardBody(card, div) {
     $rankDiv.addClass('rank').appendTo($cardDiv);
     $suitImg.addClass('suit').appendTo($cardDiv);
     $cardEffectDiv.addClass('card_effect').appendTo($cardDiv);
-
-    resizeCardFonts();
-    sizeOverlays();
 
     return $cardDiv;
 }
@@ -332,6 +355,10 @@ $(window).resize(function(){
         width = $(this).width();
         resizeCardFonts();
         sizeOverlays();
+        let target = (width <= 768) ? '#filterPanel' : '#';
+        $('.apply').resize().each(function () {
+            $(this).attr('data-target', target);
+        });
     }
 });
 
