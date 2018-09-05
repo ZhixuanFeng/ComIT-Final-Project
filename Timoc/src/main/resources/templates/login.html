@@ -3,7 +3,9 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Welcome to Timoc</title>
+    <link rel="stylesheet" href="css/site.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -15,6 +17,7 @@
         <form th:action="@{/login}" method="POST" class="form-signin">
             <h3 class="form-signin-heading" th:text="Welcome"></h3>
             <br/>
+            <h4>Please login</h4>
 
             <input type="text" id="username" name="username"  th:placeholder="Username"
                    class="form-control" /> <br/>
@@ -22,7 +25,7 @@
                    id="password" name="password" class="form-control" /> <br />
 
             <div align="center" th:if="${param.error}">
-                <p style="font-size:20px; color: #FF1C19;">Username or Password invalid, please verify</p>
+                <p style="color: #FF1C19;">Username or Password invalid, please verify</p>
             </div>
 
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -32,7 +35,7 @@
         <br/>
 
         <form th:action="@{/registration}" method="get">
-            <button class="btn btn-md btn-success btn-block" type="Submit">Go To Registration Page</button>
+            <button class="btn btn-md btn-success btn-block" type="Submit">Register</button>
         </form>
     </div>
 </div>

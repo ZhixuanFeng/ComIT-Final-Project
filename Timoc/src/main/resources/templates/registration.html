@@ -2,7 +2,9 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Registration Form</title>
+    <link rel="stylesheet" href="css/site.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -14,35 +16,35 @@
         <form autocomplete="off" action="#" th:action="@{/registration}"
               th:object="${user}" method="post" class="form-horizontal"
               role="form">
-            <h2>Registration Form</h2>
+            <h2>Register</h2>
 
             <label th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
-                   class="validation-message"></label>
+                   class="validation-message" style="color: #FF1C19;"></label>
             <input type="text" th:field="*{username}" placeholder="Username"
                    class="form-control" />
             <br/>
 
             <label th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
-                   class="validation-message"></label>
+                   class="validation-message" style="color: #FF1C19;"></label>
             <input type="text" th:field="*{email}" placeholder="Email"
                    class="form-control" />
             <br/>
 
             <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-                   class="validation-message"></label>
+                   class="validation-message" style="color: #FF1C19;"></label>
             <input type="password" th:field="*{password}"
                    placeholder="Password" class="form-control" />
             <br/>
 
             <span th:utext="${successMessage}"></span>
 
-            <button class="btn btn-primary btn-block" type="submit">Register User</button>
+            <button class="btn btn-primary btn-block" type="submit">Create Account</button>
 
         </form>
 
         <br/>
         <form th:action="@{/login}" method="get">
-            <button class="btn btn-success btn-block" type="Submit">Go To Login Page</button>
+            <button class="btn btn-success btn-block" type="Submit">Login</button>
         </form>
     </div>
 </div>
