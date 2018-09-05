@@ -6,15 +6,29 @@
     <meta charset="UTF-8">
     <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
     <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Enter Code</title>
     <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-<form th:action="@{/display}" method="get">
-    <span th:utext="${errorMessage}"></span> <br/>
-    <input type="text" id="code" name="code" style="text-transform: uppercase" placeholder="Enter game code"/> <br/>
-    <button type="Submit" th:text="Watch"></button>
-</form>
+
+
+
+<br><br><br>
+<div class="container text-center">
+    <div class="row">
+        <div class="well col-sm-6 col-sm-offset-3 ">
+            <form th:action="@{/display}" method="get">
+                <span th:utext="${errorMessage}"></span> <br/>
+                <input type="text" id="code" name="code" style="text-transform: uppercase; text-align: center" placeholder="Enter game code" maxlength="4"/> <br/>
+                <button type="Submit" th:text="Go" class="btn btn-success" style="margin-top: 3vh"></button>
+            </form>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
