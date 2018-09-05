@@ -4,20 +4,47 @@
 
 <head>
     <title>Error</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/src/main/webapp/resources/css/home.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/navbar.js"></script>
 </head>
 
 <body>
+
+<div class="topnav navbar-fixed-top" id="topnav">
+    <a href="javascript:void(0);" class="menuIcon" onclick="onMenuClicked()" style="text-decoration: none">
+        <span class="glyphicon glyphicon-menu-hamburger"></span> Menu
+    </a>
+    <a href="/join" style="text-decoration: none">Play</a>
+    <!--<a href="/deck" style="text-decoration: none">Deck</a>-->
+    <a href="/collection" style="text-decoration: none">Collection</a>
+    <a href="/market" style="text-decoration: none">Market</a>
+    <a id="userInfo" style="text-decoration: none">
+        <span class="glyphicon glyphicon-user"></span>
+        <span id="username"> Error</span>
+        <div class="newLine"></div>
+        <img src="images/gold.png" height="16" width="16"><span id="gold_amount"> -</span>
+        <img src="images/draw.png" height="16" width="16"><span id="card_amount"> -</span>
+    </a>
+    <a href="/logout" id="logoutBtn" style="text-decoration: none"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+</div>
+
+<br><br><br>
 <div class="container">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel-group" style="margin-top:40px">
             <div class="panel panel-primary">
-                <div class="panel-heading"></div>
+                <div class="panel-heading">
+                    Error
+                </div>
                 <div class="panel-body">
+                    <br>
                     Sorry! We have encountered an error.
+                    <br>
                 </div>
             </div>
         </div>
