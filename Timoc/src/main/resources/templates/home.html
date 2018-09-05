@@ -1,60 +1,83 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<link rel="stylesheet" href="css/site.css">
-<link rel="stylesheet" href="css/home.css">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Timoc</title>
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
+<style>
+    .control {
+        text-align: center;
+    }
 
+    .control a {
+        display: block;
+        margin: 5vh auto;
+    }
+</style>
+<script>
+    window.onload = function() {
+        if (screen.width <= 768) {
+            var content = document.getElementById('rightPanel');
+            var parent = content.parentNode;
+            parent.insertBefore(content, parent.firstChild);
+        }
+    }
+</script>
 <body>
 
-<div class="header">
+<div class="jumbotron text-center" style="font-family: 'Amstrad CPC464 Regular'">
     <h1>Welcome to Timoc</h1>
-    <h5>(work in progress)</h5>
+    <p>- A Webbased Multiplayer Card Game -</p>
 </div>
 
-<div class="row">
-    <div class="leftcolumn">
-        <div class="post">
-            <h2>About Timoc</h2>
-            <p>
-                Timoc is a card game that is playable on the browser.
-                It is designed to be played by
-                1-4 players in the same room, using their phones as controllers
-                and a TV as a shared display.
-                Players defeat incoming monsters by playing cards from their decks
-                and are rewarded with randomly generated cards to their collections.
-                Play decks are customizable and
-                cards can be traded in a market place.
-            </p>
-            <p>
-                This website is built by Zhixuan(Nic).
-                It will be submitted as the personal final project for the
-                <a href="http://www.comit.org/" style="color: red;">ComIT</a> course(Class of June 2018).
-                The purpose of developing this project is to learn web
-                technologies such as java, spring, html, css, javascript, etc.
-            </p>
+<div class="container">
+    <div class="row content">
+        <div class="col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-body post">
+                    <h2>About Timoc</h2>
+                    <br>
+                    <p>
+                        Timoc is a card game that is playable on the browser.
+                        It is designed to be played by
+                        1-4 players in the same room, using their phones as controllers
+                        and a TV as a shared display.
+                        Players defeat incoming enemies by playing cards from their decks
+                        and are rewarded with randomly generated cards to their collections.
+                        Play decks are customizable and
+                        cards can be traded in a market place.
+                    </p>
+                    <p>
+                        This website is built by Zhixuan(Nic).
+                        It will be submitted as the final project for the
+                        <a href="http://www.comit.org/">ComIT</a> course.
+                        The purpose of this project is to learn web development
+                        technologies such as java, spring, html, css, javascript, etc.
+                    </p>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body post">
+                </div>
+            </div>
         </div>
-        <div class="post">
-            <h2>How to..(unfinished)</h2>
-            <p>
-                This part is unfinis
-            </p>
-        </div>
-    </div>
-    <div class="rightcolumn">
-        <div class="post">
-            <div class="links">
-                <a href="/login">Login</a>
-                <br>
-                <a href="/registration">Register</a>
+        <div class="col-sm-4" id="rightPanel">
+            <div class="panel panel-default">
+                <div class="panel-body control">
+                    <a href="/login" class="btn btn-success">Login</a>
+                    <a href="/registration" class="btn btn-primary">Register</a>
+                    <a href="/display" class="btn btn-info">Watch a Game</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
 </body>
 </html>
