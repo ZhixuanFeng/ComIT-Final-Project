@@ -1,5 +1,12 @@
 "use strict";
 
+window.onload = function() {
+    if (screen.width <= 768) {
+        let fltPanel = document.getElementById("filterPanel");
+        fltPanel.className += " collapse";
+    }
+};
+
 let collection = [];
 let deck = [];
 let collectionAndStarter = [];
@@ -32,6 +39,58 @@ $(document).ready(function()
         collectionAndStarter = combineSortedCardPiles(collection, starter);
 
         displayCards(collectionAndStarter, $cardArea);
+
+        let $diamondCB = $('#cb_diamond');
+        let $clubCB = $('#cb_club');
+        let $heartCB = $('#cb_heart');
+        let $spadeCB = $('#cb_spade');
+        let $starterCB = $('#cb_starter');
+        let $indeckCB = $('#cb_indeck');
+        let $forsaleCB = $('#cb_forsale');
+        let $idleCB = $('#cb_idle');
+        $diamondCB.change(applyFilter);
+        $clubCB.change(applyFilter);
+        $heartCB.change(applyFilter);
+        $spadeCB.change(applyFilter);
+        $starterCB.change(applyFilter);
+        $indeckCB.change(applyFilter);
+        $forsaleCB.change(applyFilter);
+        $idleCB.change(applyFilter);
+
+        function applyFilter() {
+            let results = [];
+            results = ($starterCB.is(':checked')) ? collectionAndStarter : collection;
+            let showIndeck = $indeckCB.is(':checked');
+            let showforsale = $forsaleCB.is(':checked');
+            let showIdle = $idleCB.is(':checked');
+            let temp = [];
+            results.forEach(function (card) {
+                if ((card.ownerType == 1 && showIndeck)||
+                    (card.ownerType == 3 && showforsale)||
+                    (card.ownerType == 2 && showIdle)||
+                    (card.ownerType == 0 && !deck[card.indecks] && showIndeck)||
+                    (card.ownerType == 0 && deck[card.indecks] && showIdle))
+                    temp.push(card);
+            });
+            results = temp;
+
+            let showDiamond = $diamondCB.is(':checked');
+            let showClub = $clubCB.is(':checked');
+            let showHeart = $heartCB.is(':checked');
+            let showSpade = $spadeCB.is(':checked');
+            let temp2 = [];
+            results.forEach(function (card) {
+                let suit = getSuit(card);
+                if ((suit == 0 && showDiamond)||
+                    (suit == 1 && showClub)||
+                    (suit == 2 && showHeart)||
+                    (suit == 3 && showSpade))
+                    temp2.push(card);
+            });
+            results = temp2;
+
+            displayCards(results, $cardArea);
+        }
 
         // show overlay on click
         $cardArea.children('.card').click(function () {
@@ -275,17 +334,20 @@ function combineSortedCardPiles(cards1, cards2) {
 function displayCards(cards, div) {
     div.empty();
     cards.forEach(function (card) {
-        let cardDiv = addCardBody(card, div);
-        let $statusDiv = $('<div class="card_status">').appendTo(cardDiv);
+        let $container = $('<div>').addClass('col-xs-4 col-sm-3 col-md-2 col-lg-2').appendTo(div);
+        let cardDiv = addCardBody(card, $container);
+        let $statusDiv = $('<div class="card_status">').appendTo($container);
+        $statusDiv.attr('id', 'status' + card.id);
         updateCardStatusDiv(card, cardDiv);
     });
 }
 
 function updateCardStatusDiv(card, cardDiv) {
-    let statusDiv = $(cardDiv).children('.card_status')[0];
+    // let statusDiv = $(cardDiv).children('.card_status')[0];
+    let statusDiv = $('#status' + card.id);
     switch (parseInt(card.ownerType)) {
         case 0:
-            if (typeof(deck[card.indecks]) == 'undefined')
+            if (typeof(deck[card.indecks]) === 'undefined')
                 setCardStatusLabel(statusDiv, 'In Deck');
             else
                 setCardStatusLabel(statusDiv, 'empty');

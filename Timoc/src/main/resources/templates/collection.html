@@ -6,37 +6,107 @@
     <meta charset="UTF-8">
     <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
     <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Collection</title>
     <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/card.css">
-    <link rel="stylesheet" href="css/collection.css">
+    <!--<link rel="stylesheet" href="css/collection.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/navbar.js"></script>
     <script src="js/starterCards.js"></script>
     <script src="js/cardDisplay.js"></script>
     <script src="js/collection.js"></script>
 </head>
+
+<style>
+    .list-group-grey {
+        background-color: #f2f2f2;
+    }
+    .list-group-red {
+        background-color: rgba(255, 0, 0, 0.05);
+    }
+    .list-group-black {
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+</style>
 <body>
 
-<div id="card_area"></div>
-<div id="overlay">
-    <div id="ol_card"></div>
-    <div id="message"></div>
-    <div id="ol_buttons">
-        <input type="button" class="bt" id="bt_add_to_deck" value="add to deck">
-        <input type="button" class="bt" id="bt_turn_into_gold" value="turn into gold:">
-        <input type="button" class="bt" id="bt_sell" value="sell in market">
-        <input type="button" class="bt" id="bt_cancel_offer" value="cancel offer">
-        <input type="button" class="bt" id="bt_dismiss" value="dismiss">
-    </div>
-    <div id="ol_confirm_buttons">
-        <input type="button" class="bt" id="bt_confirm" value="confirm">
-        <input type="button" class="bt" id="bt_cancel" value="cancel">
-    </div>
-    <div id="ol_selling">
-        <input type="number" id="price" placeholder="price">
-        <input type="button" class="bt" id="bt_confirm_sell" value="sell">
+<div class="topnav navbar-fixed-top" id="topnav">
+    <a href="javascript:void(0);" class="menuIcon" onclick="onMenuClicked()" style="text-decoration: none">
+        <span class="glyphicon glyphicon-menu-hamburger"></span> Menu
+    </a>
+    <a href="/join" style="text-decoration: none">Play</a>
+    <a href="/deck" style="text-decoration: none">Deck</a>
+    <a class="active" style="text-decoration: none">Collection</a>
+    <a href="/market" style="text-decoration: none">Market</a>
+    <a id="userInfo" style="text-decoration: none">
+        <span class="glyphicon glyphicon-user"></span>
+        <span id="username"> name</span>
+        <div class="newLine"></div>
+        <img src="images/gold.png" height="16" width="16"><span id="gold_amount"> 0</span>
+        <img src="images/draw.png" height="16" width="16"><span id="card_amount"> 0</span>
+    </a>
+    <a href="/logout" id="logoutBtn" style="text-decoration: none"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+    <a href="#filterPanel" data-toggle="collapse" class="filterIcon" onclick="toTop()" style="text-decoration: none">
+        <span class="glyphicon glyphicon-filter"></span> Filter
+    </a>
+</div>
+
+<br><br><br>
+
+<h1 class="jumbotron text-center" style="font-family: 'Amstrad CPC464 Regular'">Card Collection</h1>
+
+<div class="container-fluid">
+    <div class="row content">
+        <div class="col-sm-3 col-md-2 col-md-offset-1 sidenav text-center">
+            <div class="panel panel-default">
+                <div class="panel-body" id="filterPanel">
+                    <ul class="list-group">
+                        <li class="list-group-item list-group-red"><label class="cb"><input type="checkbox" id="cb_diamond" value="0" checked> <img src="images/diamond.png" height="22" width="22"></label><br></li>
+                        <li class="list-group-item list-group-black"><label class="cb"><input type="checkbox" id="cb_club" value="1" checked> <img src="images/club.png" height="22" width="22"></label><br></li>
+                        <li class="list-group-item list-group-red"><label class="cb"><input type="checkbox" id="cb_heart" value="2" checked> <img src="images/heart.png" height="22" width="22"></label><br></li>
+                        <li class="list-group-item list-group-black"><label class="cb"><input type="checkbox" id="cb_spade" value="3" checked> <img src="images/spade.png" height="22" width="22"></label><br></li>
+
+                        <li class="list-group-item list-group-grey"><label class="cb"><input type="checkbox" id="cb_starter" checked> Starter</label><br></li>
+                        <li class="list-group-item list-group-item-info"><label class="cb"><input type="checkbox" id="cb_indeck" checked> In-deck</label><br></li>
+                        <li class="list-group-item list-group-item-warning"><label class="cb"><input type="checkbox" id="cb_forsale" checked> For sale</label><br></li>
+                        <li class="list-group-item list-group-item-success"><label class="cb"><input type="checkbox" id="cb_idle" checked> Idle</label><br></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row content" id="card_area">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<!--<div id="overlay">-->
+    <!--<div id="ol_card"></div>-->
+    <!--<div id="message"></div>-->
+    <!--<div id="ol_buttons">-->
+        <!--<input type="button" class="bt" id="bt_add_to_deck" value="add to deck">-->
+        <!--<input type="button" class="bt" id="bt_turn_into_gold" value="turn into gold:">-->
+        <!--<input type="button" class="bt" id="bt_sell" value="sell in market">-->
+        <!--<input type="button" class="bt" id="bt_cancel_offer" value="cancel offer">-->
+        <!--<input type="button" class="bt" id="bt_dismiss" value="dismiss">-->
+    <!--</div>-->
+    <!--<div id="ol_confirm_buttons">-->
+        <!--<input type="button" class="bt" id="bt_confirm" value="confirm">-->
+        <!--<input type="button" class="bt" id="bt_cancel" value="cancel">-->
+    <!--</div>-->
+    <!--<div id="ol_selling">-->
+        <!--<input type="number" id="price" placeholder="price">-->
+        <!--<input type="button" class="bt" id="bt_confirm_sell" value="sell">-->
+    <!--</div>-->
+<!--</div>-->
 
 </body>
 </html>

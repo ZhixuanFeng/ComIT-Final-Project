@@ -1,43 +1,86 @@
-.card
-{
-    margin: 3vh; /*15% dcw*/
-    width: 20vh; /*dcw*/
-    position: relative;
-    display: inline-block;
-}
+/*.card*/
+/*{*/
+    /*margin: 3vh; !*15% dcw*!*/
+    /*width: 20vh; !*dcw*!*/
+    /*position: relative;*/
+    /*display: inline-block;*/
+/*}*/
 
-.card:hover
-{
-    background-color: greenyellow;
-}
+/*.card:hover*/
+/*{*/
+    /*background-color: greenyellow;*/
+/*}*/
 
-.empty_card
-{
+/*.empty_card*/
+/*{*/
+    /*width: 100%;*/
+    /*height: auto;*/
+    /*display: block;*/
+/*}*/
+
+/*.rank*/
+/*{*/
+    /*width: 35%;*/
+    /*font-size: 4vh; !*20% dcw*!*/
+    /*letter-spacing: -0.15em;*/
+    /*text-align: center;*/
+    /*margin-left: auto;*/
+    /*margin-right: auto;*/
+    /*position: absolute;*/
+    /*top: 10%;*/
+/*}*/
+
+/*.suit*/
+/*{*/
+    /*width: 20%;*/
+    /*height: auto;*/
+    /*display: block;*/
+    /*position: absolute;*/
+    /*top: 25%;*/
+    /*left: 9%;*/
+/*}*/
+
+/*.card_effect*/
+/*{*/
+    /*display: block;*/
+    /*position: absolute;*/
+    /*width: 100%;*/
+    /*top: 40%;*/
+    /*left: 60%;*/
+    /*transform: translateX(-50%);*/
+/*}*/
+
+/*.effect_icon*/
+/*{*/
+    /*width: 4vh; !*20% dcw*!*/
+    /*height: auto;*/
+    /*padding-left: 2vh; !*10% dcw*!*/
+/*}*/
+
+/*.effect_amount*/
+/*{*/
+    /*font-size: 3vh; !*15% dcw*!*/
+    /*padding-left: 3vh; !*15% dcw*!*/
+/*}*/
+
+
+.empty_card {
     width: 100%;
     height: auto;
-    display: block;
 }
 
-.rank
-{
-    width: 35%;
-    font-size: 4vh; /*20% dcw*/
-    letter-spacing: -0.15em;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+.rank {
     position: absolute;
-    top: 10%;
+    top: 3%;
+    left: 18%;
 }
 
-.suit
-{
-    width: 20%;
+.suit {
+    position: absolute;
+    width: 16%;
     height: auto;
-    display: block;
-    position: absolute;
-    top: 25%;
-    left: 9%;
+    top: 18%;
+    left: 18%;
 }
 
 .card_effect
@@ -45,20 +88,17 @@
     display: block;
     position: absolute;
     width: 100%;
-    top: 40%;
-    left: 60%;
-    transform: translateX(-50%);
+    top: 30%;
+    left: 30%;
 }
 
-.effect_icon
-{
-    width: 4vh; /*20% dcw*/
+.effect_icon {
+    width: 16%;
     height: auto;
-    padding-left: 2vh; /*10% dcw*/
 }
 
 .effect_amount
 {
-    font-size: 3vh; /*15% dcw*/
-    padding-left: 3vh; /*15% dcw*/
+    padding-left: 5%;
+    position: absolute;
 }

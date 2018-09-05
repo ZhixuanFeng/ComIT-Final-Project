@@ -1,20 +1,5 @@
 "use strict";
 
-function toTop() {
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
-}
-
-function onMenuClicked() {
-    toTop();
-    let nav = document.getElementById("topnav");
-    if (nav.className === "topnav navbar-fixed-top") {
-        nav.className += " menuClicked";
-    } else {
-        nav.className = "topnav navbar-fixed-top";
-    }
-}
-
 window.onload = function() {
     if (screen.width <= 768) {
         let fltPanel = document.getElementById("filterPanel");
