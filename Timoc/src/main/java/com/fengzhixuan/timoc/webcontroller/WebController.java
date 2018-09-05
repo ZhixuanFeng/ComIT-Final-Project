@@ -54,7 +54,7 @@ public class WebController
             cardDeckService.addCard(newCard, cardDeckService.getCardDeckById(user.getId())); // test deck
         }
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("hello");
+        modelAndView.setViewName("join");
         return modelAndView;
     }
 

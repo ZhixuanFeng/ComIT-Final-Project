@@ -122,15 +122,4 @@ public class LoginController
         modelAndView.setViewName(viewName);
         return modelAndView;
     }
-
-    @RequestMapping(value="/hello", method = RequestMethod.GET)
-    public ModelAndView home()
-    {
-        ModelAndView modelAndView = new ModelAndView();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByUsername(auth.getName());
-        modelAndView.addObject("welcome", "Welcome " + user.getUsername());
-        modelAndView.setViewName("hello");
-        return modelAndView;
-    }
 }
