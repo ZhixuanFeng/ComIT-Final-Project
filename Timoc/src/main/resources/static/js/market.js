@@ -212,6 +212,7 @@ function displayCards(cards, div) {
             $confirmText.show();
             $confirmBtn.show();
             $cancelBtn.show();
+            $confirmText('Sure?');
         });
 
         $cancelBtn.click(resetButtons);
@@ -234,10 +235,10 @@ function displayCards(cards, div) {
 
         $confirmBtn.click(function () {
             if (myInfo.gold < offer.price) {
-                $('#message').text('Not enough gold').css('color', 'red');
+                $confirmText.text('Not enough gold');
             }
             else if (myInfo.cardsOwned >= myInfo.maxCards) {
-                $('#message').text('Your storage is full').css('color', 'red');
+                $confirmText.text('Your storage is full');
             }
             else {
                 $container.hide();
