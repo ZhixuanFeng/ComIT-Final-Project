@@ -10,7 +10,7 @@ window.onload = function() {
 let collection = [];
 let deck = [];
 let collectionAndStarter = [];
-
+let selectedCardId;
 $(document).ready(function()
 {
     const token = $("meta[name='_csrf']").attr("content");
@@ -93,12 +93,13 @@ $(document).ready(function()
         }
 
         // show overlay on click
-        $cardArea.children('.card').click(function () {
+        $('.card').click(function () {
             if ($overlay.is(':visible')) {
                 $overlay.hide();
                 return;
             }
 
+            selectedCardId = this.id;
             let id = this.id;
             let card = findCardById(id);
             $overlay.show();
@@ -113,8 +114,8 @@ $(document).ready(function()
             if (id <= 52) {
                 // $message.text('This is a starter card');
                 $('#bt_add_to_deck').show();
-                $('#bt_turn_into_gold').hide();
-                $('#bt_sell').hide();
+                $('#bt_turn_into_gold').show();
+                $('#bt_sell').show();
                 $('#bt_cancel_offer').hide();
             }
             else {
@@ -122,6 +123,7 @@ $(document).ready(function()
                     $('#bt_add_to_deck').hide();
                     $('#bt_turn_into_gold').hide();
                     $('#bt_sell').hide();
+                    $message.text('Retrieving information from server..');
                     $.post('market/card_id', {id:parseInt(id)}, function (offer) {
                         let offerId = offer.id;
                         let price = offer.price;
@@ -129,7 +131,7 @@ $(document).ready(function()
                             $message.text('Cannot find this card in the market, please refresh the web page');
                         }
                         else {
-                            $message.text('This card is being sold on the market for ' + price + ' gold');
+                            $message.text('You are selling this card on the market for ' + price + ' gold');
                             $('#bt_cancel_offer').show();
 
                             $('#bt_cancel_offer').click(function () {
@@ -147,7 +149,7 @@ $(document).ready(function()
                     $('#bt_turn_into_gold').show();
                     $('#bt_sell').show();
                     $('#bt_cancel_offer').hide();
-                    $('#bt_turn_into_gold').val('turn into gold: ' + (50 + card.quality));
+                    $('#bt_turn_into_gold').val((50 + card.quality) + ' gold');
                 }
             }
         });
@@ -157,7 +159,7 @@ $(document).ready(function()
         });
 
         $('#bt_add_to_deck').click(function () {
-            let id = $('#ol_card').children('.card')[0].id;
+            let id = selectedCardId;
             let card = findCardById(id);
             if (id > 52) {
                 if (card.ownerType == 3) {
@@ -181,7 +183,7 @@ $(document).ready(function()
                         updateCardStatusDiv(starter[card.indecks], $('#' + (card.indecks + 1)));
                     }
                     updateCardStatusDiv(card, $('#' + id));
-                    updateCardStatusDiv(card, $('#ol_card').children('.card')[0]);
+                    // updateCardStatusDiv(card, $('#ol_card').children('.card')[0]);
                     $message.text('This card is now in your deck');
                 });
             }
@@ -198,13 +200,13 @@ $(document).ready(function()
                     $message.text('This card is now in your deck');
                     updateCardStatusDiv(cardReplaced, $('#' + cardReplaced.id));
                     updateCardStatusDiv(card, $('#' + id));
-                    updateCardStatusDiv(card, $('#ol_card').children('.card')[0]);
+                    // updateCardStatusDiv(card, $('#ol_card').children('.card')[0]);
                 });
             }
         });
 
         $('#bt_turn_into_gold').click(function () {
-            let id = $('#ol_card').children('.card')[0].id;
+            let id = selectedCardId;
             if (id <= 52) {
                 $message.text('You may not turn starter cards into gold');
                 return;
@@ -233,21 +235,22 @@ $(document).ready(function()
                         return e.id != id;
                     });
                     $('#' + id).hide();
-                    //TODO: display gold
+                    updateNavBar();
                     $('#overlay').hide();
                     let indecks = card.indecks;
                     if (typeof(deck[indecks]) != 'undefined') {
                         deck[indecks] = undefined;
                         updateCardStatusDiv(starter[indecks], $('#' + (indecks + 1)));
                     }
-                    updateCardStatusDiv(card, $('#' + id));
+                    // updateCardStatusDiv(card, $('#' + id));
+                    $('#container' + id).hide();
                 });
                 $('#bt_confirm').off();
             });
         });
 
         $('#bt_sell').click(function () {
-            let id = $('#ol_card').children('.card')[0].id;
+            let id = selectedCardId;
             if (id <= 52) {
                 $message.text('You may not sell starter cards');
                 return;
@@ -334,13 +337,48 @@ function combineSortedCardPiles(cards1, cards2) {
 function displayCards(cards, div) {
     div.empty();
     cards.forEach(function (card) {
-        let $container = $('<div>').addClass('col-xs-4 col-sm-3 col-md-2 col-lg-2').appendTo(div);
+        let $container = $('<div>').addClass('cardContainer col-xs-4 col-sm-3 col-md-2 col-lg-2').appendTo(div);
+        $container.attr('id', 'container' + card.id);
         let cardDiv = addCardBody(card, $container);
         let $statusDiv = $('<div class="card_status">').appendTo($container);
         $statusDiv.attr('id', 'status' + card.id);
         updateCardStatusDiv(card, cardDiv);
     });
+
+    resizeCardFonts();
+    sizeOverlays();
 }
+
+function resizeCardFonts() {
+    let rankSize = $(document).find('.suit').outerWidth();
+    $('.rank').resize().each(function () {
+        $(this).css('font-size', rankSize + 'px');
+    });
+    let effectSize = $(document).find('.effect_icon').outerWidth() * 0.75;
+    $('.effect_amount').resize().each(function () {
+        $(this).css('font-size', effectSize + 'px');
+    });
+}
+
+let sizeOverlays = function() {
+    let w = $(document).find('.empty_card').outerWidth();
+    let h = w / 41 * 61;
+    $(".overlay").resize().each(function() {
+        $(this).css('width', w);
+        $(this).css('height', h);
+        $(this).css('left', $(this).position());
+    });
+};
+
+let width = $(window).width();
+$(window).resize(function(){
+    if($(this).width() !== width){
+        width = $(this).width();
+        resizeCardFonts();
+        sizeOverlays();
+        if (width > 768) $('#filterPanel').collapse('show');
+    }
+});
 
 function updateCardStatusDiv(card, cardDiv) {
     // let statusDiv = $(cardDiv).children('.card_status')[0];
@@ -368,15 +406,15 @@ function setCardStatusLabel(div, status) {
     switch (status) {
         case 'In Deck':
             $(div).text('In Deck');
-            $(div).css({'background-color': 'rgba(153, 204, 255, 32)'});
+            $(div).css({'background-color': 'rgba(153, 204, 255, 32)', 'color':'rgba(0, 0, 0, 1)'});
             break;
         case 'For Sale':
             $(div).text('For Sale');
-            $(div).css({'background-color':'rgba(255, 255, 153, 128)'});
+            $(div).css({'background-color':'rgba(255, 255, 153, 128)', 'color':'rgba(0, 0, 0, 1)'});
             break;
         default :
-            $(div).empty();
-            $(div).css({'background-color':'transparent'});
+            $(div).text('Idle Card');
+            $(div).css({'background-color':'transparent', 'color':'rgba(255, 255, 255, 0.0)'});
             break;
     }
 }

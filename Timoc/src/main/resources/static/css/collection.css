@@ -1,67 +1,129 @@
-body
-{
-    background-color: wheat;
+.list-group-grey {
+    background-color: #f2f2f2;
+}
+.list-group-red {
+    background-color: rgba(255, 0, 0, 0.05);
+}
+.list-group-black {
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
-#card_area
-{
-    width: 100%;
-    height: 100%;
+.btn-gold {
+    background-color: gold;
+    color: white;
+}
+
+.cardContainer {
+    margin-bottom: 5vh;
 }
 
 .card_status
 {
     width: 100%;
-    /*font-size: 2vh;*/
-    /*letter-spacing: -0.15em;*/
-    /*text-align: center;*/
-    /*padding: 0.5vh 0.5vh;*/
-    /*position: absolute;*/
-    /*top: 10%;*/
-    /*right: 10%;*/
+    text-align: center;
+}
+
+@media screen and (max-width: 400px) {
+
+    .card_effect {
+        top: 27%;
+        line-height: 0;
+    }
+    .effect_amount
+    {
+        line-height: normal;
+    }
 }
 
 #overlay
 {
     position: fixed;
     display: none;
-    width: 80%;
-    height: 80%;
-    top: 10%;
-    left: 10%;
-    background-color: white;
+    top: 20%;
+    left: 30%;
+    width: 40%;
+    height: 60%;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
     z-index: 2;
-    border: 2px solid greenyellow;
+    text-align: center;
+}
+
+#ol_card {
+    display: none;
+}
+
+.bt {
+    top: 20%;
+    margin-top: 5%;
+    margin-left: 20%;
+    margin-right: 20%;
 }
 
 #message
 {
-    text-align: center;
-}
-
-#ol_card
-{
     width: 100%;
-}
-
-#ol_card .card
-{
-    position: relative;
-    left: 50%;
-    margin: 7% 0;
-    transform: translateX(-50%);
-}
-
-#ol_buttons, #ol_confirm_buttons, #ol_selling
-{
-    position: relative;
+    padding: 5%;
     text-align: center;
 }
 
-.bt
-{
-    white-space: normal;
-    width: 20%;
-    margin: 2% 10%;
-    line-height: 2rem;
+#bt_dismiss {
+    position: absolute;
+    margin: 0;
+    top: 0;
+    right: 0;
+}
+
+#price {
+    margin-top: 10%;
+    width: 50%;
+}
+
+@media screen and (max-width: 768px) {
+    #overlay {
+        top: 20%;
+        left: 20%;
+        width: 60%;
+        height: 60%;
+    }
+
+    #message
+    {
+        position: absolute;
+    }
+
+    #bt_dismiss {
+        display: none;
+    }
+
+    .bt {
+        position: absolute;
+        left: 25%;
+        margin: 0;
+    }
+
+    #bt_add_to_deck {
+        top: 25%;
+    }
+
+    #bt_turn_into_gold, #bt_confirm {
+        top: 50%;
+    }
+
+    #bt_sell, #bt_confirm_sell, #bt_cancel {
+        top: 75%;
+    }
+
+    #bt_cancel_offer {
+        top: 50%;
+        left: 15%;
+    }
+
+    #price {
+        position: absolute;
+        margin: 0;
+        top: 50%;
+        left: 15%;
+        width: 70%;
+    }
 }

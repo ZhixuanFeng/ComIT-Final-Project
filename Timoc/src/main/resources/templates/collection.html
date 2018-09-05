@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/site.css">
     <link rel="stylesheet" href="css/navbar.css">
     <link rel="stylesheet" href="css/card.css">
-    <!--<link rel="stylesheet" href="css/collection.css">-->
+    <link rel="stylesheet" href="css/collection.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -20,18 +20,6 @@
     <script src="js/cardDisplay.js"></script>
     <script src="js/collection.js"></script>
 </head>
-
-<style>
-    .list-group-grey {
-        background-color: #f2f2f2;
-    }
-    .list-group-red {
-        background-color: rgba(255, 0, 0, 0.05);
-    }
-    .list-group-black {
-        background-color: rgba(0, 0, 0, 0.05);
-    }
-</style>
 <body>
 
 <div class="topnav navbar-fixed-top" id="topnav">
@@ -88,25 +76,35 @@
         </div>
     </div>
 </div>
-<!--<div id="overlay">-->
-    <!--<div id="ol_card"></div>-->
-    <!--<div id="message"></div>-->
-    <!--<div id="ol_buttons">-->
-        <!--<input type="button" class="bt" id="bt_add_to_deck" value="add to deck">-->
-        <!--<input type="button" class="bt" id="bt_turn_into_gold" value="turn into gold:">-->
-        <!--<input type="button" class="bt" id="bt_sell" value="sell in market">-->
-        <!--<input type="button" class="bt" id="bt_cancel_offer" value="cancel offer">-->
-        <!--<input type="button" class="bt" id="bt_dismiss" value="dismiss">-->
-    <!--</div>-->
-    <!--<div id="ol_confirm_buttons">-->
-        <!--<input type="button" class="bt" id="bt_confirm" value="confirm">-->
-        <!--<input type="button" class="bt" id="bt_cancel" value="cancel">-->
-    <!--</div>-->
-    <!--<div id="ol_selling">-->
-        <!--<input type="number" id="price" placeholder="price">-->
-        <!--<input type="button" class="bt" id="bt_confirm_sell" value="sell">-->
+
+<!--<div class="container">-->
+    <!--<div class="row content">-->
+        <!--<div class="col-xs-12">-->
+            <!--<div class="panel panel-default">-->
+                <div id="overlay">
+                    <input type="button" class="bt btn btn-default" id="bt_dismiss" value="X">
+                    <div id="ol_card"></div>
+                    <div id="message"></div>
+                    <div id="ol_buttons">
+                        <input type="button" class="bt btn btn-primary" id="bt_add_to_deck" value="deck">
+                        <input type="button" class="bt btn btn-gold" id="bt_turn_into_gold" value="gold">
+                        <input type="button" class="bt btn btn-warning" id="bt_sell" value="sell">
+                        <input type="button" class="bt btn btn-warning" id="bt_cancel_offer" value="cancel it">
+                    </div>
+                    <div id="ol_confirm_buttons">
+                        <input type="button" class="bt btn btn-success" id="bt_confirm" value="confirm">
+                        <input type="button" class="bt btn btn-danger" id="bt_cancel" value="cancel">
+                    </div>
+                    <div id="ol_selling">
+                        <input type="number" id="price" placeholder="price">
+                        <input type="button" class="bt btn btn-success" id="bt_confirm_sell" value="sell">
+                    </div>
+                </div>
+            <!--</div>-->
+        <!--</div>-->
     <!--</div>-->
 <!--</div>-->
+
 
 </body>
 </html>
