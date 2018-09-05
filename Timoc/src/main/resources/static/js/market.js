@@ -248,20 +248,17 @@ function displayCards(cards, div) {
         }
 
         $confirmBtn.click(function () {
-            if (gold < offer.price) {
+            if (myInfo.gold < offer.price) {
                 $('#message').text('Not enough gold').css('color', 'red');
             }
-            else if (numOfCards >= maxNumOfCards) {
+            else if (myInfo.cardsOwned >= myInfo.maxCards) {
                 $('#message').text('Your storage is full').css('color', 'red');
             }
             else {
-                // $.post('market/accept/offer_id', {id: offer.id}, function () {
-                //     $($cardDiv).hide();
-                //     gold -= offer.price;
-                //     // updateGold();
-                //     $overlay.hide();
-                // });
-                console.log('confirm purchase');
+                $container.hide();
+                $.post('market/accept/offer_id', {id: offer.id}, function () {
+                    updateNavBar();
+                });
             }
         });
     });
