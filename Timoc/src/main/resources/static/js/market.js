@@ -211,7 +211,7 @@ function displayCards(cards, div) {
     cards.forEach(function (offer) {
         let cardDiv = addCardBody(offer, div);
         let $price = $('<div>').addClass('price').appendTo(cardDiv);
-        let $goldIcon = $('<img src="images/gold.png" height="8" width="8"/>').addClass('gold_icon').appendTo($price);
+        let $goldIcon = $('<img src="images/gold.png"/>').addClass('gold_icon').appendTo($price);
         let $priceNum = $('<div>').text(offer.price).addClass('price_num').appendTo($price);
 
         $(cardDiv).click(function () {
@@ -260,6 +260,59 @@ function displayCards(cards, div) {
     function updateGold() {
 
     }
+}
+
+function addCardBody(card, div) {
+    let $cardDiv = $('<div>');
+    let $emptyCardImg;
+    if (card.id <= 52)
+        $emptyCardImg = $('<img src="images/empty_card_starter.png"/>');
+    else
+        $emptyCardImg = $('<img src="images/empty_card.png"/>');
+    let $rankDiv = $('<div>');
+    let $suitImg = $('<img/>');
+    let $cardEffectDiv = $('<div>');
+    let rank = getRank(card);
+    let suit = getSuit(card);
+    $cardDiv.attr('id', card.id);
+    $rankDiv.text(rank == 1 ? 'A' : rank == 11 ? 'J' : rank == 12 ? 'Q' : rank == 13 ? 'K' : rank);
+    $rankDiv.attr('style', suit == 0 || suit == 2 ? 'color: red' : 'color:black');
+    $suitImg.attr('src', suit == 0 ? 'images/diamond.png' : suit == 1 ? 'images/club.png' : suit == 2 ? 'images/heart.png' : 'images/spade.png');
+    if (card.attack > 0) addCardEffect('attack', card.attack, suit, $cardEffectDiv);
+    if (card.block > 0) addCardEffect('block', card.block, suit, $cardEffectDiv);
+    if (card.heal > 0) addCardEffect('heal', card.heal, suit, $cardEffectDiv);
+    if (card.mana > 0) addCardEffect('mana', card.mana, suit, $cardEffectDiv);
+    if (card.aoe > 0) addCardEffect('aoe', card.aoe, suit, $cardEffectDiv);
+    if (card.draw > 0) addCardEffect('draw', card.draw, suit, $cardEffectDiv);
+    if (card.revive > 0) addCardEffect('revive', card.revive, suit, $cardEffectDiv);
+    if (card.taunt > 0) addCardEffect('hate', card.taunt, suit, $cardEffectDiv);
+
+    $cardDiv.addClass('card col-xs-6 col-sm-4 col-md-3 col-lg-2').appendTo(div);
+    $emptyCardImg.addClass('empty_card').appendTo($cardDiv);
+    $rankDiv.addClass('rank').appendTo($cardDiv);
+    $suitImg.addClass('suit').appendTo($cardDiv);
+    $cardEffectDiv.addClass('card_effect').appendTo($cardDiv);
+
+    return $cardDiv;
+}
+
+function addCardEffect(name, amount, suit, cardEffectDiv) {
+    let $newEffectDiv = $('<div />').appendTo(cardEffectDiv);
+    let $effectIconImg = $('<img class="effect_icon" height="16" width="16"/>');
+    let $effectAmoundSpan = $('<span class="effect_amount""></span>');
+    $effectIconImg.attr('src', 'images/' + name + '.png');
+    $effectAmoundSpan.text(amount);
+    $effectAmoundSpan.attr('style', suit == 0 || suit == 2 ? 'color: red' : 'color:black');
+    $effectIconImg.addClass('effect_icon').appendTo($newEffectDiv);
+    $effectAmoundSpan.addClass('effect_amount').appendTo($newEffectDiv);
+}
+
+function getRank(card) {
+    return card.indecks - getSuit(card) * 13 + 1;
+}
+
+function getSuit(card) {
+    return Math.floor(card.indecks / 13);
 }
 
 function newPageNumBt(pageNum, postURL, postData, totalPages) {
