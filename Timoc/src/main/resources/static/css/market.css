@@ -60,12 +60,6 @@
 
 
 
-.card {
-    position: relative;
-    display: inline-block;
-    margin-bottom: 5vh;
-}
-
 .empty_card {
     width: 100%;
     height: auto;
@@ -73,8 +67,7 @@
 
 .rank {
     position: absolute;
-    font-size: 200%;
-    top: 5%;
+    top: 3%;
     left: 18%;
 }
 
@@ -82,7 +75,7 @@
     position: absolute;
     width: 16%;
     height: auto;
-    top: 20%;
+    top: 18%;
     left: 18%;
 }
 
@@ -91,7 +84,7 @@
     display: block;
     position: absolute;
     width: 100%;
-    top: 32%;
+    top: 30%;
     left: 30%;
 }
 
@@ -102,86 +95,46 @@
 
 .effect_amount
 {
-    font-size: 120%;
-    padding-left: 5%
+    padding-left: 5%;
+    position: absolute;
 }
 
-.card .price {
+.price {
     width: 100%;
     text-align: center;
+    margin-bottom: 5vh;
 }
 
-.card .gold_icon {
+.gold_icon {
     width: 16%;
     height: auto;
 }
 
-.card .price_num {
+.price_num {
     display: inline-block;
     padding: 5%;
 }
 
-/*.offers .card*/
-/*{*/
-/*margin: 1.8vh; !*15% dcw*!*/
-/*width: 12vh; !*dcw*!*/
-/*}*/
+.card:hover .overlay {
+    opacity: 1;
+}
 
-/*.offers .card .rank*/
-/*{*/
-    /*font-size: 2.4vh; !*20% dcw*!*/
-/*}*/
+.overlay {
+    width: 100%;
+    height: 100%;
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    text-align: center;
+    background: rgba(25, 25, 25, 0.8);
+    border-radius: 10px;
+}
 
-/*.offers .card .effect_icon*/
-/*{*/
-    /*width: 2.4vh; !*20% dcw*!*/
-    /*padding-left: 1.2vh; !*10% dcw*!*/
-/*}*/
+.overlay button {
+    /*margin:5px;*/
+}
 
-/*.offers .card .effect_amount*/
-/*{*/
-    /*font-size: 1.8vh; !*15% dcw*!*/
-    /*padding-left: 1.8vh; !*15% dcw*!*/
-/*}*/
-
-/*.offers .card .price, #overlay #ol_card .price*/
-/*{*/
-    /*text-align: center;*/
-/*}*/
-
-/*#overlay #ol_card .price*/
-/*{*/
-    /*padding-top: 1vh;*/
-/*}*/
-
-/*.offers .card .price .gold_icon, #overlay #ol_card .price .gold_icon*/
-/*{*/
-    /*width: 1.5vh;*/
-    /*height: auto;*/
-    /*display: inline-block;*/
-    /*margin-right: 1vh;*/
-/*}*/
-
-/*#overlay #ol_card .price .gold_icon*/
-/*{*/
-    /*width: 2vh;*/
-/*}*/
-
-/*.offers .card .price .price_num, #overlay #ol_card .price .price_num*/
-/*{*/
-    /*font-size: 1.5vh;*/
-    /*display: inline-block;*/
-/*}*/
-
-/*#overlay #ol_card .price .price_num*/
-/*{*/
-    /*font-size: 2vh;*/
-/*}*/
-
-/*#ol_sold_by*/
-/*{*/
-    /*text-align: center;*/
-/*}*/
 
 
 #pagination {

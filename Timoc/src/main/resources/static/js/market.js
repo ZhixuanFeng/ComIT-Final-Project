@@ -1,6 +1,12 @@
 "use strict"
 
+function toTop() {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+
 function onMenuClicked() {
+    toTop();
     let nav = document.getElementById("topnav");
     if (nav.className === "topnav navbar-fixed-top") {
         nav.className += " menuClicked";
@@ -209,8 +215,11 @@ function displayCards(cards, div) {
     div.empty();
     let $overlay = $('#overlay');
     cards.forEach(function (offer) {
-        let cardDiv = addCardBody(offer, div);
-        let $price = $('<div>').addClass('price').appendTo(cardDiv);
+        let container = $('<div>').addClass('col-xs-6 col-sm-4 col-md-3 col-lg-2').appendTo(div);
+        let cardDiv = addCardBody(offer, container);
+        let overlay = $('<div>').addClass('overlay').appendTo(cardDiv);
+        let button = $('<button>').addClass('btn btn-primary').appendTo(overlay);
+        let $price = $('<div>').addClass('price').appendTo(container);
         let $goldIcon = $('<img src="images/gold.png"/>').addClass('gold_icon').appendTo($price);
         let $priceNum = $('<div>').text(offer.price).addClass('price_num').appendTo($price);
 
@@ -245,21 +254,7 @@ function displayCards(cards, div) {
         });
     });
 
-    $('#bt_dismiss').click(function () {
-        $('#overlay').hide();
-    });
-
-    $(document).mouseup(function(e) {
-        let container = $('#overlay');
-        if (container.is(':visible') && !container.is(e.target) && container.has(e.target).length === 0 && !$('.card').is(e.target) && $('.card').has(e.target).length === 0)
-        {
-            container.hide();
-        }
-    });
-
-    function updateGold() {
-
-    }
+    // sizeOverlays();
 }
 
 function addCardBody(card, div) {
@@ -287,18 +282,21 @@ function addCardBody(card, div) {
     if (card.revive > 0) addCardEffect('revive', card.revive, suit, $cardEffectDiv);
     if (card.taunt > 0) addCardEffect('hate', card.taunt, suit, $cardEffectDiv);
 
-    $cardDiv.addClass('card col-xs-6 col-sm-4 col-md-3 col-lg-2').appendTo(div);
+    $cardDiv.addClass('card').appendTo(div);
     $emptyCardImg.addClass('empty_card').appendTo($cardDiv);
     $rankDiv.addClass('rank').appendTo($cardDiv);
     $suitImg.addClass('suit').appendTo($cardDiv);
     $cardEffectDiv.addClass('card_effect').appendTo($cardDiv);
+
+    resizeCardFonts();
+    sizeOverlays();
 
     return $cardDiv;
 }
 
 function addCardEffect(name, amount, suit, cardEffectDiv) {
     let $newEffectDiv = $('<div />').appendTo(cardEffectDiv);
-    let $effectIconImg = $('<img class="effect_icon" height="16" width="16"/>');
+    let $effectIconImg = $('<img class="effect_icon"/>');
     let $effectAmoundSpan = $('<span class="effect_amount""></span>');
     $effectIconImg.attr('src', 'images/' + name + '.png');
     $effectAmoundSpan.text(amount);
@@ -306,6 +304,36 @@ function addCardEffect(name, amount, suit, cardEffectDiv) {
     $effectIconImg.addClass('effect_icon').appendTo($newEffectDiv);
     $effectAmoundSpan.addClass('effect_amount').appendTo($newEffectDiv);
 }
+
+function resizeCardFonts() {
+    let rankSize = $(document).find('.suit').outerWidth();
+    $('.rank').resize().each(function () {
+        $(this).css('font-size', rankSize + 'px');
+    });
+    let effectSize = $(document).find('.effect_icon').outerWidth() * 0.75;
+    $('.effect_amount').resize().each(function () {
+        $(this).css('font-size', effectSize + 'px');
+    });
+}
+
+let sizeOverlays = function() {
+    let w = $(document).find('.empty_card').outerWidth();
+    let h = w / 41 * 61;
+    $(".overlay").resize().each(function() {
+        $(this).css('width', w);
+        $(this).css('height', h);
+        $(this).css('left', $(this).position());
+    });
+};
+
+let width = $(window).width();
+$(window).resize(function(){
+    if($(this).width() !== width){
+        width = $(this).width();
+        resizeCardFonts();
+        sizeOverlays();
+    }
+});
 
 function getRank(card) {
     return card.indecks - getSuit(card) * 13 + 1;

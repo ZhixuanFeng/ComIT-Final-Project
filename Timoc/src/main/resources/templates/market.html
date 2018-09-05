@@ -27,8 +27,8 @@
     <a href="/join" style="text-decoration: none">Play</a>
     <a href="/deck" style="text-decoration: none">Deck</a>
     <a href="/collection" style="text-decoration: none">Collection</a>
-    <a href="#" class="active" style="text-decoration: none">Market</a>
-    <a href="#" id="userInfo" style="text-decoration: none">
+    <a class="active" style="text-decoration: none">Market</a>
+    <a id="userInfo" style="text-decoration: none">
         <span class="glyphicon glyphicon-user"></span>
          namenamename
         <div class="newLine"></div>
@@ -36,7 +36,7 @@
         <img src="images/draw.png" height="16" width="16"> 0
     </a>
     <a href="/logout" id="logoutBtn" style="text-decoration: none"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
-    <a href="#filterPanel" data-toggle="collapse" class="filterIcon" style="text-decoration: none">
+    <a href="#filterPanel" data-toggle="collapse" class="filterIcon" onclick="toTop()" style="text-decoration: none">
         <span class="glyphicon glyphicon-filter"></span> Filter
     </a>
 </div>
@@ -45,7 +45,7 @@
 
 <div class="container-fluid">
     <div class="row content">
-        <div class="col-sm-2 col-sm-offset-1 sidenav text-center">
+        <div class="col-sm-3 col-md-2 col-md-offset-1 sidenav text-center">
             <div class="panel panel-default">
                 <div class="panel-body" id="filterPanel">
                     <button class="btn btn-default apply" type="button"><span class="glyphicon glyphicon-search"></span>Search</button>
@@ -98,9 +98,6 @@
             <div class="panel panel-default">
                 <div class="panel-body offers">
                     <div class="row content" id="card_area">
-                        <!--<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">-->
-                            <!--<img src="images/empty_card.png" style="width: 100%;height: auto;"/>-->
-                        <!--</div>-->
                     </div>
                     <div id="pagination">
                         <div id="page_numbers"></div>
