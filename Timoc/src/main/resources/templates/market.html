@@ -16,6 +16,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!--<script src="js/cardDisplay.js"></script>-->
+    <script src="js/navbar.js"></script>
     <script src="js/market.js"></script>
 </head>
 <body>
@@ -30,10 +31,10 @@
     <a class="active" style="text-decoration: none">Market</a>
     <a id="userInfo" style="text-decoration: none">
         <span class="glyphicon glyphicon-user"></span>
-         namenamename
+        <span id="username"> name</span>
         <div class="newLine"></div>
-        <img src="images/gold.png" height="16" width="16"> 0
-        <img src="images/draw.png" height="16" width="16"> 0
+        <img src="images/gold.png" height="16" width="16"><span id="gold_amount"> 0</span>
+        <img src="images/draw.png" height="16" width="16"><span id="card_amount"> 0</span>
     </a>
     <a href="/logout" id="logoutBtn" style="text-decoration: none"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
     <a href="#filterPanel" data-toggle="collapse" class="filterIcon" onclick="toTop()" style="text-decoration: none">

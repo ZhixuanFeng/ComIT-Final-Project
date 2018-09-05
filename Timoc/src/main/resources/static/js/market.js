@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 function toTop() {
     document.body.scrollTop = 0;
@@ -25,7 +25,7 @@ window.onload = function() {
         document.getElementById("rank_cbs").className += " collapse";
     }
 
-    let target = (width <= 768) ? '#filterPanel' : '#';
+    let target = (screen.width <= 768) ? '#filterPanel' : '#';
     $('.apply').resize().each(function () {
         $(this).attr('data-target', target);
     });
@@ -36,9 +36,6 @@ function cbTitleOnClick(id) {
     chevron.className = chevron.className === "glyphicon glyphicon-chevron-right" ? "glyphicon glyphicon-chevron-down" : "glyphicon glyphicon-chevron-right";
 }
 
-let gold;
-let numOfCards = 0;
-let maxNumOfCards = 52;
 let activePageNum = 0;
 $(document).ready(function()
 {
@@ -61,16 +58,6 @@ $(document).ready(function()
         }
         prevOrNextPageBt('market/all', {page:0}, true, totalPages);
     });
-
-    /*$.post('player/gold', function (result) {
-        gold = parseInt(result);
-    });
-
-    $.post('player/number_of_cards', function (result) {
-        gold = parseInt(result);
-    });*/
-    // $('#bt_buy').hide();
-    // $('#bt_dismiss').hide();
 
     let effectCheckboxes = [$('#cb_attack'), $('#cb_block'), $('#cb_heal'), $('#cb_mana'), $('#cb_aoe'), $('#cb_draw'), $('#cb_revive'), $('#cb_taunt')];
     let suitCheckboxes = [$('#cb_diamond'), $('#cb_club'), $('#cb_heart'), $('#cb_spade')];
@@ -359,6 +346,7 @@ $(window).resize(function(){
         $('.apply').resize().each(function () {
             $(this).attr('data-target', target);
         });
+        if (width > 768) $('#filterPanel').collapse('show');
     }
 });
 
