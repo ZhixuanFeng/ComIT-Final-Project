@@ -108,17 +108,17 @@ public class StompSubscribeEventHandler implements ApplicationListener<SessionSu
             }
 
             // room full
-            if (room.isFull())
+            if (!room.containsPlayer(principal.getName()) && room.isFull())
             {
                 return "Room full";
             }
 
-            // the post request right before this subscription puts player object into the room object
-            // unless some error happens or user modifies the front end, otherwise this shouldn't happen
-            if (!room.containsPlayer(principal.getName()))
-            {
-                return "Error";
-            }
+//            // the post request right before this subscription puts player object into the room object
+//            // unless some error happens or user modifies the front end, otherwise this shouldn't happen
+//            if (!room.containsPlayer(principal.getName()))
+//            {
+//                return "Error";
+//            }
         }
 
         // controller subscription

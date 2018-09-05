@@ -1,5 +1,6 @@
 package com.fengzhixuan.timoc.game;
 
+import com.fengzhixuan.timoc.game.enums.PlayerClass;
 import com.fengzhixuan.timoc.game.enums.PokerHand;
 import com.fengzhixuan.timoc.game.enums.TargetingMode;
 
@@ -26,6 +27,7 @@ public class TotalSelectedEffects
     {
         this.player = player;
         this.selectedCards = selectedCards;
+        pokerHand = Hand.identifyHand(selectedCards);
         for (Card card : selectedCards)
         {
             attack += card.getAttack() + player.getSTR();
@@ -40,6 +42,28 @@ public class TotalSelectedEffects
             manaCost += card.getRank();
         }
 
+        // apply class bonus
+        if (player.getPlayerClass() == PlayerClass.Knight)
+        {
+            block = Math.round(block * 1.5f);
+        }
+        else if (player.getPlayerClass() == PlayerClass.Wizard)
+        {
+            // draw a card for each pair played
+            if (pokerHand == PokerHand.OnePair) draw++;
+            else if (pokerHand == PokerHand.TwoPair ||
+                    pokerHand == PokerHand.FullHouse ||
+                    pokerHand == PokerHand.FourOfAKind) draw+=2;
+        }
+        else if (player.getPlayerClass() == PlayerClass.Berserker)
+        {
+            attack = Math.round(attack * 1.5f);
+        }
+        else if (player.getPlayerClass() == PlayerClass.Priest)
+        {
+            heal = Math.round(heal * 1.5f);
+        }
+
         if (aoe > 0)
         {
             // effect is halved due to aoe deduction
@@ -48,8 +72,6 @@ public class TotalSelectedEffects
             mana = Math.round((float) mana / 2);
             revive = Math.round((float) revive / 2);
         }
-
-        pokerHand = Hand.identifyHand(selectedCards);
 
         float effectMultiplier = 1f;
         switch (pokerHand)
@@ -94,7 +116,7 @@ public class TotalSelectedEffects
             block = Math.round(block * effectMultiplier);
             heal = Math.round(heal * effectMultiplier);
             mana = Math.round(mana * effectMultiplier);
-            draw = Math.round(draw * effectMultiplier);
+//            draw = Math.round(draw * effectMultiplier);
             revive = Math.round(revive * effectMultiplier);
             taunt = Math.round(taunt * effectMultiplier);
         }

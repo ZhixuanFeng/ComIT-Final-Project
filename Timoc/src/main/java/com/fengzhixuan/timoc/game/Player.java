@@ -87,6 +87,7 @@ public class Player
         replaceAllowance = 2;
         block = 0;
         hate = hate / 2;
+        if (playerClass == PlayerClass.Knight) hate += 4;
     }
 
     public void onTurnStart()
@@ -400,7 +401,12 @@ public class Player
 
     public PlayerClass getPlayerClass()
     {
-        return PlayerClass.Knight;
+        return playerClass;
+    }
+
+    public void setPlayerClass(PlayerClass playerClass)
+    {
+        this.playerClass = playerClass;
     }
 
     @JsonIgnore

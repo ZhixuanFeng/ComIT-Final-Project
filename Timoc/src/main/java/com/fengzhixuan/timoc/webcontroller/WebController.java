@@ -107,16 +107,16 @@ public class WebController
         ModelAndView modelAndView = new ModelAndView();
         code = code.toUpperCase();
         Room room = Room.getRoomByCode(code);
-        if (GameCodeGenerator.isCodeValid(code) && room != null && !room.isFull())
+        if (GameCodeGenerator.isCodeValid(code) && room != null)
         {
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            User user = userService.findUserByUsername(auth.getName());
-            long userId = user.getId();
-            CardDeck deck = cardDeckService.getCardDeckById(userId);
-
-            // create player object and add into room
-            Player player = new Player(user.getUsername(), code, com.fengzhixuan.timoc.game.Card.cardEntitiesToCards(deck.getCards()));
-            room.addPlayer(player);
+//            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//            User user = userService.findUserByUsername(auth.getName());
+//            long userId = user.getId();
+//            CardDeck deck = cardDeckService.getCardDeckById(userId);
+//
+//            // create player object and add into room
+//            Player player = new Player(user.getUsername(), code, com.fengzhixuan.timoc.game.Card.cardEntitiesToCards(deck.getCards()));
+//            room.addPlayer(player);
             modelAndView.setViewName("room");
         }
         else

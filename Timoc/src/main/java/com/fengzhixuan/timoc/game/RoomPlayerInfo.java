@@ -1,5 +1,8 @@
 package com.fengzhixuan.timoc.game;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fengzhixuan.timoc.game.enums.PlayerClass;
+
 // Stores player info in room
 public class RoomPlayerInfo
 {
@@ -46,5 +49,11 @@ public class RoomPlayerInfo
     public int getClassId()
     {
         return classId;
+    }
+
+    @JsonIgnore
+    public PlayerClass getPlayerClass()
+    {
+        return PlayerClass.values()[classId];
     }
 }

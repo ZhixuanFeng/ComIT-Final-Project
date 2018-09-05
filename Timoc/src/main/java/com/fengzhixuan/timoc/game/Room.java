@@ -64,7 +64,7 @@ public class Room
     {
         int index = 0;
         while (index < players.length && players[index] != null) index++;
-        return (players[index] != null) ? -1 : index;
+        return (index == players.length || players[index] != null) ? -1 : index;
     }
 
     // add player to player list
@@ -130,5 +130,16 @@ public class Room
             if (!entry.getValue().isReady()) return false;
         }
         return true;
+    }
+
+    public void setPlayerClasses()
+    {
+        for (Player player : players)
+        {
+            if (player != null)
+            {
+                player.setPlayerClass(playerStatuses.get(player.getName()).getPlayerClass());
+            }
+        }
     }
 }

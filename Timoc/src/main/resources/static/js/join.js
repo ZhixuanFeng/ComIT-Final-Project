@@ -30,7 +30,7 @@ $(document).ready(function() {
     function tryCode(code) {
         $.post('room/enter', {code: code}, function (response) {
             if (response === 'OK') {
-                window.location.replace('/room?code=' + code);
+                window.location.href = '/room?code=' + code;
             }
             else if (response.length < 20) {
                 errPopover.attr('data-content', response);

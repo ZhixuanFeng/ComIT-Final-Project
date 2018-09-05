@@ -296,7 +296,7 @@ function Player(aGame, aParent, aName, aAddToStage, aEnableBody, aPhysicsBodyTyp
 
     this.border = game.add.graphics(0, 0, this);
     this.border.lineStyle(2, 0xFFFF00, 1);
-    this.border.drawRoundedRect(-1, -1, this.sprite.width + 2, this.sprite.height + 2, 5);
+    this.border.drawRoundedRect(this.sprite.x-1, this.spriteYPos-1, this.sprite.width + 2, this.sprite.height + 2, 5);
     this.border.visible = false;
 
     this.scale.setTo(2, 2);

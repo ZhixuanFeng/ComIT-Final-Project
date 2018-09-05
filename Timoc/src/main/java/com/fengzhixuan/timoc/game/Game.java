@@ -206,7 +206,7 @@ public class Game
             case Self:
                 // send play card information for front end to animate
                 addDisplayMessage(new GamePlayerPlayCardMessage(MessageType.PlayerPlaysCard_Player, player.getId(), player.getId(), cards));
-
+                break;
             case Player:
                 Player targetPlayer = getPlayerByPosition(totalSelectedEffects.getTargetPosition());
 

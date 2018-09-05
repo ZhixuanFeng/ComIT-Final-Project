@@ -135,6 +135,7 @@ function displayPlayer(player) {
     let slot = playerSlots[player.position];
     slot.name.text(player.name);
     slot.sprite.drawImage(classImages[player.classId], 0, 0);
+    setPlayerReady(player.name, player.ready);
 }
 
 function removePlayer(name) {
