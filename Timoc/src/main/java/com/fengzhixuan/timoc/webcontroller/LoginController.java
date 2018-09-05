@@ -92,13 +92,14 @@ public class LoginController
             modelAndView.setViewName("registration");
 
             // create associated card collection
-            CardCollection cardCollection = new CardCollection(user.getId());
-
             userService.saveUser(user);
+            long id = user.getId();
+            CardCollection cardCollection = new CardCollection(id);
+
             cardCollectionService.saveCardCollection(cardCollection);
 
             // create associated card deck
-            CardDeck cardDeck = new CardDeck(user.getId());
+            CardDeck cardDeck = new CardDeck(id);
             cardDeckService.initializeDeck(cardDeck);  // this saves card deck
         }
         return modelAndView;

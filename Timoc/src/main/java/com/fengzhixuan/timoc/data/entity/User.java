@@ -59,7 +59,11 @@ public class User
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Offer> offers = new ArrayList<>();
 
-    public User(){}
+    public User()
+    {
+        level = 1;
+        maxCardStorage = 52;
+    }
 
     public long getId()
     {
