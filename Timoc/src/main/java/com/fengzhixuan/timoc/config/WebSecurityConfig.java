@@ -69,6 +69,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
             .maximumSessions(1)
             .maxSessionsPreventsLogin(false)
             .expiredUrl("/duplicated_login");
+
+        // Customize the application security
+        http.requiresChannel().anyRequest().requiresSecure();
     }
 
     @Override
