@@ -64,15 +64,6 @@ public class TotalSelectedEffects
             heal = Math.round(heal * 1.5f);
         }
 
-        if (aoe > 0)
-        {
-            // effect is halved due to aoe deduction
-            attack = Math.round((float) attack / 2);
-            heal = Math.round((float) heal / 2);
-            mana = Math.round((float) mana / 2);
-            revive = Math.round((float) revive / 2);
-        }
-
         float effectMultiplier = 1f;
         switch (pokerHand)
         {
@@ -95,6 +86,7 @@ public class TotalSelectedEffects
                 break;
             case FullHouse:
                 revive += 10;
+                aoe = 1;
                 effectMultiplier = 3f;
                 break;
             case FourOfAKind:
@@ -108,6 +100,15 @@ public class TotalSelectedEffects
                 manaCost = 0;
                 effectMultiplier = 5f;
                 break;
+        }
+
+        if (aoe > 0)
+        {
+            // effect is halved due to aoe deduction
+            attack = Math.round((float) attack / 2);
+            heal = Math.round((float) heal / 2);
+            mana = Math.round((float) mana / 2);
+            revive = Math.round((float) revive / 2);
         }
 
         if (effectMultiplier != 1)

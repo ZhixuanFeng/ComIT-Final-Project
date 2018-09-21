@@ -80,7 +80,7 @@ public class LoginController
         else
         {
             // no problem, set up and save user
-            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            user.setPassword(bCryptPasswordEncoder.encode("secret"));
             user.setEnabled(true);
             Role role = roleRepository.findByRole("USER");
             //Role role = roleRepository.getOne(1); // use getOne to increase performance, assuming id of USER is 1

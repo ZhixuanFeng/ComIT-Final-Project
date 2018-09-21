@@ -2,7 +2,7 @@ let playerPositions = [{x:64, y:32}, {x:64, y:64}, {x:64, y:96}, {x:64, y:128}];
 
 function addPlayerHpChangeNumber(hpChange) {
     let hpChangeUINumber;
-    if (hpChange !== 0) {
+    // if (hpChange !== 0) {
         hpChangeUINumber = game.add.group();
         let xPos = 0;
         let absChange = Math.abs(hpChange);
@@ -15,7 +15,7 @@ function addPlayerHpChangeNumber(hpChange) {
             xPos += 4;
         }
         hpChangeUINumber.create(xPos, 0, 'displayui', Math.floor(absChange % 10));
-    }
+    // }
     if (hpChange > 0) {
         hpChangeUINumber.children.forEach(function (number) {
             number.tint = 0x00ff00;

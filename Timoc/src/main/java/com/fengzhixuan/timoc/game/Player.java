@@ -361,7 +361,7 @@ public class Player
     // return actual amount healed on revive
     public int revive(int amount)
     {
-        if (!isDown) return 0;
+        if (!isDown || amount == 0) return 0;
 
         isDown = false;
         game.addDisplayMessage(new GamePlayerMessage(MessageType.PlayerRevive, id));

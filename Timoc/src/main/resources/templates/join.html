@@ -44,7 +44,7 @@
             <button type="button" id="create" class="btn btn-success btn-lg">Create a Game</button>
             <p><br><br>- or -<br><br></p>
             <p>Enter room code to join:</p>
-            <input type="text" class="form-control" placeholder="example: ABAB" id="code" style="text-align:center;" th:maxlength="${maxcodelength}">
+            <input type="text" class="form-control" placeholder="example: ABAB" id="code" style="text-align:center;" th:maxlength="${maxcodelength}" autocomplete="off">
             <div id="err" data-toggle="popover" data-placement="bottom" data-content="Code"></div>
         </div>
     </div>

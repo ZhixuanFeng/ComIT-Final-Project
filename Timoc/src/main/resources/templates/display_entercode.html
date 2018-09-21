@@ -23,7 +23,7 @@
         <div class="well col-sm-6 col-sm-offset-3 ">
             <form th:action="@{/display}" method="get">
                 <span th:utext="${errorMessage}"></span> <br/>
-                <input type="text" id="code" name="code" style="text-transform: uppercase; text-align: center" placeholder="Enter game code" maxlength="4"/> <br/>
+                <input type="text" id="code" name="code" style="text-transform: uppercase; text-align: center" placeholder="Enter game code" maxlength="4" autocomplete="off"/> <br/>
                 <button type="Submit" th:text="Go" class="btn btn-success" style="margin-top: 3vh"></button>
             </form>
         </div>

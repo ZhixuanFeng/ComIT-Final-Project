@@ -132,8 +132,8 @@ public class Display
             case 3:  // left
                 if (state == displayState.SelectingCards)
                 {
-                    if (cursorPosition == 0) return null;
                     cursorPosition--;
+                    if (cursorPosition < 0) cursorPosition = numOfCards-1;
                 }
                 else  // selecting targets
                 {
@@ -146,8 +146,8 @@ public class Display
             case 4:  // right
                 if (state == displayState.SelectingCards)
                 {
-                    if (cursorPosition == numOfCards-1) return null;
                     cursorPosition++;
+                    if (cursorPosition == numOfCards) cursorPosition = 0;
                 }
                 else  // selecting targets
                 {
@@ -239,7 +239,7 @@ public class Display
                     game.playerPlaysCard(game.getCurrentPlayer(), totalSelectedEffects);
 
                     // auto finish player turn if player has no more cards left
-                    if (currentPlayer.getHandPile().size() == 0) game.finishPlayerTurn();
+//                    if (currentPlayer.getHandPile().size() == 0) game.finishPlayerTurn();
                 }
                 break;
             case 6:  // cancel
@@ -291,7 +291,7 @@ public class Display
                 game.playerDiscardsCard(currentPlayer, card);  // sends display status
 
                 // auto finish player turn if player has no more cards left
-                if (currentPlayer.getHandPile().size() == 0) game.finishPlayerTurn();
+//                if (currentPlayer.getHandPile().size() == 0) game.finishPlayerTurn();
                 return null;
             case 0:  // next
                 game.finishPlayerTurn();

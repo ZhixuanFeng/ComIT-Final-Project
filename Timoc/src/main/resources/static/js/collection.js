@@ -92,67 +92,7 @@ $(document).ready(function()
             displayCards(results, $cardArea);
         }
 
-        // show overlay on click
-        $('.card').click(function () {
-            if ($overlay.is(':visible')) {
-                $overlay.hide();
-                return;
-            }
 
-            selectedCardId = this.id;
-            let id = this.id;
-            let card = findCardById(id);
-            $overlay.show();
-            $('#ol_buttons').show();
-            $('#ol_confirm_buttons').hide();
-            $('#ol_selling').hide();
-
-            $('#ol_card').empty();
-            $message.empty();
-            displayCards([card], $('#ol_card'));
-
-            if (id <= 52) {
-                // $message.text('This is a starter card');
-                $('#bt_add_to_deck').show();
-                $('#bt_turn_into_gold').show();
-                $('#bt_sell').show();
-                $('#bt_cancel_offer').hide();
-            }
-            else {
-                if (card.ownerType == 3) {
-                    $('#bt_add_to_deck').hide();
-                    $('#bt_turn_into_gold').hide();
-                    $('#bt_sell').hide();
-                    $message.text('Retrieving information from server..');
-                    $.post('market/card_id', {id:parseInt(id)}, function (offer) {
-                        let offerId = offer.id;
-                        let price = offer.price;
-                        if (typeof(price) == 'undefined') {
-                            $message.text('Cannot find this card in the market, please refresh the web page');
-                        }
-                        else {
-                            $message.text('You are selling this card on the market for ' + price + ' gold');
-                            $('#bt_cancel_offer').show();
-
-                            $('#bt_cancel_offer').click(function () {
-                                $.post('market/cancel/offer_id', {id:offerId}, function () {
-                                    card.ownerType = 2;
-                                    updateCardStatusDiv(card, $('#' + id));
-                                    $('#overlay').hide();
-                                });
-                            });
-                        }
-                    });
-                }
-                else {
-                    $('#bt_add_to_deck').show();
-                    $('#bt_turn_into_gold').show();
-                    $('#bt_sell').show();
-                    $('#bt_cancel_offer').hide();
-                    $('#bt_turn_into_gold').val((50 + card.quality) + ' gold');
-                }
-            }
-        });
 
         $('#bt_dismiss, #bt_cancel').click(function () {
             $('#overlay').hide();
@@ -177,7 +117,7 @@ $(document).ready(function()
                     deck[card.indecks] = card;
                     if (typeof(cardReplaced) != 'undefined') {
                         cardReplaced.ownerType = 2;
-                        updateCardStatusDiv(deck[card.indecks], $('#' + deck[card.indecks].id));
+                        updateCardStatusDiv(cardReplaced, $('#' + deck[card.indecks].id));
                     }
                     else {
                         updateCardStatusDiv(starter[card.indecks], $('#' + (card.indecks + 1)));
@@ -347,6 +287,68 @@ function displayCards(cards, div) {
 
     resizeCardFonts();
     sizeOverlays();
+
+    let $overlay = $('#overlay');
+    let $message = $('#message');
+    // show overlay on click
+    $('.card').click(function () {
+        if ($overlay.is(':visible')) {
+            $overlay.hide();
+            return;
+        }
+
+        selectedCardId = this.id;
+        let id = this.id;
+        let card = findCardById(id);
+        $overlay.show();
+        $('#ol_buttons').show();
+        $('#ol_confirm_buttons').hide();
+        $('#ol_selling').hide();
+
+        $message.empty();
+
+        if (id <= 52) {
+            // $message.text('This is a starter card');
+            $('#bt_add_to_deck').show();
+            $('#bt_turn_into_gold').show();
+            $('#bt_sell').show();
+            $('#bt_cancel_offer').hide();
+        }
+        else {
+            if (card.ownerType == 3) {
+                $('#bt_add_to_deck').hide();
+                $('#bt_turn_into_gold').hide();
+                $('#bt_sell').hide();
+                $message.text('Retrieving information from server..');
+                $.post('market/card_id', {id:parseInt(id)}, function (offer) {
+                    let offerId = offer.id;
+                    let price = offer.price;
+                    if (typeof(price) == 'undefined') {
+                        $message.text('Cannot find this card in the market, please refresh the web page');
+                    }
+                    else {
+                        $message.text('You are selling this card on the market for ' + price + ' gold');
+                        $('#bt_cancel_offer').show();
+
+                        $('#bt_cancel_offer').click(function () {
+                            $.post('market/cancel/offer_id', {id:offerId}, function () {
+                                card.ownerType = 2;
+                                updateCardStatusDiv(card, $('#' + id));
+                                $('#overlay').hide();
+                            });
+                        });
+                    }
+                });
+            }
+            else {
+                $('#bt_add_to_deck').show();
+                $('#bt_turn_into_gold').show();
+                $('#bt_sell').show();
+                $('#bt_cancel_offer').hide();
+                $('#bt_turn_into_gold').val((50 + card.quality) + ' gold');
+            }
+        }
+    });
 }
 
 function resizeCardFonts() {
@@ -392,6 +394,9 @@ function updateCardStatusDiv(card, cardDiv) {
             break;
         case 1:
             setCardStatusLabel(statusDiv, 'In Deck');
+            break;
+        case 2:
+            setCardStatusLabel(statusDiv, 'Idle Card');
             break;
         case 3:
             setCardStatusLabel(statusDiv, 'For Sale');

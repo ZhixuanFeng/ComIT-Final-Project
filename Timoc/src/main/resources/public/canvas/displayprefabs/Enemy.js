@@ -3,7 +3,7 @@ let enemyPositions = [{x:240, y:42}, {x:240, y:74}, {x:240, y:106}, {x:240, y:13
 function updateEnemyHp(hp) {
     if (hp >= 100) {
         this.hpDigit1.loadTexture('displayui', Math.floor(hp / 100));
-        this.hpDigit2.loadTexture('displayui', Math.floor((hp % 10) / 10));
+        this.hpDigit2.loadTexture('displayui', Math.floor((hp % 100) / 10));
         this.hpDigit3.loadTexture('displayui', hp % 10);
         this.hpDigit3.visible = true;
     }
@@ -26,7 +26,7 @@ function doShowHpBar(bool) {
 
 function showEnemyHpChangeNumber(hpChange) {
     let hpChangeNumber;
-    if (hpChange !== 0) {
+    // if (hpChange !== 0) {
         hpChangeNumber = game.add.group();
         let xPos = 0;
         let absChange = Math.abs(hpChange);
@@ -39,7 +39,7 @@ function showEnemyHpChangeNumber(hpChange) {
             xPos += 4;
         }
         hpChangeNumber.create(xPos, 0, 'displayui', Math.floor(absChange % 10));
-    }
+    // }
     if (hpChange > 0) {
         hpChangeNumber.children.forEach(function (number) {
             number.tint = 0x00ff00;

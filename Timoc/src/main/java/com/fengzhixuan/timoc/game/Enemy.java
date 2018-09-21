@@ -82,10 +82,10 @@ public class Enemy
 
         game.addDisplayMessage(new GameEnemyMessage(MessageType.EnemyStartsTurn, id));
 
-        Player mostHatePlayer = game.findPlayerWithMostHate();
-        if (mostHatePlayer == null) return;
         for (Card card : getHand())
         {
+            Player mostHatePlayer = game.findPlayerWithMostHate();
+            if (mostHatePlayer == null) return;
             if (card.getAttack() > 0)
             {
                 game.addDisplayMessage(new GameEnemyPlayCardMessage(MessageType.EnemyPlaysCard_Player, id, card, mostHatePlayer.getId()));

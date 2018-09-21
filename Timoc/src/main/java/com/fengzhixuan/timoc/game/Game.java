@@ -148,7 +148,6 @@ public class Game
         {
             newEnemy = new TimocOdium(this, enemyCount, positionId);
         }
-
         if (newEnemy == null) return;
         enemies.put(newEnemy.getId(), newEnemy);
         enemyCount++;
@@ -498,19 +497,22 @@ public class Game
         for (Map.Entry<String, Player> playerEntry : players.entrySet())
         {
             Player player = playerEntry.getValue();
-            if (result == null)
+            if (!player.isDown())
             {
-                result = player;
-            }
-            else if (!player.isDown())
-            {
-                if (player.getHate() > result.getHate())
+                if (result == null)
                 {
                     result = player;
                 }
-                else if (player.getHate() == result.getHate())
+                else
                 {
-                    result = random.nextInt() < 0 ? player : result;
+                    if (player.getHate() > result.getHate())
+                    {
+                        result = player;
+                    }
+                    else if (player.getHate() == result.getHate())
+                    {
+                        result = random.nextInt() < 0 ? player : result;
+                    }
                 }
             }
         }

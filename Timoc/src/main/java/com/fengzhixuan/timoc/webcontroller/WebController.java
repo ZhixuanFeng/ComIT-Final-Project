@@ -35,6 +35,7 @@ public class WebController
     {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("home");
+        System.out.println("New visit");
         return modelAndView;
     }
 
@@ -92,6 +93,16 @@ public class WebController
         return modelAndView;
     }
 
+    @RequestMapping(value = "/loginSuccess", method = RequestMethod.GET)
+    public ModelAndView newLogin()
+    {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName() + " logged in");
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("join");
+        modelAndView.addObject("maxcodelength", 4);
+        return modelAndView;
+    }
+
     @RequestMapping(value = "/join", method = RequestMethod.GET)
     public ModelAndView getJoinPage()
     {
@@ -104,6 +115,7 @@ public class WebController
     @RequestMapping(value = "/room", method = RequestMethod.GET)
     public ModelAndView enterRoom(@RequestParam("code") String code)
     {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName() + " joined a room");
         ModelAndView modelAndView = new ModelAndView();
         code = code.toUpperCase();
         Room room = Room.getRoomByCode(code);
@@ -129,6 +141,7 @@ public class WebController
     @RequestMapping(value = "/controller", method = RequestMethod.GET)
     public ModelAndView enterController(@RequestParam("code") String code)
     {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getName() + " entered a game");
         ModelAndView modelAndView = new ModelAndView();
         if (GameCodeGenerator.isCodeValid(code.toUpperCase()) && Game.gameCodeExist(code.toUpperCase()))
         {
