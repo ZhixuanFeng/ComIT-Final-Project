@@ -37,10 +37,14 @@
 <script>
     window.onload = function() {
         if (screen.width <= 768) {
-            var content = document.getElementById('rightPanel');
-            var parent = content.parentNode;
+            let content = document.getElementById('rightPanel');
+            let parent = content.parentNode;
             parent.insertBefore(content, parent.firstChild);
         }
+
+        let div = $('.video');
+        let width = div.width();
+        div.css('height', width/560*315);
     }
 </script>
 <body>
@@ -69,7 +73,7 @@
                     </p>
                     <p>
                     <br>
-                        <iframe width="560" height="315" src="https://www.youtube.com/embed/k7XhGppqiFc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                        <iframe class="video" width=100% src="https://www.youtube.com/embed/k7XhGppqiFc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                     <br>
                     <br>
                     </p>
@@ -94,29 +98,12 @@
                     <br>
                     <img src="images/exampleImage.png" class="img-rounded" style="display: block;margin: auto; margin-bottom: 5vh">
                     <p>
-                        This game is designed to use smart phones as controllers.  Another
-                        device is needed to set up as a shared display among players.
+                        This game is designed to use smart phones as controllers and another device as a display.
                         Here are the steps:<br>
                         1. login using a phone<br>
                         2. create/join a game<br>
-                        3. on game start, use a PC to go to <a href="https://timoc.net/display/">timoc.net/display</a>,
+                        3. on game start, use a PC to go to <a href="https://timoc.nicfeng.com/display/">timoc.nicfeng.com/display/</a>,
                         enter the room code, then everything will be connected and ready to go.
-                    </p>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="panel-body post">
-                    <h2>September Roadmap</h2>
-                    <br>
-                    <p>
-                        There is no main goal for September, but a few things to be done:<br>
-                        - learn and use ReactJS to improve user interface<br>
-                        - add tooptips, popovers on the pages to add explanations<br>
-                        - add a page to explain game rules<br>
-                        - some in-game sound effects<br>
-                        - bug fix, bug fix, bug fix<br>
-                        <br>
-                        The goal in October would be getting ready for public testing.
                     </p>
                 </div>
             </div>
