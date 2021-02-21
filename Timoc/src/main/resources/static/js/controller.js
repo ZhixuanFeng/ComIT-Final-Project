@@ -33,7 +33,7 @@ function create() {
 
     game.stage.backgroundColor = bgColors[Math.floor((Math.random() * bgColors.length) + 1)-1];
 
-    instruction = this.add.text(14.0, 85.0, 'Please open a browser on another device, \ngo to timoc.net/display and enter code: ' + code, {"font":"bold 20px Arial"});
+    instruction = this.add.text(14.0, 85.0, 'Please open a browser on another device, \ngo to timoc.nicfeng.com/display/ and enter code: ' + code, {"font":"bold 20px Arial"});
     instruction.visible = false;
 
     btnGroup = this.add.group();
