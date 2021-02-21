@@ -8,7 +8,7 @@ Timoc is a card game that is playable on the browser.  It is designed to be play
                         Play decks are customizable and
                         cards can be traded in a market place.
                         
-Project is live on <a href="https://www.timoc.net/">timoc.net</a>.  This website is built by Zhixuan(Nic).
+Project is live on <a href="https://timoc.nicfeng.com/">timoc.nicfeng.com</a>.  This website is built by Zhixuan(Nic).
                         It is the final project for the
                         <a href="http://www.comit.org/">ComIT</a> course(June-August 2018).
                         The purpose of developing this project is to learn web
